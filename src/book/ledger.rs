@@ -1,7 +1,8 @@
 use super::event::{Event};
+use super::types::*;
 
-type Events = std::collections::BTreeMap<time::OffsetDateTime, Event>;
-type EventsIter<'s> = std::collections::btree_map::Iter<'s, time::OffsetDateTime, Event>;
+type Events = std::collections::BTreeMap<Date, Event>;
+type EventsIter<'s> = std::collections::btree_map::Iter<'s, Date, Event>;
 
 pub struct Ledger {
     events: Events,

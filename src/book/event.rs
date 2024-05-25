@@ -1,5 +1,6 @@
 pub mod income;
 
+use super::types::*;
 pub use income::Income;
 
 #[derive(serde::Deserialize)]
@@ -9,9 +10,9 @@ pub enum Event {
 }
 
 impl Event {
-    pub fn date(&self) -> time::OffsetDateTime {
+    pub fn date(&self) -> Date {
         match self {
-            Event::Income(e) => e.date,
+            Event::Income(e) => e.date.clone(),
         }
     }
     
@@ -29,7 +30,7 @@ impl Event {
     
     pub fn describe(&self) -> String {
         match self {
-            Event::Income(e) => format!("income {}, declared at {}, amount={} {}, moms={} currency={} method={:?}", e.id, e.date, e.amount, e.currency, e.moms, e.currency, e.method)
+            Event::Income(e) => format!("income {}, declared at {}, amount={}, moms={} currency={:?} method={:?}", e.id, e.date, e.amount.0, e.moms.0, e.currency, e.method)
         }
     }
 }

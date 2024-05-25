@@ -1,5 +1,6 @@
 pub struct Generator;
 
+use crate::book::types::*;
 use crate::book::accounts::Accounts;
 use crate::book::ledger::Ledger;
 use crate::book::event;
@@ -9,7 +10,7 @@ impl Generator {
     fn add_income_to_accounts<'l>(accounts: &mut Accounts<'l>, e: &event::Income, f: &'l event::Event) {
         match e.method {
             event::income::Method::ReverseCharge => {
-                accounts.add_entry(e.date, &f, konto::kundfordringar, e.amount); // TODO: Change currency!
+                accounts.add_entry(&e.date, &f, konto::kundfordringar, BookAmount(e.amount.0)); // TODO: Change currency!
 //                accounts.add_entry(e.date, &f, );
             },
             _ => panic!("Not supported path"),

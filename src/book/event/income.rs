@@ -1,3 +1,5 @@
+use crate::book::types::*;
+
 #[derive(Debug, serde::Deserialize)]
 pub enum Method {
     #[serde(rename="normal")]
@@ -15,16 +17,15 @@ pub enum Category {
 #[derive(serde::Deserialize)]
 pub struct Income {
   pub id: String,
-  #[serde(with="time::serde::iso8601")]
-  pub date: time::OffsetDateTime,
-  pub country: crate::book::country::Country,
+  pub date: Date,
+  pub country: Country,
   #[serde(rename="customer-vat")]
   pub customer_vat: String,
-  pub currency: String,
+  pub currency: Currency,
   pub method: Method,
   pub category: Category,
-  pub amount: i64,
-  pub moms: i64,
+  pub amount: Amount,
+  pub moms: Amount,
   pub description: String,
 }
 
