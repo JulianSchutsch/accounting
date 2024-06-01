@@ -22,4 +22,10 @@ impl From<&str> for BookError {
     }
 }
 
+impl From<serde_yaml::Error> for BookError {
+    fn from(value: serde_yaml::Error) -> Self {
+        BookError{ value: value.to_string() }
+    }
+}
+
 pub type BookResult<T=()> = Result<T, BookError>;

@@ -13,8 +13,8 @@ fn add_sweden(p: Params<Invoice>) -> BookResult<()> {
     for MomsClassedAmount(moms_perc, amount, moms) in p.event.amount.iter() {
         let book_amount = p.converter.amount_into_book(p.event.date, p.event.currency, *amount)?;
         let book_moms = p.converter.moms_into_book(p.event.date, p.event.currency, *moms)?;
-        p.accounts.add_entry_debet(&p.event_ref, accounts::CLAIMS_FROM_CUSTOMERS, book_amount);
-        p.accounts.add_entry_debet(&p.event_ref, accounts::INCOMING_MOMS, book_moms);
+        p.accounts.add_entry_debet(p.ledger_id, &p.event_ref, accounts::CLAIMS_FROM_CUSTOMERS, book_amount);
+        p.accounts.add_entry_debet(p.ledger_id, &p.event_ref, accounts::INCOMING_MOMS, book_moms);
     }
     Ok(())
 }

@@ -1,6 +1,6 @@
-pub mod id;
+pub mod accountid;
 mod accounts;
-mod naming;
+mod accountnaming;
 
 pub use accounts::Accounts;
-pub use accounts::Entry;
+pub use accountnaming::AccountNaming;

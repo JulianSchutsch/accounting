@@ -28,7 +28,8 @@ fn add_entry<'p, 'e:'p>(p: IncompleteParams<'_, 'p, '_>, entry: &'e Event) -> Bo
 impl crate::book::generator::Generator for Generator {
     fn generate_accounts<'p:'r, 'r>(&self, converter: & dyn Converter, ledger: &'p Ledger) -> BookResult<Accounts<'r>> {
         let mut accounts = Accounts::new(converter.book_currency());
-        ledger.iter().try_for_each(|(_, e)| add_entry(IncompleteParams{
+        ledger.iter().try_for_each(|(ledger_id, e)| add_entry(IncompleteParams{
+            ledger_id: *ledger_id,
             accounts: &mut accounts,
             converter: converter,
         }, e))?;

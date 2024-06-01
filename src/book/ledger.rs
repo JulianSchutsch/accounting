@@ -3,4 +3,4 @@ mod ledger;
 
 pub use ledger::Ledger;
 
-pub use event::{Event, Income, IncomeCategory, Invoice};
+pub use event::{LedgerId, Event, Income, IncomeCategory, Invoice};

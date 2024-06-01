@@ -7,6 +7,12 @@ pub struct Date(InternalDate);
 
 const DATE_STRING_FORMAT: &'static str = "%Y-%m-%d";
 
+impl Date {
+    pub fn default() -> Self {
+        Date(chrono::NaiveDate::default())
+    }
+}
+
 impl<'de> Deserialize<'de> for Date {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Date, D::Error> {
         let string = String::deserialize(deserializer)?;
