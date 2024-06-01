@@ -7,6 +7,7 @@ pub enum TableAlignment {
 }
 
 pub enum TableEntry {
+    Empty,
     String(TableAlignment, String),
     NewRow,
     RowSeparator,
@@ -37,6 +38,7 @@ impl Table {
         for entry in self.iter() {
             match entry {
                 TableEntry::NewRow => column = 0,
+                TableEntry::Empty => column+=1,
                 TableEntry::String(_, s) => {
                     result_w.entry(column).and_modify(|v| *v = std::cmp::max(*v, s.len())).or_insert(s.len());
                     column+=1;
@@ -64,6 +66,10 @@ impl Table {
         let mut column : usize = 0;
         for entry in self.iter() {
             match entry {
+                TableEntry::Empty => {
+                    Self::print_string(column==0, w.get(&column).copied().unwrap_or(0), &TableAlignment::Left, &"".to_string());
+                    column += 1;
+                }
                 TableEntry::String(a, s) => {
                     Self::print_string(column==0, w.get(&column).copied().unwrap_or(0), a, s);
                     column += 1;
@@ -73,7 +79,7 @@ impl Table {
                     column = 0;
                 }
                 TableEntry::RowSeparator => {
-                    println!("{:-<width$}", width=total_width);
+                    println!("{:-<width$}", "", width=total_width);
                 }
             }
         }

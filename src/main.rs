@@ -22,4 +22,7 @@ fn main() {
     ledger.print();
     let accounts = book::Generator::generate_accounts(&generator, &converter, &ledger).unwrap();
     accounts.print();
+    let naming = book::swedish::AccountNaming::new();
+    let complete_book = book::report::bookaccounts::complete::generate_complete_accounts_table(&accounts, &naming);
+    complete_book.print();
 }

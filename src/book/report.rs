@@ -1,2 +1,2 @@
-mod table;
-mod bookaccounts;
+pub mod table;
+pub mod bookaccounts;

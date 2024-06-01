@@ -3,7 +3,7 @@ mod ledger;
 mod generator;
 mod converter;
 mod bookaccounts;
-mod report;
+pub mod report;
 pub mod swedish;
 mod bookresult;
 
