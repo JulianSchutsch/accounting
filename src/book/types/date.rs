@@ -2,15 +2,15 @@ pub use serde::{Deserialize, Deserializer};
 
 type InternalDate = chrono::NaiveDate;
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct Date(InternalDate);
 
-const DateStringFormat: &'static str = "%Y-%m-%d";
+const DATE_STRING_FORMAT: &'static str = "%Y-%m-%d";
 
 impl<'de> Deserialize<'de> for Date {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Date, D::Error> {
         let string = String::deserialize(deserializer)?;
-        let naive = chrono::NaiveDate::parse_from_str(&string, DateStringFormat).map_err(serde::de::Error::custom)?;
+        let naive = chrono::NaiveDate::parse_from_str(&string, DATE_STRING_FORMAT).map_err(serde::de::Error::custom)?;
         Ok(Date(naive))
     }
 }

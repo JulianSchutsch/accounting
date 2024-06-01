@@ -1,31 +1,37 @@
-pub struct Generator;
+mod params;
+mod income;
+mod invoice;
 
-use crate::book::types::*;
-use crate::book::accounts::Accounts;
-use crate::book::ledger::Ledger;
-use crate::book::event;
-use super::konto;
+use crate::book::bookresult::*;
+use crate::book::bookaccounts::*;
+use crate::book::ledger::*;
+use crate::book::converter::Converter;
+
+use params::*;
+
+pub struct Generator {}
 
 impl Generator {
-    fn add_income_to_accounts<'l>(accounts: &mut Accounts<'l>, e: &event::Income, f: &'l event::Event) {
-        match e.method {
-            event::income::Method::ReverseCharge => {
-                accounts.add_entry(&e.date, &f, konto::kundfordringar, BookAmount(e.amount.0)); // TODO: Change currency!
-//                accounts.add_entry(e.date, &f, );
-            },
-            _ => panic!("Not supported path"),
-        }
+    pub fn new() -> Generator {
+        Generator{}
     }
 }
 
+fn add_entry<'p, 'e:'p>(p: IncompleteParams<'_, 'p, '_>, entry: &'e Event) -> BookResult {
+    match entry {
+        Event::Income(e) => income::add(p.complete_with(e, entry)).map_err(|e| e.extend_by_str("Failed to add income"))?,
+        Event::Invoice(e) => invoice::add(p.complete_with(e, entry)).map_err(|e| e.extend_by_str("Failed to add invoice"))?,
+    }
+    Ok(())
+}
+
 impl crate::book::generator::Generator for Generator {
-    fn generate_accounts<'l>(&self, ledger: &'l Ledger) -> Result<Accounts<'l>, String> {
-        let mut accounts = Accounts::new();
-        for (date, entry) in ledger.iter() {
-            match entry {
-                event::Event::Income(e) => Self::add_income_to_accounts(&mut accounts, e, entry),
-            }
-        }
+    fn generate_accounts<'p:'r, 'r>(&self, converter: & dyn Converter, ledger: &'p Ledger) -> BookResult<Accounts<'r>> {
+        let mut accounts = Accounts::new(converter.book_currency());
+        ledger.iter().try_for_each(|(_, e)| add_entry(IncompleteParams{
+            accounts: &mut accounts,
+            converter: converter,
+        }, e))?;
         Ok(accounts)
     }
 }
