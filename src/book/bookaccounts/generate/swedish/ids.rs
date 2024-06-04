@@ -1,4 +1,4 @@
-use crate::book::bookaccounts::accountid::AccountId as Id;
+use crate::book::bookaccounts::bookaccountid::BookAccountId as Id;
 
 pub const COMPANY:Id = Id(1930);
 pub const CLAIMS_TO_CUSTOMERS:Id = Id(1510);

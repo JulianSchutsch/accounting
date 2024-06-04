@@ -1,24 +1,22 @@
 mod book;
 
 use book::BookResult;
+use book::Import;
+use book::bookaccounts;
 
-fn mainmain() -> BookResult {
-    let settings = book::settings::Settings::read_from_file("/home/alexandrus/jsmjukvaruutveckling/booksettings.yaml".to_string())?;
-    let exchange_rates = book::exchange_rate::import_using_settings(&settings)?;
-    let bank_accounts = book::bankaccounts::import_using_settings(&settings)?;
-    let ledger = book::ledger::import_using_settings(&settings)?;
-    ledger.print();
-    /*    let generator = book::swedish::Generator::new(&converter);
-        let accounts = book::Generator::generate_accounts(&generator, &ledger).unwrap();
-        accounts.print();
-        let naming = book::swedish::AccountNaming::new();
-        let complete_book = book::report::bookaccounts::complete::generate_complete_accounts_table(&accounts, &naming);
-        complete_book.print();*/
+fn process_root_file(path: &str) -> BookResult {
+    let import = Import::from_root_file(path)?;
+    import.ledger.print();
+    let book_accounts = bookaccounts::generate(&import)?;
+    book_accounts.print();
+    let complete_book = book::report::bookaccounts::complete::generate_complete_accounts_table(&book_accounts);
+    complete_book.print();
     Ok(())
 }
 
 fn main() {
-    let result = mainmain();
+    let path = std::env::args().nth(1).expect("no path to root file given");
+    let result = process_root_file(path.as_str());
     if result.is_err() {
         println!("{}", result.err().unwrap());
     }

@@ -1,4 +1,7 @@
+use crate::book::Currency;
+
 #[derive(serde::Deserialize)]
 pub struct Riksbank {
-    pub files: Vec<String>
+    pub currency: Currency,
+    pub file: String,
 }

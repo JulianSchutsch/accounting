@@ -3,19 +3,18 @@ use crate::book::bookresult::*;
 use crate::book::ledger::*;
 use crate::book::types::*;
 
-use crate::book::swedish::bookaccounts;
-
 use super::params::Params;
+use super::ids;
 
 fn add_sweden(p: Params<Invoice>) -> BookResult<()> {
     if(p.event.reverse_charge) {
-        return Err(BookError::new_from_str("Reverse charge not supported within sweden"));
+        return Err(BookError::new("Reverse charge not supported within sweden"));
     }
     for MomsClassedAmount(moms_perc, amount, moms) in p.event.amount.iter() {
-        let book_amount = p.converter.amount_into_book(p.event.date, p.event.currency, *amount)?;
-        let book_moms = p.converter.moms_into_book(p.event.date, p.event.currency, *moms)?;
-        p.accounts.add_entry(p.ledger_id, &p.event_ref, bookaccounts::CLAIMS_FROM_CUSTOMERS, AccountAmount::Debit(book_amount));
-        p.accounts.add_entry(p.ledger_id, &p.event_ref, bookaccounts::INCOMING_MOMS, AccountAmount::Debit(book_moms));
+        let book_amount = p.import.exchange_rates.amount_into_book(p.event.date, p.event.currency, *amount)?;
+        let book_moms = p.import.exchange_rates.moms_into_book(p.event.date, p.event.currency, *moms)?;
+        p.accounts.add_entry(p.ledger_id, &p.event_ref, ids::CLAIMS_FROM_CUSTOMERS, AccountAmount::Debit(book_amount));
+        p.accounts.add_entry(p.ledger_id, &p.event_ref, ids::INCOMING_MOMS, AccountAmount::Debit(book_moms));
     }
     Ok(())
 }

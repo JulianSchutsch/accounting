@@ -33,16 +33,20 @@ type EntriesIter<'l, 's> = std::collections::btree_map::Iter<'s, EntryKey, Vec<A
 pub struct BookAccounts<'l> {
     currency: Currency,
     entries: Entries<'l>,
-    pub naming: std::collections::HashMap<BookAccountId, String>
+    pub naming: HashMap<BookAccountId, String>
 }
 
 impl<'s> BookAccounts<'s> {
     pub fn new<'l>(currency: Currency) -> BookAccounts<'l> {
         BookAccounts{
-            currency: currency,
+            currency,
             entries: Entries::new(),
             naming: HashMap::new()
         }
+    }
+
+    pub fn set_account_name(&mut self, id: BookAccountId, name: &str) {
+        self.naming.insert(id, name.to_string());
     }
 
     pub fn iter(&self) -> EntriesIter { self.entries.iter() }
