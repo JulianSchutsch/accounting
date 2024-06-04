@@ -1,6 +1,4 @@
-pub mod accountid;
-mod accounts;
-mod accountnaming;
+pub mod bookaccountid;
+mod bookaccounts;
 
-pub use accounts::{Accounts, AccountEntry, AccountAmount};
-pub use accountnaming::AccountNaming;
+pub use bookaccounts::{BookAccounts, AccountEntry, AccountAmount};

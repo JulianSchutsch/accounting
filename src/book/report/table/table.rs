@@ -1,5 +1,3 @@
-use std::fmt::Alignment;
-
 pub enum TableAlignment {
     Left,
     Center,

@@ -1,7 +1,8 @@
+use std::collections::HashMap;
 use crate::book::ledger::*;
 use crate::book::types::*;
 
-use super::accountid::AccountId;
+use super::bookaccountid::BookAccountId;
 
 #[derive(Debug, Clone, Copy)]
 pub enum AccountAmount {
@@ -21,7 +22,7 @@ impl AccountAmount {
 #[derive(Debug, Clone, Copy)]
 pub struct AccountEntry<'l> {
     pub source: &'l Event,
-    pub account: AccountId,
+    pub account: BookAccountId,
     pub amount: AccountAmount
 }
 
@@ -29,16 +30,18 @@ type EntryKey = (Date, LedgerId);
 type Entries<'l> = std::collections::BTreeMap<EntryKey, Vec<AccountEntry<'l>>>;
 type EntriesIter<'l, 's> = std::collections::btree_map::Iter<'s, EntryKey, Vec<AccountEntry<'l>>>;
 
-pub struct Accounts<'l> {
+pub struct BookAccounts<'l> {
     currency: Currency,
     entries: Entries<'l>,
+    pub naming: std::collections::HashMap<BookAccountId, String>
 }
 
-impl<'s> Accounts<'s> {
-    pub fn new<'l>(currency: Currency) -> Accounts<'l> {
-        Accounts{
+impl<'s> BookAccounts<'s> {
+    pub fn new<'l>(currency: Currency) -> BookAccounts<'l> {
+        BookAccounts{
             currency: currency,
-            entries: Entries::new()
+            entries: Entries::new(),
+            naming: HashMap::new()
         }
     }
 
@@ -52,7 +55,7 @@ impl<'s> Accounts<'s> {
         }
     }
 
-    pub fn add_entry<'l: 's>(&mut self, ledger_id: LedgerId, source: &'l Event,  account: AccountId, amount: AccountAmount) {
+    pub fn add_entry<'l: 's>(&mut self, ledger_id: LedgerId, source: &'l Event,  account: BookAccountId, amount: AccountAmount) {
         let entry = AccountEntry{
             source: source,
             account: account,

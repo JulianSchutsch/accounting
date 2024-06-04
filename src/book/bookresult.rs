@@ -1,31 +1,52 @@
+use std::collections::LinkedList;
+use std::fmt;
+
 #[derive(Debug)]
 pub struct BookError {
-    value: String,
+    errors: LinkedList<String>,
 }
 
 impl BookError {
-    pub fn new_from_str(s:&str) -> BookError {
+    pub fn new<T: ToString>(s:T) -> BookError {
+        let mut list = LinkedList::<String>::new();
+        list.push_front(s.to_string());
         BookError{
-            value: String::from(s)
+            errors: list
         }
     }
-    pub fn extend_by_str(&self, s:& str) -> BookError {
+
+    pub fn new_from<E: ToString, T: ToString>(e: E, s:T) -> BookError {
+        let mut list = LinkedList::<String>::new();
+        list.push_front(e.to_string());
+        list.push_front(s.to_string());
         BookError{
-            value: format!("{} \n {}", self.value.as_str(), s)
+            errors: list
         }
+    }
+
+    pub fn extend<T: ToString>(self, s:T) -> Self {
+        let mut result = self;
+        result.errors.push_front(s.to_string());
+        result
     }
 }
 
-impl From<&str> for BookError {
-    fn from(value: & str) -> Self {
-        return BookError::new_from_str(value);
+impl<T> From<T> for BookError where T: std::error::Error {
+    fn from(value: T) -> Self {
+        BookError::new(value)
     }
 }
 
-impl From<serde_yaml::Error> for BookError {
-    fn from(value: serde_yaml::Error) -> Self {
-        BookError{ value: value.to_string() }
+impl fmt::Display for BookError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut ident : usize = 0;
+        for error in self.errors.iter() {
+            writeln!(f, "{: <ident$}{}", "", error, ident=ident)?;
+            ident += 2;
+        }
+        Ok(())
     }
 }
 
 pub type BookResult<T=()> = Result<T, BookError>;
+

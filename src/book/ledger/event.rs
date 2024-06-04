@@ -8,4 +8,4 @@ pub use event::Event;
 pub use income::Income;
 pub use invoice::Invoice;
 pub use income::IncomeCategory;
-pub use ledgerid::LedgerId;
+pub use ledgerid::{FiscalYearId, LedgerId};

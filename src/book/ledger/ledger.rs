@@ -1,15 +1,17 @@
+use std::collections::BTreeMap;
 use crate::book::types::*;
 use crate::book::ledger::*;
 use crate::book::bookresult::*;
 
-use super::event::LedgerId;
+pub use event::{FiscalYearId, LedgerId};
 
 type Events = std::collections::BTreeMap<LedgerId, Event>;
 type EventsIter<'s> = std::collections::btree_map::Iter<'s, LedgerId, Event>;
+type FiscalYears = std::collections::BTreeMap<FiscalYearId, FiscalYear>;
 
 pub struct Ledger {
-    events: Events,
-    next_id: LedgerId,
+    pub events: Events,
+    pub fiscal_years: FiscalYears,
 }
 
 impl Ledger {
@@ -17,19 +19,8 @@ impl Ledger {
     pub fn new() -> Ledger {
         Ledger{
             events: Events::new(),
-            next_id: LedgerId(0)
+            fiscal_years: BTreeMap::new(),
         }
-    }
-
-    pub fn add_from_file(&mut self, path: String) -> BookResult<()> {
-        let file = std::fs::File::open(path).map_err(|_| "Failed to open path")?;
-        let reader = std::io::BufReader::new(file);
-        let entries: Vec<Event> = serde_yaml::from_reader(reader)?;
-        for entry in entries {
-            self.events.insert(self.next_id, entry);
-            self.next_id = LedgerId(self.next_id.0+1);
-        }
-        Ok(())
     }
 
     pub fn print(&self) {

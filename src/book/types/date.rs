@@ -1,4 +1,8 @@
-pub use serde::{Deserialize, Deserializer};
+use chrono::Datelike;
+use book::bookresult::BookResult;
+
+use crate::book;
+use crate::book::BookError;
 
 type InternalDate = chrono::NaiveDate;
 
@@ -8,13 +12,19 @@ pub struct Date(InternalDate);
 const DATE_STRING_FORMAT: &'static str = "%Y-%m-%d";
 
 impl Date {
-    pub fn default() -> Self {
-        Date(chrono::NaiveDate::default())
+    pub fn id(&self) -> i32 {
+        self.0.year()*10000 + (self.0.month() as i32)*100 + (self.0.day() as i32)
     }
+
+    pub fn from_str(s: &str) -> BookResult<Date> {
+        let naive = chrono::NaiveDate::parse_from_str(s, DATE_STRING_FORMAT).map_err(|e| BookError::new(format!("Failed to parse date {} with {}", s, e)))?;
+        Ok(Date(naive))
+    }
+
 }
 
-impl<'de> Deserialize<'de> for Date {
-    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Date, D::Error> {
+impl<'de> serde::Deserialize<'de> for Date {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Date, D::Error> {
         let string = String::deserialize(deserializer)?;
         let naive = chrono::NaiveDate::parse_from_str(&string, DATE_STRING_FORMAT).map_err(serde::de::Error::custom)?;
         Ok(Date(naive))
