@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 use std::io::BufRead;
-use crate::book::bank_accounts::bank_account_reference::BankAccountReference;
+use crate::book::bank_accounts::bank_account_reference::{BankAccountReference, SwedishAccountNumber};
+use crate::book::bank_accounts::bank_accounts::BankAccountType;
 use crate::book::bank_accounts::BankAccounts;
 use crate::book::book_result::*;
 use crate::book::types::*;
@@ -58,7 +59,11 @@ pub fn import(banks : &mut BankAccounts, path: &str, settings: &settings::banks:
     let rows = csv_reader.deserialize().collect::<Result<Vec<Row>,_>>()?;
     let accounts = rows.iter().map(|row| row.account_nr).collect::<HashSet<i64>>();
     for account in accounts {
-        let accound_id = banks.ensure_account(HashSet::from_iter(vec![BankAccountReference::Swedish_Account_Number(account)].into_iter()));
+        let ref1 = BankAccountReference::Swedish_Account_Number(SwedishAccountNumber{number: account});
+        let accound_id = banks.ensure_account(
+            HashSet::from_iter(vec![ref1].into_iter()),
+            BankAccountType::Account, None, None
+        )?;
         banks.add_period(accound_id, period, path.to_string());
     }
     Ok(())

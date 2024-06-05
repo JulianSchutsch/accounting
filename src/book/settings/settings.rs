@@ -1,8 +1,18 @@
 use crate::book::book_result::*;
 use crate::book::types::*;
+use crate::book::bank_accounts::*;
 
 use super::fiscal_year::FiscalYear;
 use super::exchange_rates::ExchangeRate;
+
+#[derive(Clone, serde::Deserialize)]
+pub struct Accounts {
+    #[serde(rename="type")]
+    pub account_type: BankAccountType,
+    pub currency: Currency,
+    pub initial_value: Amount,
+    pub references: Vec<BankAccountReference>
+}
 
 #[derive(serde::Deserialize)]
 struct PlainSettings {
@@ -10,6 +20,7 @@ struct PlainSettings {
     pub book_generator: String,
     pub exchange_rates: Vec<ExchangeRate>,
     pub fiscal_years: Vec<String>,
+    pub accounts: Vec<Accounts>
 }
 
 pub struct Settings {
@@ -18,6 +29,7 @@ pub struct Settings {
     pub book_generator: String,
     pub exchange_rates: Vec<ExchangeRate>,
     pub fiscal_years: Vec<FiscalYear>,
+    pub accounts: Vec<Accounts>
 }
 
 impl Settings {
@@ -55,7 +67,8 @@ impl Settings {
             book_currency: plain.book_currency,
             book_generator: plain.book_generator,
             exchange_rates: plain.exchange_rates,
-            fiscal_years
+            fiscal_years,
+            accounts: plain.accounts
         })
     }
 }
