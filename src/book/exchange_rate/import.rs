@@ -12,5 +12,5 @@ pub fn import_using_settings(settings: &settings::Settings) -> BookResult<Exchan
             settings::ExchangeRate::Riksbank(s) => riksbank::import(&mut currency_converter, s)?
         }
     }
-    Ok((currency_converter))
+    Ok(currency_converter)
 }

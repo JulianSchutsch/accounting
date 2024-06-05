@@ -1,22 +1,25 @@
 use crate::book::book_result::*;
-use crate::book::types;
+use crate::book::types::*;
 use crate::book::utils::paths::build_path;
 
 use super::banks;
 use super::events;
+use super::annual_accounts_method::AnnualAccountsMethod;
 
 #[derive(serde::Deserialize)]
 struct PlainFiscalYear {
-    pub fiscal_year: types::FiscalYear,
+    pub fiscal_year: DateRange,
     pub banks: Vec<banks::PlainBanks>,
-    pub events: Vec<events::PlainEvents>
+    pub events: Vec<events::PlainEvents>,
+    pub annual_accounts_method: AnnualAccountsMethod
 }
 
 pub struct FiscalYear {
     pub root_path: String,
-    pub fiscal_year: types::FiscalYear,
+    pub fiscal_year: DateRange,
     pub banks: Vec<banks::Banks>,
-    pub events: Vec<events::Events>
+    pub events: Vec<events::Events>,
+    pub annual_accounts_method: AnnualAccountsMethod
 }
 
 impl FiscalYear {
@@ -35,6 +38,7 @@ impl FiscalYear {
             fiscal_year: plain.fiscal_year,
             banks: plain.banks.iter().map(|p| { p.to_banks() }).collect::<Result<Vec<_>, _>>()?,
             events: plain.events.iter().map(|p|{ p.to_events() }).collect::<Result<Vec<_>, _>>()?,
+            annual_accounts_method: plain.annual_accounts_method
         })
     }
 }

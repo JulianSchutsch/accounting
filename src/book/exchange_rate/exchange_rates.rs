@@ -23,15 +23,15 @@ impl ExchangeRates {
         }
         let currency_series = self.series.get(&currency).ok_or_else(|| BookError::new(format!("Failed to retrieve exchange_rates {}", currency)))?;
         let exchange_rate = currency_series.get(&date).ok_or_else(|| BookError::new("Failed to find exchange rate for date"))?;
-        let bookamount = amount*exchange_rate;
-        Ok(bookamount)
+        let book_amount = amount*exchange_rate;
+        Ok(book_amount)
     }
 
-    pub fn amount_into_book(&self, date: Date, currency: Currency, amount: Amount) -> BookResult<BookAmount> {
-        Ok(BookAmount(self.into_book(date, currency, amount.0)?))
+    pub fn amount_into_book(&self, date: Date, currency: Currency, amount: Amount) -> BookResult<Amount> {
+        Ok(Amount(self.into_book(date, currency, amount.0)?))
     }
 
-    pub fn moms_into_book(&self, date: Date, currency: Currency, amount: Moms) -> BookResult<BookAmount> {
-        Ok(BookAmount(self.into_book(date, currency, amount.0)?))
+    pub fn moms_into_book(&self, date: Date, currency: Currency, amount: Amount) -> BookResult<Amount> {
+        Ok(Amount(self.into_book(date, currency, amount.0)?))
     }
 }

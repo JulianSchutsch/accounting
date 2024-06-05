@@ -1,3 +1,4 @@
+use crate::book::{BookError, BookResult};
 use crate::book::types::*;
 
 #[derive(Debug, PartialEq, Clone, Copy, serde::Deserialize)]
@@ -23,4 +24,18 @@ pub struct Income {
   pub category: IncomeCategory,
   pub amount: Vec<MomsClassedAmount>,
   pub description: String,
+}
+
+impl Income {
+  pub fn verify(&self) -> BookResult {
+    if self.reverse_charge {
+      if self.amount.iter().any(|v | v.moms.0!=0.0) {
+        return Err(BookError::new("Moms cannot be non zero for reverse charge"));
+      }
+    }
+    if self.amount.iter().any(|v| !v.verify()) {
+      return Err(BookError::new("Moms calculation off"));
+    }
+    Ok(())
+  }
 }

@@ -1,34 +1,19 @@
 use std::collections::HashMap;
+
 use crate::book::ledger::*;
 use crate::book::types::*;
 
 use super::book_account_id::BookAccountId;
+use super::book_account_entry::BookAccountEntry;
+use super::book_account_amount::BookAccountAmount;
 
-#[derive(Debug, Clone, Copy)]
-pub enum AccountAmount {
-    Debit(BookAmount),
-    Credit(BookAmount)
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
+pub struct EntryKey {
+    pub date: Date,
+    pub ledger_id: LedgerId
 }
-
-impl AccountAmount {
-    pub fn plain_amount(&self) -> BookAmount {
-        match self {
-            AccountAmount::Credit(a) => *a,
-            AccountAmount::Debit(a) => *a,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct AccountEntry<'l> {
-    pub source: &'l Event,
-    pub account: BookAccountId,
-    pub amount: AccountAmount
-}
-
-type EntryKey = (Date, LedgerId);
-type Entries<'l> = std::collections::BTreeMap<EntryKey, Vec<AccountEntry<'l>>>;
-type EntriesIter<'l, 's> = std::collections::btree_map::Iter<'s, EntryKey, Vec<AccountEntry<'l>>>;
+type Entries<'l> = std::collections::BTreeMap<EntryKey, Vec<BookAccountEntry<'l>>>;
+pub type BookAccountEntriesIter<'l, 's> = std::collections::btree_map::Iter<'s, EntryKey, Vec<BookAccountEntry<'l>>>;
 
 pub struct BookAccounts<'l> {
     currency: Currency,
@@ -49,22 +34,18 @@ impl<'s> BookAccounts<'s> {
         self.naming.insert(id, name.to_string());
     }
 
-    pub fn iter(&self) -> EntriesIter { self.entries.iter() }
+    pub fn iter(&self) -> BookAccountEntriesIter { self.entries.iter() }
 
     pub fn print(&self) {
-        for ((date, ledger_id), entry_list) in self.iter() {
+        for (entry_key, entry_list) in self.iter() {
             for entry in entry_list.iter() {
-                println!("Entry: {:?} {} {:?} {:?} pga={}", ledger_id, date, entry.account, entry.amount, entry.source.id());
+                println!("Entry: {:?} {} {:?} {:?} pga={}", entry_key.ledger_id, entry_key.date, entry.account, entry.amount, entry.source.id());
             }
         }
     }
 
-    pub fn add_entry<'l: 's>(&mut self, ledger_id: LedgerId, source: &'l Event,  account: BookAccountId, amount: AccountAmount) {
-        let entry = AccountEntry{
-            source: source,
-            account: account,
-            amount: amount
-        };
-        self.entries.entry((source.date(), ledger_id)).and_modify(|e| e.push(entry)).or_insert(vec![entry]);
+    pub fn add_entry<'l: 's>(&mut self, ledger_id: LedgerId, source: &'l Event,  account: BookAccountId, amount: BookAccountAmount) {
+        let entry = BookAccountEntry{ source, account, amount };
+        self.entries.entry(EntryKey{date: source.date(), ledger_id}).and_modify(|e| e.push(entry)).or_insert(vec![entry]);
     }
 }

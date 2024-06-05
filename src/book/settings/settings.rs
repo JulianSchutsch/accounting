@@ -55,7 +55,7 @@ impl Settings {
             book_currency: plain.book_currency,
             book_generator: plain.book_generator,
             exchange_rates: plain.exchange_rates,
-            fiscal_years: fiscal_years
+            fiscal_years
         })
     }
 }

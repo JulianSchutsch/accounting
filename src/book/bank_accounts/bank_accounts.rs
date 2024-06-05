@@ -52,7 +52,7 @@ impl BankAccounts {
         None
     }
 
-    pub fn find_account_by_any_of(&self, references: &std::collections::HashSet<BankAccountReference>) -> Option<BankAccountId> {
+    pub fn find_account_by_any_of(&self, references: &HashSet<BankAccountReference>) -> Option<BankAccountId> {
         for (account_id, account) in self.accounts.iter() {
             if !account.references.is_disjoint(references) {
                 return Some(account_id.clone());
@@ -61,7 +61,7 @@ impl BankAccounts {
         None
     }
 
-    pub fn ensure_account(&mut self, references: std::collections::HashSet<BankAccountReference>) -> BankAccountId {
+    pub fn ensure_account(&mut self, references: HashSet<BankAccountReference>) -> BankAccountId {
         if let Some(account_id) = self.find_account_by_any_of(&references) {
             self.accounts.entry(account_id)
                 .and_modify(|entry| entry.references.extend(references.into_iter()));

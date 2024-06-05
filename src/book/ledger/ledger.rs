@@ -7,7 +7,7 @@ pub use event::{FiscalYearId, LedgerId};
 
 type Events = std::collections::BTreeMap<LedgerId, Event>;
 type EventsIter<'s> = std::collections::btree_map::Iter<'s, LedgerId, Event>;
-type FiscalYears = std::collections::BTreeMap<FiscalYearId, FiscalYear>;
+type FiscalYears = std::collections::BTreeMap<FiscalYearId, DateRange>;
 
 pub struct Ledger {
     pub events: Events,

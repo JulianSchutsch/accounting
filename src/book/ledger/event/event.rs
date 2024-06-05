@@ -1,4 +1,4 @@
-use crate::book::Date;
+use crate::book::{BookResult, Date};
 
 use super::income::Income;
 use super::invoice::Invoice;
@@ -23,6 +23,13 @@ impl Event {
         match self {
             Event::Income(e) => &e.id,
             Event::Invoice(e) => &e.id,
+        }
+    }
+
+    pub fn verify(&self) -> BookResult<> {
+        match self {
+            Event::Income(e) => e.verify(),
+            Event::Invoice(e) => e.verify()
         }
     }
 }

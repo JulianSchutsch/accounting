@@ -14,11 +14,18 @@ fn import_events(ledger: &mut Ledger, ledger_id: &mut LedgerId, path: &str, fisc
     Ok(())
 }
 
-fn import_fiscal_year(mut ledger: &mut Ledger, fiscal_year_settings: &settings::FiscalYear) -> BookResult<> {
+fn import_fiscal_year(mut ledger: &mut Ledger, fiscal_year_settings: &settings::FiscalYear) -> BookResult {
     let mut ledger_id: LedgerId = LedgerId::initial(fiscal_year_settings.fiscal_year.begin);
     directory_scan(std::path::Path::new(fiscal_year_settings.root_path.as_str()), &mut |path|{
         import_events(&mut ledger, &mut ledger_id, path, fiscal_year_settings)
     })
+}
+
+fn verify_events(ledger: &Ledger) -> BookResult {
+    for (_, event) in ledger.events.iter() {
+        event.verify()?;
+    }
+    Ok(())
 }
 
 pub fn import_using_settings(settings: &settings::Settings) -> BookResult<Ledger> {
@@ -26,5 +33,6 @@ pub fn import_using_settings(settings: &settings::Settings) -> BookResult<Ledger
     for fiscal_year in settings.fiscal_years.iter() {
         import_fiscal_year(&mut ledger, fiscal_year)?;
     }
+    verify_events(&ledger)?;
     Ok(ledger)
 }
