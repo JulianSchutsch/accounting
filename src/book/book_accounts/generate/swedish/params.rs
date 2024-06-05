@@ -1,4 +1,4 @@
-use crate::book::bookaccounts::BookAccounts;
+use crate::book::book_accounts::BookAccounts;
 use crate::book::ledger::{Event, LedgerId};
 use crate::book::import::Import;
 

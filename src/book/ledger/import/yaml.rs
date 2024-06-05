@@ -1,4 +1,4 @@
-use crate::book::bookresult::BookResult;
+use crate::book::book_result::BookResult;
 use crate::book::ledger::*;
 use crate::book::settings;
 

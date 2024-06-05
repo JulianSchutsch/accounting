@@ -4,9 +4,9 @@ mod params;
 mod ids;
 mod naming;
 
-use crate::book::bookresult::*;
+use crate::book::book_result::*;
 use crate::book::import::Import;
-use crate::book::bookaccounts::BookAccounts;
+use crate::book::book_accounts::BookAccounts;
 use crate::book::ledger::Event;
 
 use params::*;

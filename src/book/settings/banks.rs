@@ -1,6 +1,6 @@
 pub mod csv;
 
-use crate::book::bookresult::BookResult;
+use crate::book::book_result::BookResult;
 
 pub use csv::CSV;
 

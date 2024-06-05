@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 use crate::book::types::*;
 use crate::book::ledger::*;
-use crate::book::bookresult::*;
+use crate::book::book_result::*;
 
 pub use event::{FiscalYearId, LedgerId};
 

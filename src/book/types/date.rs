@@ -1,5 +1,5 @@
 use chrono::Datelike;
-use book::bookresult::BookResult;
+use book::book_result::BookResult;
 
 use crate::book;
 use crate::book::BookError;

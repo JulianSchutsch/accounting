@@ -1,23 +1,23 @@
 use std::collections::HashSet;
 use std::io::BufRead;
-use crate::book::bankaccounts::bank_account_reference::BankAccountReference;
-use crate::book::bankaccounts::BankAccounts;
-use crate::book::bookresult::*;
+use crate::book::bank_accounts::bank_account_reference::BankAccountReference;
+use crate::book::bank_accounts::BankAccounts;
+use crate::book::book_result::*;
 use crate::book::types::*;
 use crate::book::settings;
 
 #[derive(Debug, serde::Deserialize)]
 struct Row {
     #[serde(rename="Radnr")]
-    row_number: i32,
+    _row_number: i32,
     #[serde(rename="Clnr")]
-    clearing_number: i32,
+    _clearing_number: i32,
     #[serde(rename="Kontonr")]
     account_nr: i64,
     #[serde(rename="Produkt")]
-    product: String,
+    _product: String,
     #[serde(rename="Valuta")]
-    currency: Currency,
+    _currency: Currency,
     #[serde(rename="Bokfdag")]
     executed_date: Date,
     #[serde(rename="Transdag")]

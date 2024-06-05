@@ -1,10 +1,10 @@
 mod csv;
 
-use crate::book::bookresult::BookResult;
+use crate::book::book_result::BookResult;
 use crate::book::settings;
 use crate::book::utils::paths::directory_scan;
 
-use super::bankaccounts::BankAccounts;
+use super::bank_accounts::BankAccounts;
 
 fn import_banks(banks: &mut BankAccounts, path: &str, fiscal_year_settings: &settings::FiscalYear) -> BookResult<> {
     for banks_filter in fiscal_year_settings.banks.iter() {

@@ -1,6 +1,6 @@
 mod yaml;
 
-use crate::book::bookresult::*;
+use crate::book::book_result::*;
 use crate::book::settings;
 use crate::book::utils::paths::*;
 use super::ledger::{Ledger, LedgerId};

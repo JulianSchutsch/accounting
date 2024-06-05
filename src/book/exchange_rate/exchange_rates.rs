@@ -1,11 +1,11 @@
 use crate::book::types::*;
-use crate::book::bookresult::{BookError, BookResult};
+use crate::book::book_result::{BookError, BookResult};
 
 pub type CurrencySeries = std::collections::BTreeMap<Date, f64>;
 type Series = std::collections::HashMap<Currency, CurrencySeries>;
 
 pub struct ExchangeRates {
-    pub book_currency: Currency,
+    book_currency: Currency,
     pub series: Series,
 }
 
@@ -25,10 +25,6 @@ impl ExchangeRates {
         let exchange_rate = currency_series.get(&date).ok_or_else(|| BookError::new("Failed to find exchange rate for date"))?;
         let bookamount = amount*exchange_rate;
         Ok(bookamount)
-    }
-
-    pub fn book_currency(&self) -> Currency {
-        return self.book_currency;
     }
 
     pub fn amount_into_book(&self, date: Date, currency: Currency, amount: Amount) -> BookResult<BookAmount> {

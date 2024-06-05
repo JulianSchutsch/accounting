@@ -1,6 +1,6 @@
 pub mod riksbank;
 
-use crate::book::bookresult::*;
+use crate::book::book_result::*;
 use crate::book::settings;
 
 use super::exchange_rates::ExchangeRates;

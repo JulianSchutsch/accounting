@@ -1,4 +1,4 @@
-use crate::book::bookresult::*;
+use crate::book::book_result::*;
 use crate::book::types::*;
 
 use super::fiscal_year::FiscalYear;

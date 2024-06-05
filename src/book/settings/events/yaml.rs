@@ -1,4 +1,4 @@
-use crate::book::bookresult::BookResult;
+use crate::book::book_result::BookResult;
 
 #[derive(serde::Deserialize)]
 pub struct PlainYaml {
