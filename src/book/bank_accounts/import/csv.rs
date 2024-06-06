@@ -59,12 +59,12 @@ pub fn import(banks : &mut BankAccounts, path: &str, settings: &settings::banks:
     let rows = csv_reader.deserialize().collect::<Result<Vec<Row>,_>>()?;
     let accounts = rows.iter().map(|row| row.account_nr).collect::<HashSet<i64>>();
     for account in accounts {
-        let ref1 = BankAccountReference::Swedish_Account_Number(SwedishAccountNumber{number: account});
-        let accound_id = banks.ensure_account(
+        let ref1 = BankAccountReference::SwedishAccountNumber(SwedishAccountNumber{number: account});
+        let account_id = banks.ensure_account(
             HashSet::from_iter(vec![ref1].into_iter()),
             BankAccountType::Account, None, None
         )?;
-        banks.add_period(accound_id, period, path.to_string());
+        banks.add_period(account_id, period, path.to_string());
     }
     Ok(())
 }
