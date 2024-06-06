@@ -1,16 +1,13 @@
-use crate::book::bank_accounts::BankAccounts;
 use crate::book::book_accounts::BookAccountAmount;
 use crate::book::book_result::*;
 use crate::book::ledger::*;
 use crate::book::types::*;
 
-use crate::book::ledger::InvoiceCategory;
-
 use super::params::Params;
 use super::ids;
 
 fn add_sweden(p: Params<Invoice>) -> BookResult<()> {
-    if(p.event.reverse_charge) {
+    if p.event.reverse_charge {
         return Err(BookError::new("Reverse charge not supported within sweden"));
     }
     for MomsClassedAmount{moms_percent, amount, moms} in p.event.amount.iter() {
@@ -32,8 +29,8 @@ fn add_worldwide(p: Params<Invoice>) -> BookResult<()> {
 }
 
 pub fn add(p: Params<Invoice>) -> BookResult<()> {
-    if(p.event.country.is_eu()) {
-        if(p.event.country==Country::Sweden) {
+    if p.event.country.is_eu() {
+        if p.event.country==Country::Sweden {
             add_sweden(p)
         } else {
             add_eu(p)

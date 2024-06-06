@@ -7,10 +7,10 @@ use crate::book::book_result::*;
 use super::params::Params;
 use super::ids;
 
-fn add_worldwide(p: Params<Income>) -> BookResult<()> {
-    for MomsClassedAmount{moms_percent: moms_perc, amount, moms} in p.event.amount.iter() {
+fn add_worldwide(p: Params<Income>) -> BookResult {
+    for MomsClassedAmount{moms_percent, amount, moms} in p.event.amount.iter() {
         let book_amount = p.import.exchange_rates.amount_into_book(p.event.date, p.event.currency, *amount)?;
-        if(!p.event.reverse_charge) {
+        if !p.event.reverse_charge {
             return Err(BookError::new("Reverse charge required for worldwide at the moment"));
         }
         match p.event.category {

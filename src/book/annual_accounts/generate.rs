@@ -9,7 +9,7 @@ use super::swedish;
 
 fn generate_year(import: &Import, year: &settings::FiscalYear, book_accounts: &BookAccounts) -> BookResult<AnnualAccounts> {
     match year.annual_accounts_method {
-        settings::AnnualAccountsMethod::Swedish_K2 => Ok(AnnualAccounts::SwedishK2(swedish::k2::generate(import, year, book_accounts)?))
+        settings::AnnualAccountsMethod::SwedishK2 => Ok(AnnualAccounts::SwedishK2(swedish::k2::generate(import, year, book_accounts)?))
     }
 }
 

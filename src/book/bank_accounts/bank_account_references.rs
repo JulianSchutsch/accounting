@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-use std::hash::Hash;
 
 use super::bank_account_reference::BankAccountReference;
 
@@ -22,6 +21,7 @@ impl BankAccountReferences {
         references.insert(reference);
         BankAccountReferences { references }
     }
+
     pub fn new_from_iter<'l, T: Iterator<Item=&'l BankAccountReference>>(iterable: T) -> BankAccountReferences {
         let references = iterable.map(|v| v.clone()).collect::<HashSet<BankAccountReference>>();
         BankAccountReferences { references }

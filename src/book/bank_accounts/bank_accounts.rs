@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, HashSet};
+use std::collections::BTreeMap;
 use crate::book::book_result::*;
 use crate::book::types::*;
 
@@ -53,7 +53,7 @@ impl BankAccounts {
     pub fn add_transaction(&mut self, account_references: BankAccountReferences, date: Date, amount: Amount, references: Vec<String>) -> BookResult {
         if let Some((_, account)) = self.get_mut_account_by_references(&account_references) {
             let transaction = BankTransaction{amount, references, consumed: false};
-            account.transactions.entry(date).or_insert({ vec![] }).push(transaction);
+            account.transactions.entry(date).or_insert(vec![]).push(transaction);
             return Ok(());
         }
         Err(BookError::new("Account not found by references"))

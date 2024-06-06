@@ -50,10 +50,10 @@ pub fn generate_complete_accounts_table(accounts: &BookAccounts) -> Table {
         for row in 0..9999999 {
             let debit = debit_it.next();
             let credit = credit_it.next();
-            if(debit.is_none() && credit.is_none()) {
+            if debit.is_none() && credit.is_none() {
                 break;
             }
-            if(row!=0) {
+            if row!=0 {
                 result.insert(TableEntry::Empty);
                 result.insert(TableEntry::Empty);
             }

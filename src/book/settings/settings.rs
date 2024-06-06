@@ -36,7 +36,7 @@ impl Settings {
     fn read_plain(path: &str) -> BookResult<PlainSettings> {
         let file = std::fs::File::open(path)?;
         let reader = std::io::BufReader::new(file);
-        let mut plain: Result<PlainSettings, _> = serde_yaml::from_reader(reader);
+        let plain: Result<PlainSettings, _> = serde_yaml::from_reader(reader);
         plain.map_err(|e| BookError::new(format!("Failed to read settings from {} with error {}", path, e.to_string())))
     }
 

@@ -3,6 +3,7 @@ mod invoice;
 mod params;
 mod ids;
 mod naming;
+mod payment;
 
 use crate::book::book_result::*;
 use crate::book::import::Import;
@@ -13,10 +14,10 @@ use params::*;
 
 fn add_entry<'p, 'e:'p>(p: IncompleteParams<'_, 'p, '_>, entry: &'e Event) -> BookResult {
     match entry {
-        Event::Income(e) => income::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add income"))?,
-        Event::Invoice(e) => invoice::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add invoice"))?,
+        Event::Income(e) => income::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add income")),
+        Event::Invoice(e) => invoice::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add invoice")),
+        Event::Payment(e) => payment::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add payment"))
     }
-    Ok(())
 }
 
 pub fn generate<'p:'r, 'r>(import: &'p Import) -> BookResult<BookAccounts<'r>> {

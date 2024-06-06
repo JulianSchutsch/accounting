@@ -15,13 +15,13 @@ type TableEntries = Vec<TableEntry>;
 type TableEntriesIterator<'a> = std::slice::Iter<'a, TableEntry>;
 
 pub struct Table {
-    entries: Vec<TableEntry>,
+    entries: TableEntries,
 }
 
 impl Table {
     pub fn new() -> Table {
         Table{
-            entries: Vec::<TableEntry>::new()
+            entries: TableEntries::new()
         }
     }
     pub fn iter(&self) -> TableEntriesIterator {
@@ -60,7 +60,7 @@ impl Table {
 
     pub fn print(&self) {
         let w = self.column_widths();
-        let total_width : usize = w.len()*3+w.iter().fold(0, |acc, (key, value)| acc+value);
+        let total_width : usize = w.len()*3+w.iter().fold(0, |acc, (_, value)| acc+value);
         let mut column : usize = 0;
         for entry in self.iter() {
             match entry {
