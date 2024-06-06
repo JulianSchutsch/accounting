@@ -11,7 +11,7 @@ pub struct Accounts {
     pub account_type: BankAccountType,
     pub currency: Currency,
     pub initial_value: Amount,
-    pub references: Vec<BankAccountReference>
+    pub references: BankAccountReferences
 }
 
 #[derive(serde::Deserialize)]

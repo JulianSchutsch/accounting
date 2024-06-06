@@ -1,5 +1,5 @@
 mod book_result;
-mod types;
+pub mod types;
 pub mod ledger;
 pub mod book_accounts;
 pub mod bank_accounts;
