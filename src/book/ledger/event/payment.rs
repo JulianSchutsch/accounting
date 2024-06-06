@@ -1,5 +1,4 @@
-use crate::book::book_result::*;
-use crate::book::types::*;
+use crate::book::*;
 
 #[derive(Debug, serde::Deserialize)]
 pub enum PaymentKind {

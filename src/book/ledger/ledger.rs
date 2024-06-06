@@ -1,13 +1,10 @@
 use std::collections::BTreeMap;
-use crate::book::types::*;
-use crate::book::ledger::*;
-use crate::book::book_result::*;
 
-pub use event::{FiscalYearId, LedgerId};
+use crate::book::*;
 
-type Events = std::collections::BTreeMap<LedgerId, Event>;
+type Events = BTreeMap<LedgerId, Event>;
 type EventsIter<'s> = std::collections::btree_map::Iter<'s, LedgerId, Event>;
-type FiscalYears = std::collections::BTreeMap<FiscalYearId, DateRange>;
+type FiscalYears = BTreeMap<FiscalYearId, DateRange>;
 
 pub struct Ledger {
     pub events: Events,

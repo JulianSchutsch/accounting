@@ -1,7 +1,4 @@
-use crate::book::types::*;
-
-#[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Eq, Ord)]
-pub struct FiscalYearId(pub i32);
+use crate::book::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Eq, Ord)]
 pub struct LedgerId(pub i32, pub i32);

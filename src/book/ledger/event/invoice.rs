@@ -1,5 +1,4 @@
-use crate::book::{BookError, BookResult};
-use crate::book::types::*;
+use crate::book::*;
 
 #[derive(Debug, Clone, Copy, serde::Deserialize)]
 pub enum InvoiceCategory {

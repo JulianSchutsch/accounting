@@ -1,5 +1,5 @@
 use crate::book::book_accounts::book_account_id::BookAccountId;
-use crate::book::ledger::Event;
+use crate::book::*;
 
 use super::book_account_amount::BookAccountAmount;
 

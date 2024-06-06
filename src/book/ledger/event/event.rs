@@ -1,4 +1,4 @@
-use crate::book::{BookResult, Date};
+use crate::book::*;
 
 use super::income::Income;
 use super::invoice::Invoice;

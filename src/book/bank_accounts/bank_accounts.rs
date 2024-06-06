@@ -1,9 +1,7 @@
 use std::collections::BTreeMap;
-use crate::book::book_result::*;
-use crate::book::types::*;
 
+use crate::book::*;
 use super::bank_account_id::BankAccountId;
-use super::bank_account_references::BankAccountReferences;
 
 #[derive(Clone)]
 pub struct BankTransaction {

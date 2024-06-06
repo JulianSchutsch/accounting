@@ -1,4 +1,4 @@
-use crate::book::book_accounts::BookAccounts;
+use crate::book::*;
 
 use super::ids::*;
 

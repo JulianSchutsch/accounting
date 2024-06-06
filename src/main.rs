@@ -1,9 +1,6 @@
 mod book;
 
-use book::BookResult;
-use book::Import;
-use book::book_accounts;
-use book::annual_accounts;
+use book::*;
 
 fn process_root_file(path: &str) -> BookResult {
     let import = Import::from_root_file(path)?;

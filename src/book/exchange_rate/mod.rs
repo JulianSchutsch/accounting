@@ -1,5 +1,8 @@
 mod exchange_rates;
-pub mod import;
+mod import;
 
-pub use exchange_rates::ExchangeRates;
 pub use import::import_using_settings;
+
+pub mod public {
+    pub use super::exchange_rates::*;
+}

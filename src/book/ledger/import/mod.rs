@@ -1,9 +1,8 @@
 mod yaml;
 
-use crate::book::book_result::*;
-use crate::book::settings;
-use crate::book::utils::paths::*;
-use super::ledger::{Ledger, LedgerId};
+use crate::book::*;
+
+use super::ledger::*;
 
 fn import_events(ledger: &mut Ledger, ledger_id: &mut LedgerId, path: &str, fiscal_year_settings: &settings::FiscalYear) -> BookResult<> {
     for event_filter in fiscal_year_settings.events.iter() {
@@ -16,7 +15,7 @@ fn import_events(ledger: &mut Ledger, ledger_id: &mut LedgerId, path: &str, fisc
 
 fn import_fiscal_year(mut ledger: &mut Ledger, fiscal_year_settings: &settings::FiscalYear) -> BookResult {
     let mut ledger_id: LedgerId = LedgerId::initial(fiscal_year_settings.fiscal_year.begin);
-    directory_scan(std::path::Path::new(fiscal_year_settings.root_path.as_str()), &mut |path|{
+    utils::paths::directory_scan(std::path::Path::new(fiscal_year_settings.root_path.as_str()), &mut |path|{
         import_events(&mut ledger, &mut ledger_id, path, fiscal_year_settings)
     })
 }

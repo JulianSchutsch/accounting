@@ -1,5 +1,5 @@
 use crate::book::book_accounts::book_account_id::BookAccountId as Id;
-use crate::book::ledger::InvoiceCategory;
+use crate::book::*;
 
 pub const CLAIMS_TO_CUSTOMERS:Id = Id(1510);
 pub const CLAIMS_FROM_CUSTOMERS: Id = Id(2440);

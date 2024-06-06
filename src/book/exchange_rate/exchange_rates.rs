@@ -1,5 +1,4 @@
-use crate::book::types::*;
-use crate::book::book_result::{BookError, BookResult};
+use crate::book::*;
 
 pub type CurrencySeries = std::collections::BTreeMap<Date, f64>;
 type Series = std::collections::HashMap<Currency, CurrencySeries>;

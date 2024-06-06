@@ -10,10 +10,9 @@ macro_rules! build_path {
 }
 
 pub(crate) use build_path;
-use crate::book::BookError;
-use crate::book::book_result::BookResult;
+use crate::book::*;
 
-pub fn directory_scan(path: &std::path::Path, f: &mut dyn FnMut(&str)->BookResult) -> BookResult<> {
+pub fn directory_scan(path: &std::path::Path, f: &mut dyn FnMut(&str) -> BookResult) -> BookResult {
     for entry in std::fs::read_dir(path)? {
         let entry_path = entry?.path();
         if entry_path.is_dir() {

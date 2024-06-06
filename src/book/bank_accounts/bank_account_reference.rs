@@ -4,7 +4,7 @@ pub struct SwedishAccountNumber {
 }
 
 #[derive(Clone, Hash, PartialEq, Eq, serde::Deserialize)]
-pub struct Name {
+pub struct NamedAccount {
     pub name: String,
 }
 
@@ -12,6 +12,6 @@ pub struct Name {
 pub enum BankAccountReference {
     #[serde(rename="swedish_account_number")]
     SwedishAccountNumber(SwedishAccountNumber),
-    #[serde(rename="name")]
-    Name(Name)
+    #[serde(rename="named_account")]
+    NamedAccount(NamedAccount)
 }

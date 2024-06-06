@@ -1,15 +1,13 @@
 use chrono::Datelike;
-use book::book_result::BookResult;
 
-use crate::book;
-use crate::book::BookError;
+use crate::book::*;
 
+const DATE_STRING_FORMAT: &'static str = "%Y-%m-%d";
 type InternalDate = chrono::NaiveDate;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct Date(InternalDate);
 
-const DATE_STRING_FORMAT: &'static str = "%Y-%m-%d";
 
 impl Date {
     pub fn id(&self) -> i32 {

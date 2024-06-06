@@ -1,13 +1,7 @@
 use std::collections::HashSet;
 use std::io::BufRead;
 
-use crate::book::bank_accounts::bank_account_reference::*;
-use crate::book::bank_accounts::bank_account_references::*;
-use crate::book::bank_accounts::bank_accounts::BankAccountType;
-use crate::book::bank_accounts::BankAccounts;
-use crate::book::book_result::*;
-use crate::book::types::*;
-use crate::book::settings;
+use crate::book::*;
 
 #[derive(Debug, serde::Deserialize)]
 struct Row {

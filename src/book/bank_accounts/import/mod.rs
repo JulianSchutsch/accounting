@@ -1,8 +1,6 @@
 mod csv;
 
-use crate::book::book_result::BookResult;
-use crate::book::settings;
-use crate::book::utils::paths::directory_scan;
+use crate::book::*;
 
 use super::bank_accounts::BankAccounts;
 
@@ -16,7 +14,7 @@ fn import_banks(banks: &mut BankAccounts, path: &str, fiscal_year_settings: &set
 }
 
 fn import_fiscal_year(mut ledger: &mut BankAccounts, fiscal_year_settings: &settings::FiscalYear) -> BookResult {
-    directory_scan(std::path::Path::new(fiscal_year_settings.root_path.as_str()), &mut |path|{
+    utils::paths::directory_scan(std::path::Path::new(fiscal_year_settings.root_path.as_str()), &mut |path|{
         import_banks(&mut ledger, path, fiscal_year_settings)
     })
 }

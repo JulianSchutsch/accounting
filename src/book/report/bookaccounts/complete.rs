@@ -1,5 +1,5 @@
 use crate::book::report::table::*;
-use crate::book::book_accounts::*;
+use crate::book::*;
 
 fn split_debit_credit<'l>(entries: &Vec<BookAccountEntry<'l>>) -> (Vec<BookAccountEntry<'l>>, Vec<BookAccountEntry<'l>>) {
     let mut debit = Vec::<BookAccountEntry>::new();

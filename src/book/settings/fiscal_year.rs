@@ -1,6 +1,4 @@
-use crate::book::book_result::*;
-use crate::book::types::*;
-use crate::book::utils::paths::build_path;
+use crate::book::*;
 
 use super::banks;
 use super::events;
@@ -32,9 +30,9 @@ impl FiscalYear {
     }
 
     pub fn read_from_file(root_path: &str, path: &str) -> BookResult<FiscalYear> {
-        let plain = Self::read_plain(&build_path!(root_path, path, "book.yaml"))?;
+        let plain = Self::read_plain(&utils::paths::build_path!(root_path, path, "book.yaml"))?;
         Ok(FiscalYear{
-            root_path: build_path!(root_path, path),
+            root_path: utils::paths::build_path!(root_path, path),
             fiscal_year: plain.fiscal_year,
             banks: plain.banks.iter().map(|p| { p.to_banks() }).collect::<Result<Vec<_>, _>>()?,
             events: plain.events.iter().map(|p|{ p.to_events() }).collect::<Result<Vec<_>, _>>()?,

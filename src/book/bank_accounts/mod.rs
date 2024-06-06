@@ -1,10 +1,12 @@
 mod bank_accounts;
-mod import;
 mod bank_account_id;
-pub mod bank_account_reference;
-pub mod bank_account_references;
+mod bank_account_references;
+mod bank_account_reference;
 
-pub use bank_accounts::{BankAccounts, BankAccountType};
-pub use bank_account_reference::BankAccountReference;
-pub use bank_account_references::BankAccountReferences;
-pub use import::import_using_settings;
+pub mod import;
+
+pub mod public {
+    pub use super::bank_accounts::*;
+    pub use super::bank_account_reference::*;
+    pub use super::bank_account_references::*;
+}
