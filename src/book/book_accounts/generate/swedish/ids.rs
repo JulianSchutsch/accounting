@@ -16,6 +16,10 @@ pub const INCOMING_MOMS_PROCUREMENT_ABROAD: Id = Id(2645);
 pub const MEDIA_ADVERTISMENT: Id = Id(5970);
 pub const SOFTWARE_LICENSES: Id = Id(5420);
 
+pub const DEBT_TO_PRIVATE: Id = Id(2393);
+
+pub const COMPANY_BANK_ACCOUNT: Id = Id(1930);
+
 pub fn invoice_account(category: InvoiceCategory) -> Id {
     match category {
         InvoiceCategory::MediaAdvertisment => MEDIA_ADVERTISMENT,

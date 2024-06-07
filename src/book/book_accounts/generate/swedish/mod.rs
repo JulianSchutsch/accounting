@@ -3,17 +3,15 @@ mod invoice;
 mod params;
 mod ids;
 mod naming;
-mod payment;
 
 use crate::book::*;
 
 use params::*;
 
-fn add_entry<'p, 'e:'p>(p: IncompleteParams<'_, 'p, '_>, entry: &'e Event) -> BookResult {
+fn add_entry<'p, 'e:'p>(p: IncompleteParams<'_, 'p, '_, '_>, entry: &'e Event) -> BookResult {
     match entry {
         Event::Income(e) => income::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add income")),
         Event::Invoice(e) => invoice::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add invoice")),
-        Event::Payment(e) => payment::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add payment"))
     }
 }
 
@@ -23,6 +21,7 @@ pub fn generate<'p:'r, 'r>(import: &'p Import) -> BookResult<BookAccounts<'r>> {
     import.ledger.iter().try_for_each(|(ledger_id, e)| add_entry(IncompleteParams{
         ledger_id: *ledger_id,
         accounts: &mut accounts,
+        bank_accounts: &import.bank_accounts,
         import: &import
     }, e))?;
     Ok(accounts)

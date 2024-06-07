@@ -1,5 +1,7 @@
 use crate::book::*;
 
+use super::invoice_payment::InvoicePayment;
+
 #[derive(Debug, Clone, Copy, serde::Deserialize)]
 pub enum InvoiceCategory {
     #[serde(rename="software-license")]
@@ -23,10 +25,14 @@ pub struct Invoice {
     pub category: InvoiceCategory,
     pub amount: Vec<MomsClassedAmount>,
     pub description: String,
+    #[serde(skip_deserializing)]
+    pub total_amount: Amount,
+    #[serde(skip_deserializing)]
+    pub payments: Vec<InvoicePayment>
 }
 
 impl Invoice {
-    pub fn verify(&self) -> BookResult {
+    pub fn verify_and_complete(&mut self) -> BookResult {
         if self.reverse_charge {
             if self.amount.iter().any(|v | v.moms.0!=0.0) {
                 return Err(BookError::new("Moms cannot be non zero for reverse charge"));
@@ -35,6 +41,9 @@ impl Invoice {
         if self.amount.iter().any(|v| !v.verify()) {
             return Err(BookError::new("Moms calculation off"));
         }
+        self.total_amount = self.amount.iter().fold(Amount(0.0), |acc, MomsClassedAmount{moms_percent:_, amount, moms}| {
+            *amount + *moms
+        });
         Ok(())
     }
 }

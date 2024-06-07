@@ -12,6 +12,10 @@ impl BankAccountReferences {
         !self.references.is_disjoint(&rhs.references)
     }
 
+    pub fn contains(&self, rhs: &BankAccountReference) -> bool {
+        self.references.contains(rhs)
+    }
+
     pub fn extend(&mut self, references: BankAccountReferences) {
         self.references.extend(references.references.into_iter());
     }

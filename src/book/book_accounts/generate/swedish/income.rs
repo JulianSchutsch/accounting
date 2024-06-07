@@ -12,10 +12,10 @@ fn add_worldwide(p: Params<Income>) -> BookResult {
         match p.event.category {
             IncomeCategory::Services => {
                 let pseudo_moms = Amount(book_amount.0 * 0.25);
-                p.accounts.add_entry(p.ledger_id, &p.event_ref, ids::CLAIMS_TO_CUSTOMERS, BookAccountAmount::Debit(book_amount));
-                p.accounts.add_entry(p.ledger_id, &p.event_ref, ids::SALES_OF_SERVICES_WORLDWIDE, BookAccountAmount::Credit(book_amount));
-                p.accounts.add_entry(p.ledger_id, &p.event_ref, ids::OUTGOING_MOMS_REVERSE_CHARGE_25PERC, BookAccountAmount::Debit(pseudo_moms));
-                p.accounts.add_entry(p.ledger_id, &p.event_ref, ids::INCOMING_MOMS_PROCUREMENT_ABROAD, BookAccountAmount::Credit(pseudo_moms));
+                p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::CLAIMS_TO_CUSTOMERS, BookAccountAmount::Debit(book_amount));
+                p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::SALES_OF_SERVICES_WORLDWIDE, BookAccountAmount::Credit(book_amount));
+                p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::OUTGOING_MOMS_REVERSE_CHARGE_25PERC, BookAccountAmount::Debit(pseudo_moms));
+                p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::INCOMING_MOMS_PROCUREMENT_ABROAD, BookAccountAmount::Credit(pseudo_moms));
             }
         }
     }

@@ -11,4 +11,5 @@ pub fn generate_naming(accounts: &mut BookAccounts) {
     accounts.set_account_name(CLAIMS_FROM_CUSTOMERS, "Claims from customers");
     accounts.set_account_name(MEDIA_ADVERTISMENT, "Media advertisment");
     accounts.set_account_name(SOFTWARE_LICENSES, "Software licenses");
+    accounts.set_account_name(DEBT_TO_PRIVATE, "Debt to private");
 }

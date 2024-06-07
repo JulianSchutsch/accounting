@@ -6,8 +6,7 @@ use super::bank_account_id::BankAccountId;
 #[derive(Clone)]
 pub struct BankTransaction {
     amount: Amount,
-    references: Vec<String>,
-    consumed: bool
+    references: Vec<String>
 }
 
 pub struct BankPeriod {
@@ -20,12 +19,12 @@ pub struct BankPeriod {
 pub enum BankAccountType {
     #[serde(rename="account")]
     Account,
-    #[serde(rename="credit")]
-    Credit
+    #[serde(rename="privat")]
+    Privat
 }
 
 pub struct BankAccount {
-    account_type: BankAccountType,
+    pub account_type: BankAccountType,
     initial_value: Amount,
     currency: Currency,
     references: BankAccountReferences,
@@ -50,7 +49,7 @@ impl BankAccounts {
 
     pub fn add_transaction(&mut self, account_references: BankAccountReferences, date: Date, amount: Amount, references: Vec<String>) -> BookResult {
         if let Some((_, account)) = self.get_mut_account_by_references(&account_references) {
-            let transaction = BankTransaction{amount, references, consumed: false};
+            let transaction = BankTransaction{amount, references};
             account.transactions.entry(date).or_insert(vec![]).push(transaction);
             return Ok(());
         }
@@ -59,6 +58,15 @@ impl BankAccounts {
 
     pub fn add_period(&mut self, account_id: BankAccountId, period: Period, filename: String) {
         self.periods.push(BankPeriod{ account_id, period, filename });
+    }
+
+    pub fn get_account_by_reference(&self, reference: &BankAccountReference) -> Option<&BankAccount> {
+        for (_, account) in self.accounts.iter() {
+            if account.references.contains(reference) {
+                return Some(account);
+            }
+        }
+        None
     }
 
     pub fn get_mut_account_by_references(&mut self, references: &BankAccountReferences) -> Option<(BankAccountId, &mut BankAccount)> {

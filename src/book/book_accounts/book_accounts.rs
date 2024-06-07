@@ -43,8 +43,8 @@ impl<'s> BookAccounts<'s> {
         }
     }
 
-    pub fn add_entry<'l: 's>(&mut self, ledger_id: LedgerId, source: &'l Event,  account: BookAccountId, amount: BookAccountAmount) {
+    pub fn add_entry<'l: 's>(&mut self, ledger_id: LedgerId, date: Date, source: &'l Event,  account: BookAccountId, amount: BookAccountAmount) {
         let entry = BookAccountEntry{ source, account, amount };
-        self.entries.entry(EntryKey{date: source.date(), ledger_id}).and_modify(|e| e.push(entry)).or_insert(vec![entry]);
+        self.entries.entry(EntryKey{date, ledger_id}).and_modify(|e| e.push(entry)).or_insert(vec![entry]);
     }
 }

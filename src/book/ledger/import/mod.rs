@@ -20,9 +20,9 @@ fn import_fiscal_year(mut ledger: &mut Ledger, fiscal_year_settings: &settings::
     })
 }
 
-fn verify_events(ledger: &Ledger) -> BookResult {
-    for (_, event) in ledger.events.iter() {
-        event.verify()?;
+fn verify_and_complete_events(ledger: &mut Ledger) -> BookResult {
+    for (_, event) in ledger.events.iter_mut() {
+        event.verify_and_complete()?;
     }
     Ok(())
 }
@@ -32,6 +32,6 @@ pub fn import_using_settings(settings: &settings::Settings) -> BookResult<Ledger
     for fiscal_year in settings.fiscal_years.iter() {
         import_fiscal_year(&mut ledger, fiscal_year)?;
     }
-    verify_events(&ledger)?;
+    verify_and_complete_events(&mut ledger)?;
     Ok(ledger)
 }

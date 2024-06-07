@@ -1,7 +1,7 @@
 #[derive(Debug, Clone, Copy, serde::Deserialize)]
 pub struct MomsPercent(pub i32);
 
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, serde::Deserialize)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, PartialOrd, serde::Deserialize)]
 pub struct Amount(pub f64);
 
 #[derive(Debug, Clone, Copy)]
@@ -12,6 +12,9 @@ pub struct MomsClassedAmount {
 }
 
 impl MomsClassedAmount {
+    pub fn total(&self) -> Amount {
+        self.amount + self.moms
+    }
     pub fn verify(&self) -> bool {
         let moms_error = (self.moms_percent.0 as f64)/100.0 * self.amount.0 - self.moms.0;
         return moms_error<=0.02;
