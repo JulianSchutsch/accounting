@@ -22,7 +22,7 @@ fn import_fiscal_year(mut ledger: &mut BankAccounts, fiscal_year_settings: &sett
 pub fn import_using_settings(settings: &settings::Settings) -> BookResult<BankAccounts> {
     let mut banks = BankAccounts::new();
     for account in settings.accounts.iter() {
-        banks.ensure_account(account.references.clone(), account.account_type, Some(account.currency), Some(account.initial_value))?;
+        banks.add_account(account.references.clone(), account.account_type, account.currency, account.initial_value)?;
     }
     for fiscal_year in settings.fiscal_years.iter() {
         import_fiscal_year(&mut banks, fiscal_year)?;

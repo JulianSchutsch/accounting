@@ -4,7 +4,7 @@ use super::fiscal_year::FiscalYear;
 use super::exchange_rates::ExchangeRate;
 
 #[derive(Clone, serde::Deserialize)]
-pub struct Accounts {
+pub struct Account {
     #[serde(rename="type")]
     pub account_type: BankAccountType,
     pub currency: Currency,
@@ -18,7 +18,7 @@ struct PlainSettings {
     pub book_generator: String,
     pub exchange_rates: Vec<ExchangeRate>,
     pub fiscal_years: Vec<String>,
-    pub accounts: Vec<Accounts>
+    pub accounts: Vec<Account>
 }
 
 pub struct Settings {
@@ -27,7 +27,7 @@ pub struct Settings {
     pub book_generator: String,
     pub exchange_rates: Vec<ExchangeRate>,
     pub fiscal_years: Vec<FiscalYear>,
-    pub accounts: Vec<Accounts>
+    pub accounts: Vec<Account>
 }
 
 impl Settings {

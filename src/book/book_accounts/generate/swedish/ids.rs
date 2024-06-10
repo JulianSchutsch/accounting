@@ -20,9 +20,40 @@ pub const DEBT_TO_PRIVATE: Id = Id(2393);
 
 pub const COMPANY_BANK_ACCOUNT: Id = Id(1930);
 
-pub fn invoice_account(category: InvoiceCategory) -> Id {
+pub fn income_worldwide_account(category: Category) -> BookResult<Id> {
     match category {
-        InvoiceCategory::MediaAdvertisment => MEDIA_ADVERTISMENT,
-        InvoiceCategory::SoftwareLicense => SOFTWARE_LICENSES
+        Category::Services => Ok(SALES_OF_SERVICES_WORLDWIDE),
+        _ => Err(BookError::new("Unsupported worldwide income category"))
+    }
+}
+
+pub fn invoice_moms(category: Category, reverse_charge: bool) -> BookResult<(Id, MomsFactor)> {
+    if reverse_charge {
+        Err(BookError::new("Unsupported case of moms"))
+    } else {
+        match category {
+            Category::SoftwareLicense => Ok((INCOMING_MOMS, MomsFactor(0.25))),
+            Category::MediaAdvertisement => Ok((INCOMING_MOMS, MomsFactor(0.25))),
+            _ => Err(BookError::new("Unsupported case of moms"))
+        }
+    }
+}
+
+pub fn income_moms(category: Category, reverse_charge: bool) -> BookResult<(Id, MomsFactor)> {
+    if reverse_charge {
+        match category {
+            Category::Services => Ok((OUTGOING_MOMS_REVERSE_CHARGE_25PERC, MomsFactor(0.25))),
+            _ =>         Err(BookError::new("Unsupported case of moms"))
+        }
+    } else {
+        Err(BookError::new("Unsupported case of moms"))
+    }
+}
+
+pub fn invoice_account(category: Category) -> BookResult<Id> {
+    match category {
+        Category::MediaAdvertisement => Ok(MEDIA_ADVERTISMENT),
+        Category::SoftwareLicense => Ok(SOFTWARE_LICENSES),
+        _ => Err(BookError::new(format!("Category {} not classified for invoice account", category)))
     }
 }

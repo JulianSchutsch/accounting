@@ -5,6 +5,9 @@ mod book_accounts_filter;
 mod book_account_amount;
 mod book_account_entry;
 mod book_account_id;
+mod book_account_sum;
+
+pub mod verify;
 
 pub mod public {
     pub use super::book_accounts::*;
@@ -13,6 +16,7 @@ pub mod public {
     pub use super::book_accounts_filter::*;
     pub use super::book_account_id_range::*;
     pub use super::book_account_id::*;
+    pub use super::book_account_sum::*;
 }
 
 pub use generate::generate;

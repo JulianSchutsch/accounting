@@ -5,11 +5,13 @@ use crate::book::*;
 const DATE_STRING_FORMAT: &'static str = "%Y-%m-%d";
 type InternalDate = chrono::NaiveDate;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Default, Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct Date(InternalDate);
 
-
 impl Date {
+    pub const MIN: Date = Date(InternalDate::MIN);
+    pub const MAX: Date = Date(InternalDate::MAX);
+
     pub fn id(&self) -> i32 {
         self.0.year()*10000 + (self.0.month() as i32)*100 + (self.0.day() as i32)
     }

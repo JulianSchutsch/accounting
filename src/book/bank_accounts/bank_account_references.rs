@@ -39,3 +39,13 @@ impl<'de> serde::Deserialize<'de> for BankAccountReferences {
         Ok(BankAccountReferences{ references })
     }
 }
+
+impl std::fmt::Display for BankAccountReferences {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[")?;
+        for reference in self.references.iter() {
+            write!(f, "{} ", reference)?;
+        }
+        write!(f, "]")
+    }
+}

@@ -14,6 +14,7 @@ fn process_root_file(path: &str) -> BookResult {
         let annual_account = annual_accounts::generate(&import, &book_accounts, year.fiscal_year)?;
         annual_account.print();
     }
+    book_accounts::verify::balance::verify(&book_accounts)?;
     Ok(())
 }
 

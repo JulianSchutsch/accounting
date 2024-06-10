@@ -18,11 +18,11 @@ fn add_entry<'p, 'e:'p>(p: IncompleteParams<'_, 'p, '_, '_>, entry: &'e Event) -
 pub fn generate<'p:'r, 'r>(import: &'p Import) -> BookResult<BookAccounts<'r>> {
     let mut accounts = BookAccounts::new(import.settings.book_currency);
     naming::generate_naming(&mut accounts);
-    import.ledger.iter().try_for_each(|(ledger_id, e)| add_entry(IncompleteParams{
+    import.ledger.iter().try_for_each(|(ledger_id, event)| add_entry(IncompleteParams{
         ledger_id: *ledger_id,
         accounts: &mut accounts,
         bank_accounts: &import.bank_accounts,
         import: &import
-    }, e))?;
+    }, event))?;
     Ok(accounts)
 }

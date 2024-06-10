@@ -4,25 +4,26 @@ use super::params::Params;
 use super::ids;
 
 fn add_worldwide(p: Params<Income>) -> BookResult {
-    for MomsClassedAmount{moms_percent, amount, moms} in p.event.amount.iter() {
-        let book_amount = p.import.exchange_rates.amount_into_book(p.event.date, p.event.currency, *amount)?;
-        if !p.event.reverse_charge {
-            return Err(BookError::new("Reverse charge required for worldwide at the moment"));
-        }
-        match p.event.category {
-            IncomeCategory::Services => {
-                let pseudo_moms = Amount(book_amount.0 * 0.25);
-                p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::CLAIMS_TO_CUSTOMERS, BookAccountAmount::Debit(book_amount));
-                p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::SALES_OF_SERVICES_WORLDWIDE, BookAccountAmount::Credit(book_amount));
-                p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::OUTGOING_MOMS_REVERSE_CHARGE_25PERC, BookAccountAmount::Debit(pseudo_moms));
-                p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::INCOMING_MOMS_PROCUREMENT_ABROAD, BookAccountAmount::Credit(pseudo_moms));
-            }
-        }
+    let amounts = p.event.amounts.convert_into_book_currency(p.event.date, &p.import.exchange_rates)?;
+
+    p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::CLAIMS_TO_CUSTOMERS, BookAccountAmount::Debit(amounts.total));
+
+    let mut accumulated_moms = Amount(0.0);
+    for (&category, &amount) in amounts.iter() {
+        let (outgoing_moms_account, moms_factor) = ids::income_moms(category, amounts.reverse_charge)?;
+        let income_account = ids::income_worldwide_account(category)?;
+        let moms = moms_factor * amount;
+        accumulated_moms+=moms;
+        p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, income_account, BookAccountAmount::Credit(amount));
+        p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, outgoing_moms_account, BookAccountAmount::Debit(moms));
+    }
+    if amounts.reverse_charge {
+        p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::INCOMING_MOMS_PROCUREMENT_ABROAD, BookAccountAmount::Credit(accumulated_moms));
     }
     Ok(())
 }
 
-pub fn add(p: Params<Income>) -> BookResult<()> {
+pub fn add(p: Params<Income>) -> BookResult {
     assert_eq!(p.event.country.is_eu(), false);
-    add_worldwide(p)
+    add_worldwide(p).map_err(|e| e.extend("Failed to add world wide income"))
 }

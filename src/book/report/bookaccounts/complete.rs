@@ -47,7 +47,7 @@ pub fn generate_complete_accounts_table(accounts: &BookAccounts) -> Table {
         let (debit_list, credit_list) = split_debit_credit(entry_list);
         let mut debit_it = debit_list.iter();
         let mut credit_it = credit_list.iter();
-        for row in 0..9999999 {
+        for row in 0..usize::MAX {
             let debit = debit_it.next();
             let credit = credit_it.next();
             if debit.is_none() && credit.is_none() {

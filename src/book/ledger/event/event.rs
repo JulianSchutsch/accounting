@@ -23,11 +23,4 @@ impl Event {
             Event::Invoice(e) => &e.id,
         }
     }
-
-    pub fn verify_and_complete(&mut self) -> BookResult<> {
-        match self {
-            Event::Income(e) => e.verify(),
-            Event::Invoice(e) => e.verify_and_complete(),
-        }
-    }
 }

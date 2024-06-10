@@ -4,23 +4,23 @@ use crate::book::*;
 use super::params::Params;
 use super::ids;
 
-fn add_sweden(p: Params<Invoice>) -> BookResult<()> {
-    if p.event.reverse_charge {
-        return Err(BookError::new("Reverse charge not supported within sweden"));
+fn add_sweden(p: Params<Invoice>) -> BookResult {
+
+    let amounts = p.event.amounts.convert_into_book_currency(p.event.date, &p.import.exchange_rates)?;
+    p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::CLAIMS_FROM_CUSTOMERS, BookAccountAmount::Credit(amounts.total));
+
+    for (&category, &amount) in amounts.iter() {
+        let (incoming_moms_account, moms_factor) = ids::invoice_moms(category, amounts.reverse_charge)?;
+        let invoice_account = ids::invoice_account(category)?;
+        let moms = moms_factor*amount;
+        p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, incoming_moms_account, BookAccountAmount::Debit(moms));
+        p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, invoice_account, BookAccountAmount::Debit(amount));
     }
 
-    for cl_amount in p.event.amount.iter() {
-        let book_total = p.import.exchange_rates.amount_into_book(p.event.date, p.event.currency, cl_amount.total())?;
-        let book_moms = p.import.exchange_rates.moms_into_book(p.event.date, p.event.currency, cl_amount.moms)?;
-        p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::CLAIMS_FROM_CUSTOMERS, BookAccountAmount::Credit(book_total));
-        p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::INCOMING_MOMS, BookAccountAmount::Debit(book_moms));
-        p.accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::invoice_account(p.event.category), BookAccountAmount::Debit(book_total));
-    }
-
-    for payment in p.event.payments.iter() {
-        let account = p.bank_accounts.get_account_by_reference(&payment.account)
+    for payment in p.event.payments.iter_inverse_date(p.event.date) {
+        let account = p.bank_accounts.get_account_by_references(&BankAccountReferences::new_from_single(payment.account.clone()))
             .ok_or_else(|| BookError::new(format!("Cannot find bank account {} for payment for {}", payment.account, p.event.id)))?;
-        let amount = payment.amount.unwrap_or_else(|| p.event.total_amount);
+        let amount = payment.amount;
         p.accounts.add_entry(p.ledger_id, payment.date, &p.event_ref, ids::CLAIMS_FROM_CUSTOMERS, BookAccountAmount::Debit(amount));
         match account.account_type {
             BankAccountType::Privat => {

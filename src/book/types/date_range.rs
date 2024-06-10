@@ -7,6 +7,11 @@ pub struct DateRange {
 }
 
 impl DateRange {
+    pub const FULL: DateRange = DateRange{ begin: Date::MIN, end: Date::MAX };
+
+    pub fn new(begin: Date, end: Date) -> Self {
+        Self { begin, end }
+    }
     pub fn contains(&self, date: Date) -> bool {
         (date>=self.begin) && (date<=self.end)
     }
