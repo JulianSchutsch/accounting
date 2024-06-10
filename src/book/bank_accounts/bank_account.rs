@@ -2,12 +2,6 @@ use std::collections::BTreeMap;
 
 use crate::book::*;
 
-#[derive(Clone)]
-pub struct BankTransaction {
-    amount: Amount,
-    references: Vec<String>
-}
-
 pub struct BankPeriod {
     period: Period,
     filename: String
@@ -35,8 +29,22 @@ impl BankAccount {
         Self { account_type, initial_value, currency, references, transactions: BTreeMap::new(), periods: Vec::new() }
     }
 
-    pub fn add_transaction(&mut self, date: Date, amount: Amount, references: Vec<String>) -> BookResult {
-        let transaction = BankTransaction{amount, references};
+    pub fn consume_transaction<'c, 's: 'c>(&'s self, consumer: &mut BankTransactionConsumer<'c>, date: Date, amount: Amount, references: &BankTransactionReferences) -> BookResult {
+        if let Some(transactions)=self.transactions.get(&date) {
+            for entry in transactions.iter() {
+                if entry.is_match(amount, references) {
+                    if !consumer.try_consume(entry) {
+                        return Err(BookError::new(format!("Matching transaction for amount={} and references={:?} already consumed", amount, references)));
+                    }
+                    return Ok(());
+                }
+            }
+        }
+        Err(BookError::new(format!("No matching transaction for amount={} and references={:?} found", amount, references)))
+    }
+
+    pub fn add_transaction(&mut self, date: Date, amount: Amount, references: BankTransactionReferences) -> BookResult {
+        let transaction = BankTransaction::new(amount, references);
         self.transactions.entry(date).or_insert(vec![]).push(transaction);
         return Ok(());
     }

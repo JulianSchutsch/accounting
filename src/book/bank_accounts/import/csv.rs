@@ -63,14 +63,17 @@ pub fn import(banks : &mut BankAccounts, path: &str, settings: &settings::banks:
     let mut reader = std::io::BufReader::new(file);
     let period = read_header(&mut reader)?;
 
+
     let mut csv_reader = csv::Reader::from_reader(reader);
     let rows = csv_reader.deserialize().collect::<Result<Vec<Row>,_>>()?;
+
+    add_account_periods(banks, &rows, period, path)?;
 
     for row in rows.into_iter() {
         let ref1 = BankAccountReference::SwedishAccountNumber(SwedishAccountNumber{number: row.account_nr});
         banks.get_mut_account_by_references(&BankAccountReferences::new_from_single(ref1.clone()))
             .ok_or_else(|| BookError::new(format!("Account {} not defined!", ref1)))?
-            .add_transaction(row.transaction_date, row.amount, vec![row.reference])?;
+            .add_transaction(row.transaction_date, row.amount, BankTransactionReferences::new_from_single(row.reference.as_str()))?;
     }
 
     Ok(())

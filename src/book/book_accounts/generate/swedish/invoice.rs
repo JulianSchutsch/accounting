@@ -27,6 +27,7 @@ fn add_sweden(p: Params<Invoice>) -> BookResult {
                 p.accounts.add_entry(p.ledger_id, payment.date, &p.event_ref, ids::DEBT_TO_PRIVATE, BookAccountAmount::Credit(amount));
             }
             BankAccountType::Account => {
+                account.consume_transaction(p.bank_transaction_consumer, payment.date, payment.amount, &payment.references)?;
                 p.accounts.add_entry(p.ledger_id, payment.date, &p.event_ref, ids::COMPANY_BANK_ACCOUNT, BookAccountAmount::Credit(amount));
             }
         }
