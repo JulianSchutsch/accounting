@@ -1,13 +1,13 @@
 use crate::book::*;
 
-pub struct Import {
+pub struct First {
     pub settings: settings::Settings,
     pub exchange_rates: ExchangeRates,
     pub bank_accounts: BankAccounts,
     pub ledger: Ledger
 }
 
-impl Import {
+impl First {
     pub fn from_root_file(path:&str) -> BookResult<Self> {
         let settings = settings::Settings::read_from_file(path)?;
         let exchange_rates = exchange_rate::import_using_settings(&settings)?;

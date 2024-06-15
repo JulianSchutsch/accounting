@@ -1,11 +1,15 @@
 use crate::book::*;
 
 pub struct BankTransaction {
-    amount: Amount,
-    references: BankTransactionReferences,
+    pub amount: Amount,
+    pub references: BankTransactionReferences,
 }
 
 impl BankTransaction {
+    pub fn description(&self) -> String {
+        return self.references.description();
+    }
+
     pub fn new(amount: Amount, references: BankTransactionReferences) -> Self {
         Self { amount, references }
     }

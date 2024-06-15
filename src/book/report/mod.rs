@@ -1,2 +1,3 @@
 pub mod table;
-pub mod bookaccounts;
+pub mod book_accounts;
+pub mod bank_accounts;

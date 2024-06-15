@@ -7,6 +7,7 @@ pub enum TableAlignment {
 pub enum TableEntry {
     Empty,
     String(TableAlignment, String),
+    TitleRow(String),
     NewRow,
     RowSeparator,
 }
@@ -30,6 +31,7 @@ impl Table {
     pub fn insert(&mut self, e:TableEntry) {
         self.entries.push(e);
     }
+
     pub fn column_widths(&self) -> std::collections::HashMap<usize, usize> {
         let mut result_w = std::collections::HashMap::<usize, usize>::new();
         let mut column : usize = 0;
@@ -41,6 +43,7 @@ impl Table {
                     result_w.entry(column).and_modify(|v| *v = std::cmp::max(*v, s.len())).or_insert(s.len());
                     column+=1;
                 }
+                TableEntry::TitleRow(_) => column = 0,
                 _ => {}
             }
         }
@@ -75,6 +78,9 @@ impl Table {
                 TableEntry::NewRow => {
                     println!();
                     column = 0;
+                }
+                TableEntry::TitleRow(s) => {
+                    println!("- {} -", s);
                 }
                 TableEntry::RowSeparator => {
                     println!("{:-<width$}", "", width=total_width);

@@ -13,11 +13,11 @@ fn split_debit_credit<'l>(entries: &Vec<BookAccountEntry<'l>>) -> (Vec<BookAccou
     (debit, credit)
 }
 
-pub fn generate_account_desc(e: &BookAccountEntry, accounts: &BookAccounts) -> String {
+fn generate_account_desc(e: &BookAccountEntry, accounts: &BookAccounts) -> String {
     format!("{} {}", e.account.0, accounts.naming.get(&e.account).map_or("", |v| v.as_str()))
 }
 
-pub fn generate_side(table: &mut Table, entry: Option<&BookAccountEntry>, accounts: &BookAccounts) {
+fn generate_side(table: &mut Table, entry: Option<&BookAccountEntry>, accounts: &BookAccounts) {
     match entry {
         Some(e) => {
             table.insert(TableEntry::String(TableAlignment::Left, generate_account_desc(&e, accounts)));

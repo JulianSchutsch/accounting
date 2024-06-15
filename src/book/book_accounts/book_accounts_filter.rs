@@ -24,13 +24,13 @@ pub struct BookAccountsFilter<'l1, 'l2: 'l1> {
     book_iter: BookAccountEntriesIter<'l1, 'l2>
 }
 
-pub struct BankAccountsFilterBuilder {
+pub struct BookAccountsFilterBuilder {
     id_range: BookAccountIdRange,
     date_range: DateRange,
     side: BookAccountSide,
 }
 
-impl BankAccountsFilterBuilder {
+impl BookAccountsFilterBuilder {
     pub fn new() -> Self {
         Self{
             id_range: BookAccountIdRange::FULL,

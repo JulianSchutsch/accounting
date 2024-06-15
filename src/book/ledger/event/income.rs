@@ -1,9 +1,5 @@
 use crate::book::*;
 
-fn default_reverse_charge() -> bool {
-  false
-}
-
 #[derive(Debug, serde::Deserialize)]
 pub struct Income {
   pub id: String,

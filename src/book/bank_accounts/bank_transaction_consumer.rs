@@ -9,6 +9,11 @@ pub struct BankTransactionConsumer<'l> {
 }
 
 impl<'l> BankTransactionConsumer<'l> {
+    pub fn is_consumed(&self, transaction: &'l BankTransaction) -> bool {
+        let ptr: *const BankTransaction = transaction;
+        self.consumed.get(&ptr).is_some()
+    }
+
     pub fn try_consume(&mut self, transaction: &'l BankTransaction) -> bool {
         let ptr: *const BankTransaction = transaction;
         if let Some(_) = self.consumed.get(&ptr) {

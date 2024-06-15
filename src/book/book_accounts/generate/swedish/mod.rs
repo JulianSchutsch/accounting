@@ -7,24 +7,22 @@ mod naming;
 use crate::book::*;
 
 use params::*;
+use crate::book::phases::Second;
 
-fn add_entry<'p, 'e:'p>(p: IncompleteParams<'_, 'p, '_, '_, '_, '_>, entry: &'e Event) -> BookResult {
+fn add_entry<'p, 'e:'p>(p: IncompleteParams<'_, 'p, 'e>, entry: &'e Event) -> BookResult {
     match entry {
         Event::Income(e) => income::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add income")),
         Event::Invoice(e) => invoice::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add invoice")),
     }
 }
 
-pub fn generate<'p:'r, 'r>(import: &'p Import) -> BookResult<BookAccounts<'r>> {
-    let mut accounts = BookAccounts::new(import.settings.book_currency);
-    naming::generate_naming(&mut accounts);
-    let mut bank_transaction_consumer = BankTransactionConsumer::new();
-    import.ledger.iter().try_for_each(|(ledger_id, event)| add_entry(IncompleteParams{
+pub fn generate(first: &phases::First) -> BookResult<phases::Second> {
+    let mut second = Second::new(first);
+    naming::generate_naming(&mut second.book_accounts);
+    first.ledger.iter().try_for_each(|(ledger_id, event)| add_entry(IncompleteParams{
+        first: &first,
+        second: &mut second,
         ledger_id: *ledger_id,
-        accounts: &mut accounts,
-        bank_accounts: &import.bank_accounts,
-        bank_transaction_consumer: &mut bank_transaction_consumer,
-        import: &import
     }, event))?;
-    Ok(accounts)
+    Ok(second)
 }

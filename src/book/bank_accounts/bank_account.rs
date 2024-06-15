@@ -15,16 +15,27 @@ pub enum BankAccountType {
     Privat
 }
 
+type BankTransactions = BTreeMap<Date, Vec<BankTransaction>>;
+pub type BankTransactionsIter<'l> = std::collections::btree_map::Iter<'l, Date, Vec<BankTransaction>>;
+
 pub struct BankAccount {
     pub account_type: BankAccountType,
-    initial_value: Amount,
-    currency: Currency,
+    pub initial_value: Amount,
+    pub currency: Currency,
     pub references: BankAccountReferences,
-    transactions: BTreeMap<Date, Vec<BankTransaction>>,
+    transactions: BankTransactions,
     periods: Vec<BankPeriod>,
 }
 
 impl BankAccount {
+    pub fn description(&self) -> String {
+        format!("{}", self.references)
+    }
+
+    pub fn iter_transactions(&self) -> BankTransactionsIter {
+        self.transactions.iter()
+    }
+
     pub fn new(account_type: BankAccountType, initial_value: Amount, currency: Currency, references: BankAccountReferences) -> Self {
         Self { account_type, initial_value, currency, references, transactions: BTreeMap::new(), periods: Vec::new() }
     }

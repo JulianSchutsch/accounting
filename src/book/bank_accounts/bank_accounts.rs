@@ -3,12 +3,19 @@ use std::collections::BTreeMap;
 use crate::book::*;
 use super::bank_account_id::BankAccountId;
 
+type AccountsIter<'l> = std::collections::btree_map::Iter<'l, BankAccountId, BankAccount>;
+type Accounts = BTreeMap<BankAccountId, BankAccount>;
+
 pub struct BankAccounts {
-    accounts: BTreeMap<BankAccountId, BankAccount>,
+    accounts: Accounts,
     next_account_id: BankAccountId,
 }
 
 impl BankAccounts {
+
+    pub fn iter(&self) -> AccountsIter {
+        return self.accounts.iter();
+    }
 
     pub fn new() -> BankAccounts {
         BankAccounts{

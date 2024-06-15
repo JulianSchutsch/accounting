@@ -3,18 +3,23 @@ mod book;
 use book::*;
 
 fn process_root_file(path: &str) -> BookResult {
-    let import = Import::from_root_file(path)?;
-    import.ledger.print();
-    let book_accounts = book_accounts::generate(&import)?;
-    book_accounts.print();
-    let complete_book = book::report::bookaccounts::complete::generate_complete_accounts_table(&book_accounts);
+    let first = phases::First::from_root_file(path)?;
+    first.ledger.print();
+    let second = book_accounts::generate(&first)?;
+    second.book_accounts.print();
+    let complete_book = book::report::book_accounts::complete::generate_complete_accounts_table(&second.book_accounts);
     complete_book.print();
-    for year in import.settings.fiscal_years.iter() {
+    for year in first.settings.fiscal_years.iter() {
         println!("Deal with fiscal year {}", year.fiscal_year);
-        let annual_account = annual_accounts::generate(&import, &book_accounts, year.fiscal_year)?;
+        let annual_account = annual_accounts::generate(&first, &second.book_accounts, year.fiscal_year)?;
         annual_account.print();
     }
-    book_accounts::verify::balance::verify(&book_accounts)?;
+    book_accounts::verify::balance::verify(&second.book_accounts)?;
+    let c = report::bank_accounts::filtered_transactions::generate(
+        &first.bank_accounts,
+        BankTransactionsFilterBuilder::new(),
+        Some(&second.consumed_bank_transactions));
+    c.print();
     Ok(())
 }
 

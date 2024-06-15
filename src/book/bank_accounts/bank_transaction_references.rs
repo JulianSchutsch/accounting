@@ -8,6 +8,12 @@ pub struct BankTransactionReferences {
 
 impl BankTransactionReferences {
 
+    pub fn description(&self) -> String {
+        self.references.iter().fold(String::new(), |acc, v| {
+            if acc.is_empty() { v.clone() } else { acc + ";" + v }
+        })
+    }
+
     pub fn is_match(&self, other: &BankTransactionReferences) -> bool {
         other.references.is_subset(&self.references)
     }
