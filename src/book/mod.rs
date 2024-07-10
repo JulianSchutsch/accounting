@@ -10,6 +10,7 @@ pub mod annual_accounts;
 pub mod utils;
 pub mod ledger;
 pub mod phases;
+pub mod formats;
 
 pub use book_accounts::public::*;
 pub use book_result::*;

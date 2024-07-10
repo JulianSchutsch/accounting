@@ -16,9 +16,11 @@ impl<'l> BankTransactionConsumer<'l> {
 
     pub fn try_consume(&mut self, transaction: &'l BankTransaction) -> bool {
         let ptr: *const BankTransaction = transaction;
+        println!("Try Consume : {:?}", ptr);
         if let Some(_) = self.consumed.get(&ptr) {
             return false;
         }
+        println!("Consume : {:?}", ptr);
         self.consumed.insert(ptr);
         true
     }

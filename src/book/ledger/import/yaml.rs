@@ -7,6 +7,8 @@ pub fn import_yaml_events(ledger: &mut Ledger, ledger_id: &mut LedgerId, path: &
         Income(Income),
         #[serde(rename="invoice")]
         Invoice(Invoice),
+        #[serde(rename="salary")]
+        Salary(Salary),
         #[serde(rename="invoice_payment")]
         InvoicePayment(Payment)
     }
@@ -24,6 +26,10 @@ pub fn import_yaml_events(ledger: &mut Ledger, ledger_id: &mut LedgerId, path: &
             },
             DeEvent::Invoice(e) => {
                 ledger.events.insert(ledger_id.clone(), Event::Invoice(e));
+                ledger_id.increase();
+            }
+            DeEvent::Salary(e) => {
+                ledger.events.insert(ledger_id.clone(), Event::Salary(e));
                 ledger_id.increase();
             }
             DeEvent::InvoicePayment(e) => {

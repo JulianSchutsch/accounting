@@ -17,7 +17,7 @@ fn process_root_file(path: &str) -> BookResult {
     book_accounts::verify::balance::verify(&second.book_accounts)?;
     let c = report::bank_accounts::filtered_transactions::generate(
         &first.bank_accounts,
-        BankTransactionsFilterBuilder::new(),
+        BankTransactionsFilterBuilder::new().show_consumed(),
         Some(&second.consumed_bank_transactions));
     c.print();
     Ok(())

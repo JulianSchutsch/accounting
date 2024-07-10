@@ -1,12 +1,10 @@
 use crate::book::*;
 
-use super::income::Income;
-use super::invoice::Invoice;
-
 #[derive(Debug)]
 pub enum Event {
     Income(Income),
     Invoice(Invoice),
+    Salary(Salary)
 }
 
 impl Event {
@@ -14,6 +12,7 @@ impl Event {
         match self {
             Event::Income(e) => e.date,
             Event::Invoice(e) => e.date,
+            Event::Salary(e) => e.date,
         }
     }
 
@@ -21,6 +20,7 @@ impl Event {
         match self {
             Event::Income(e) => &e.id,
             Event::Invoice(e) => &e.id,
+            Event::Salary(e) => &e.id,
         }
     }
 }

@@ -12,4 +12,9 @@ pub fn generate_naming(accounts: &mut BookAccounts) {
     accounts.set_account_name(MEDIA_ADVERTISMENT, "Media advertisment");
     accounts.set_account_name(SOFTWARE_LICENSES, "Software licenses");
     accounts.set_account_name(DEBT_TO_PRIVATE, "Debt to private");
+    accounts.set_account_name(SERVICE_SALARY, "Service salary");
+    accounts.set_account_name(SHORT_TERM_DEBT_SALARY, "Shortterm salary debt");
+    accounts.set_account_name(EMPLOYEE_PRELIMINARY_TAXES, "Employee preliminary taxes");
+    accounts.set_account_name(EMPLOYER_COSTS, "Employers taxes");
+    accounts.set_account_name(EMPLOYER_SOCIAL_FEES, "Employers social costs");
 }
