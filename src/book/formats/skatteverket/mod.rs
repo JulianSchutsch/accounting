@@ -1,1 +1,1 @@
-mod konto;
+pub mod konto;

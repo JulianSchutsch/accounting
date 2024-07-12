@@ -8,7 +8,8 @@ use super::bank_accounts::BankAccounts;
 fn import_banks(banks: &mut BankAccounts, path: &str, fiscal_year_settings: &settings::FiscalYear) -> BookResult {
     for banks_filter in fiscal_year_settings.banks.iter() {
         match banks_filter {
-            settings::banks::Banks::CSV(e) => csv::import(banks, path, e).map_err(|e| e.extend(format!("Failed to import csv account from file {}", path)))?
+            settings::banks::Banks::CSV(e) => csv::import(banks, path, e).map_err(|e| e.extend(format!("Failed to import csv account from file {}", path)))?,
+            settings::banks::Banks::SKV(e) => skv::import(banks, path, e).map_err(|e| e.extend(format!("Failed to import skv account from file {}", path)))?
         }
     }
     Ok(())

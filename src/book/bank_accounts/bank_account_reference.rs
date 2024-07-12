@@ -4,6 +4,11 @@ pub struct SwedishAccountNumber {
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, serde::Deserialize)]
+pub struct SkatteverketReference {
+    pub number: i64
+}
+
+#[derive(Debug, Clone, Hash, PartialEq, Eq, serde::Deserialize)]
 pub struct NamedAccount {
     pub name: String,
 }
@@ -13,14 +18,17 @@ pub enum BankAccountReference {
     #[serde(rename="swedish_account_number")]
     SwedishAccountNumber(SwedishAccountNumber),
     #[serde(rename="named_account")]
-    NamedAccount(NamedAccount)
+    NamedAccount(NamedAccount),
+    #[serde(rename="skatteverket")]
+    Skatteverket(SkatteverketReference)
 }
 
 impl std::fmt::Display for BankAccountReference {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::SwedishAccountNumber(e) => write!(f, "Swedish Account Number = {}", e.number),
-            Self::NamedAccount(e) => write!(f, "Named account = {}", e.name)
+            Self::NamedAccount(e) => write!(f, "Named account = {}", e.name),
+            Self::Skatteverket(e) => write!(f, "Skatteverket account = {}", e.number)
         }
     }
 }

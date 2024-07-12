@@ -1,2 +1,2 @@
 pub mod swedbank;
-mod skatteverket;
+pub mod skatteverket;
