@@ -22,9 +22,13 @@ pub const COMPANY_BANK_ACCOUNT: Id = Id(1930);
 
 pub const SERVICE_SALARY: Id = Id(7210);
 pub const SHORT_TERM_DEBT_SALARY: Id = Id(2821);
-pub const EMPLOYEE_PRELIMINARY_TAXES: Id = Id(2710);
-pub const EMPLOYER_SOCIAL_FEES: Id = Id(7510);
-pub const EMPLOYER_COSTS: Id = Id(2730);
+
+pub const EMPLOYEE_TAXES: Id = Id(2710);
+pub const EMPLOYER_SOCIAL_SECURITY_TAX: Id = Id(2730);
+
+pub const EMPLOYER_SOCIAL_SECURITY_COSTS: Id = Id(7510);
+
+pub const SHORT_TERM_DEBT_TAXES: Id = Id(1630);
 
 pub fn income_worldwide_account(category: Category) -> BookResult<Id> {
     match category {

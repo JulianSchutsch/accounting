@@ -4,6 +4,7 @@ mod params;
 mod ids;
 mod naming;
 mod salary;
+mod tax_payment;
 
 use crate::book::*;
 
@@ -14,7 +15,8 @@ fn add_entry<'p, 'e:'p>(p: IncompleteParams<'_, 'p, 'e>, entry: &'e Event) -> Bo
     match entry {
         Event::Income(e) => income::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add income")),
         Event::Invoice(e) => invoice::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add invoice")),
-        Event::Salary(e) => salary::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add salary"))
+        Event::Salary(e) => salary::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add salary")),
+        Event::TaxPayment(e) => tax_payment::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add tax payment")),
     }
 }
 

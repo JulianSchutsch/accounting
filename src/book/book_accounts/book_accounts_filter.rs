@@ -10,8 +10,8 @@ pub enum BookAccountSide {
 impl BookAccountSide {
     pub fn contains(&self, other: BookAccountAmount) -> bool {
         (*self==BookAccountSide::Both) || match other {
-            BookAccountAmount::Debit(_) => (*self==BookAccountSide::Debit),
-            BookAccountAmount::Credit(_) => (*self==BookAccountSide::Credit)
+            BookAccountAmount::Debit(_) => *self==BookAccountSide::Debit,
+            BookAccountAmount::Credit(_) => *self==BookAccountSide::Credit
         }
     }
 }

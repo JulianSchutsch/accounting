@@ -4,7 +4,8 @@ use crate::book::*;
 pub enum Event {
     Income(Income),
     Invoice(Invoice),
-    Salary(Salary)
+    Salary(Salary),
+    TaxPayment(TaxPayment)
 }
 
 impl Event {
@@ -13,6 +14,7 @@ impl Event {
             Event::Income(e) => e.date,
             Event::Invoice(e) => e.date,
             Event::Salary(e) => e.date,
+            Event::TaxPayment(e) => e.date
         }
     }
 
@@ -21,6 +23,7 @@ impl Event {
             Event::Income(e) => &e.id,
             Event::Invoice(e) => &e.id,
             Event::Salary(e) => &e.id,
+            Event::TaxPayment(e) => &e.id
         }
     }
 }

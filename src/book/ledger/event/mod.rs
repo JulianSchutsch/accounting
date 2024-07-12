@@ -6,6 +6,7 @@ mod payment;
 mod fiscal_year_id;
 mod payments;
 mod salary;
+mod tax_payment;
 
 pub mod public {
     pub use super::income::*;
@@ -16,4 +17,5 @@ pub mod public {
     pub use super::payment::*;
     pub use super::payments::*;
     pub use super::fiscal_year_id::*;
+    pub use super::tax_payment::*;
 }

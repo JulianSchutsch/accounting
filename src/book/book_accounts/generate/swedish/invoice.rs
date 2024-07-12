@@ -1,4 +1,3 @@
-use serde_json::to_string;
 use crate::book::*;
 
 use super::params::Params;
@@ -39,7 +38,7 @@ fn add_eu(p: Params<Invoice>) -> BookResult<()> {
     panic!("Not implemented")
 }
 
-fn add_worldwide(p: Params<Invoice>) -> BookResult<()> {
+fn add_worldwide(_p: Params<Invoice>) -> BookResult<()> {
     panic!("Not implemented")
 }
 
