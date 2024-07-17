@@ -6,7 +6,7 @@ use super::annual_accounts_method::AnnualAccountsMethod;
 
 #[derive(serde::Deserialize)]
 struct PlainFiscalYear {
-    pub fiscal_year: DateRange,
+    pub fiscal_year: Period,
     pub banks: Vec<banks::PlainBanks>,
     pub events: Vec<events::PlainEvents>,
     pub annual_accounts_method: AnnualAccountsMethod
@@ -14,7 +14,7 @@ struct PlainFiscalYear {
 
 pub struct FiscalYear {
     pub root_path: String,
-    pub fiscal_year: DateRange,
+    pub fiscal_year: Period,
     pub banks: Vec<banks::Banks>,
     pub events: Vec<events::Events>,
     pub annual_accounts_method: AnnualAccountsMethod

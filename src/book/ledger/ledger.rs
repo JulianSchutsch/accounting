@@ -4,7 +4,7 @@ use crate::book::*;
 
 type Events = BTreeMap<LedgerId, Event>;
 type EventsIter<'s> = std::collections::btree_map::Iter<'s, LedgerId, Event>;
-type FiscalYears = BTreeMap<FiscalYearId, DateRange>;
+type FiscalYears = BTreeMap<FiscalYearId, Period>;
 
 pub struct Ledger {
     pub events: Events,

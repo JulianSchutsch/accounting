@@ -1,13 +1,13 @@
 use crate::book::report::table::*;
 use crate::book::*;
 
-fn split_debit_credit<'l>(entries: &Vec<BookAccountEntry<'l>>) -> (Vec<BookAccountEntry<'l>>, Vec<BookAccountEntry<'l>>) {
+fn split_debit_credit<'l>(entries: &Vec<&BookAccountEntry<'l>>) -> (Vec<BookAccountEntry<'l>>, Vec<BookAccountEntry<'l>>) {
     let mut debit = Vec::<BookAccountEntry>::new();
     let mut credit = Vec::<BookAccountEntry>::new();
     for entry in entries {
         match entry.amount {
-            BookAccountAmount::Debit(_) => debit.push(entry.clone()),
-            BookAccountAmount::Credit(_) => credit.push(entry.clone())
+            BookAccountAmount::Debit(_) => debit.push(*entry.clone()),
+            BookAccountAmount::Credit(_) => credit.push(*entry.clone())
         }
     }
     (debit, credit)
@@ -30,7 +30,7 @@ fn generate_side(table: &mut Table, entry: Option<&BookAccountEntry>, accounts: 
     }
 }
 
-pub fn generate_complete_accounts_table(accounts: &BookAccounts) -> Table {
+pub fn generate_complete_accounts_table(filter: BookAccountsFilter, accounts: &BookAccounts) -> Table {
     let mut result : Table = Table::new();
     result.insert(TableEntry::String(TableAlignment::Left, "Date".to_string()));
     result.insert(TableEntry::String(TableAlignment::Left, "Verification Id".to_string()));
@@ -40,11 +40,11 @@ pub fn generate_complete_accounts_table(accounts: &BookAccounts) -> Table {
     result.insert(TableEntry::String(TableAlignment::Left, "Credit".to_string()));
     result.insert(TableEntry::String(TableAlignment::Left, "Event".to_string()));
     result.insert(TableEntry::NewRow);
-    for (entry_key, entry_list) in accounts.iter() {
+    for ((date, ledger_id), entry_list) in filter {
         result.insert(TableEntry::RowSeparator);
-        result.insert(TableEntry::String(TableAlignment::Left, format!("{}", entry_key.date)));
-        result.insert(TableEntry::String(TableAlignment::Left, format!("{}:{}", entry_key.ledger_id.fiscal_year_id, entry_key.ledger_id.id)));
-        let (debit_list, credit_list) = split_debit_credit(entry_list);
+        result.insert(TableEntry::String(TableAlignment::Left, format!("{}", date)));
+        result.insert(TableEntry::String(TableAlignment::Left, format!("{}:{}", ledger_id.fiscal_year_id, ledger_id.id)));
+        let (debit_list, credit_list) = split_debit_credit(&entry_list);
         let mut debit_it = debit_list.iter();
         let mut credit_it = credit_list.iter();
         for row in 0..usize::MAX {

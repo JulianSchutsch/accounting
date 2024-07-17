@@ -1,9 +1,11 @@
 use crate::book::*;
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Clone, Copy, Debug, serde::Deserialize)]
 pub enum TaxPaymentKind {
     SocialSecurityTax,
-    EmployeeTax
+    EmployeeTax,
+    CompanyTax,
+    Moms
 }
 
 #[derive(Debug, serde::Deserialize)]

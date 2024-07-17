@@ -11,6 +11,7 @@ pub mod utils;
 pub mod ledger;
 pub mod phases;
 pub mod formats;
+pub mod accumulated_book;
 
 pub use book_accounts::public::*;
 pub use book_result::*;
@@ -18,3 +19,4 @@ pub use types::public::*;
 pub use ledger::public::*;
 pub use bank_accounts::public::*;
 pub use exchange_rate::public::*;
+pub use accumulated_book::public::*;

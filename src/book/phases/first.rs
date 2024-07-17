@@ -13,6 +13,7 @@ impl First {
         let exchange_rates = exchange_rate::import_using_settings(&settings)?;
         let (bank_accounts, ledger_importer) = bank_accounts::import::import_using_settings(&settings)?;
         let mut ledger = ledger::import_using_settings(&settings)?;
+        ledger::generate_using_settings(&mut ledger, &settings)?;
         ledger_importer.import(&mut ledger)?;
         Ok(Self { settings, exchange_rates, bank_accounts, ledger })
     }

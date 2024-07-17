@@ -8,6 +8,7 @@ mod book_account_id;
 mod book_account_sum;
 
 pub mod verify;
+pub mod tools;
 
 pub mod public {
     pub use super::book_accounts::*;

@@ -9,7 +9,7 @@ fn generate_year(import: &phases::First, year: &settings::FiscalYear, book_accou
     }
 }
 
-pub fn generate(import: &phases::First, book_accounts: &BookAccounts, year: DateRange) -> BookResult<AnnualAccounts> {
+pub fn generate(import: &phases::First, book_accounts: &BookAccounts, year: Period) -> BookResult<AnnualAccounts> {
     for f_year in import.settings.fiscal_years.iter() {
         if f_year.fiscal_year == year {
             return generate_year(import, &f_year, book_accounts)

@@ -9,7 +9,7 @@ pub fn generate_naming(accounts: &mut BookAccounts) {
     accounts.set_account_name(SALES_OF_SERVICES_WORLDWIDE, "Sales, Services, Worldwide");
     accounts.set_account_name(INCOMING_MOMS_PROCUREMENT_ABROAD, "Incoming moms, procurement abroad");
     accounts.set_account_name(CLAIMS_FROM_CUSTOMERS, "Claims from customers");
-    accounts.set_account_name(MEDIA_ADVERTISMENT, "Media advertisement");
+    accounts.set_account_name(MEDIA_ADVERTISEMENT, "Media advertisement");
     accounts.set_account_name(SOFTWARE_LICENSES, "Software licenses");
     accounts.set_account_name(DEBT_TO_PRIVATE, "Debt to private");
     accounts.set_account_name(SERVICE_SALARY, "Service salary");
@@ -17,4 +17,10 @@ pub fn generate_naming(accounts: &mut BookAccounts) {
     accounts.set_account_name(EMPLOYEE_TAXES, "Employee preliminary taxes");
     accounts.set_account_name(EMPLOYER_SOCIAL_SECURITY_TAX, "Social security tax");
     accounts.set_account_name(EMPLOYER_SOCIAL_SECURITY_COSTS, "Social security costs");
+    accounts.set_account_name(PRELIMINARY_PAID_COMPANY_TAX, "Preliminary paid company tax");
+    accounts.set_account_name(SHORT_TERM_DEBT_TAXES, "Short term tax debt");
+    accounts.set_account_name(COMPANY_BANK_ACCOUNT, "Company bank account");
+    accounts.set_account_name(FINES, "Fines");
+    accounts.set_account_name(TAX_FREE_INCOME, "Tax free income");
+    accounts.set_account_name(MOMS_DEBT, "Moms debt");
 }

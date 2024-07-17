@@ -1,4 +1,3 @@
-use std::ops::Deref;
 use crate::book::*;
 
 pub trait LedgerImporter {

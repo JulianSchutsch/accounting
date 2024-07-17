@@ -1,16 +1,26 @@
 use crate::book::*;
-use crate::book::book_accounts::generate::swedish::ids;
-use crate::book::book_accounts::generate::swedish::params::Params;
+
+use super::ids;
+use super::params::Params;
 
 pub fn add(p: Params<TaxPayment>) -> BookResult {
     match p.event.kind {
-        TaxPaymentKind::EmployeeTax => {
-            p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::EMPLOYEE_TAXES, BookAccountAmount::Debit(p.event.amount));
-            p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::SHORT_TERM_DEBT_TAXES, BookAccountAmount::Credit(p.event.amount));
-        }
-        TaxPaymentKind::SocialSecurityTax => {
-            p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::EMPLOYER_SOCIAL_SECURITY_TAX, BookAccountAmount::Debit(p.event.amount));
-            p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::SHORT_TERM_DEBT_TAXES, BookAccountAmount::Credit(p.event.amount));
+        TaxPaymentKind::EmployeeTax | TaxPaymentKind::SocialSecurityTax => {
+            p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::SHORT_TERM_DEBT_TAXES, BookAccountAmount::Debit(p.event.amount));
+            p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::COMPANY_BANK_ACCOUNT, BookAccountAmount::Credit(p.event.amount));
+        },
+        TaxPaymentKind::CompanyTax => {
+            p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::PRELIMINARY_PAID_COMPANY_TAX, BookAccountAmount::Debit(p.event.amount));
+            p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::COMPANY_BANK_ACCOUNT, BookAccountAmount::Credit(p.event.amount));
+        },
+        TaxPaymentKind::Moms => {
+            if p.event.amount>=Amount(0.0) {
+                p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::MOMS_DEBT, BookAccountAmount::Debit(p.event.amount));
+                p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::COMPANY_BANK_ACCOUNT, BookAccountAmount::Credit(p.event.amount));
+            } else {
+                p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::MOMS_DEBT, BookAccountAmount::Credit(-p.event.amount));
+                p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::COMPANY_BANK_ACCOUNT, BookAccountAmount::Debit(-p.event.amount));
+            }
         }
     }
     Ok(())

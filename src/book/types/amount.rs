@@ -1,6 +1,14 @@
 #[derive(Default, Debug, Clone, Copy, PartialEq, PartialOrd, serde::Deserialize)]
 pub struct Amount(pub f64);
 
+impl std::ops::Neg for Amount {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self( -self.0 )
+    }
+}
+
 impl std::ops::AddAssign for Amount {
     fn add_assign(&mut self, rhs: Self) {
         self.0 += rhs.0

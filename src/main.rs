@@ -7,19 +7,24 @@ fn process_root_file(path: &str) -> BookResult {
     first.ledger.print();
     let second = book_accounts::generate(&first)?;
     second.book_accounts.print();
-    let complete_book = book::report::book_accounts::complete::generate_complete_accounts_table(&second.book_accounts);
+    let period = Period::from_dates(Date::from_str("2023-06-01")?, Date::from_str("2023-8-01")?);
+    let filter = BookAccountsFilterBuilder::new().limit_date(period).build(&second.book_accounts);
+    let complete_book = book::report::book_accounts::complete::generate_complete_accounts_table(filter.clone(), &second.book_accounts);
+    let accumulated_book = book::AccumulatedBook::calculate(filter);
+    let accumulated = book::report::accumulated_book::complete::generate_complete_accounts_table(&accumulated_book, &second.book_accounts);
     complete_book.print();
-    for year in first.settings.fiscal_years.iter() {
+    accumulated.print();
+/*    for year in first.settings.fiscal_years.iter() {
         println!("Deal with fiscal year {}", year.fiscal_year);
         let annual_account = annual_accounts::generate(&first, &second.book_accounts, year.fiscal_year)?;
         annual_account.print();
-    }
-    book_accounts::verify::balance::verify(&second.book_accounts)?;
+    }*/
+/*    book_accounts::verify::balance::verify(&second.book_accounts)?;
     let c = report::bank_accounts::filtered_transactions::generate(
         &first.bank_accounts,
         BankTransactionsFilterBuilder::new().show_consumed(),
         Some(&second.consumed_bank_transactions));
-    c.print();
+    c.print();*/
     Ok(())
 }
 

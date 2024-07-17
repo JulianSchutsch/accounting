@@ -1,14 +1,14 @@
 use crate::book::*;
 
 pub struct BankTransactionsFilterBuilder {
-    date_range: DateRange,
+    date_range: Period,
     show_consumed: bool
 }
 
 type BankTransactionVecIter<'l> = std::slice::Iter<'l, BankTransaction>;
 
 pub struct BankTransactionsFilter<'l1, 'l2, 'l2_l> {
-    date_range: DateRange,
+    date_range: Period,
     bank_account: &'l1 BankAccount,
     consumed: Option<&'l2 BankTransactionConsumer<'l2_l>>,
     show_consumed: bool,
@@ -18,7 +18,7 @@ pub struct BankTransactionsFilter<'l1, 'l2, 'l2_l> {
 
 impl BankTransactionsFilterBuilder {
     pub fn new() -> Self {
-        Self { date_range: DateRange::FULL, show_consumed: false }
+        Self { date_range: Period::FULL, show_consumed: false }
     }
 
     pub fn show_consumed(&self) -> Self {
