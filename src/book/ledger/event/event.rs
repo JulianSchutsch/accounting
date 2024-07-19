@@ -9,7 +9,8 @@ pub enum Event {
     Interest(Interest),
     Fine(Fine),
     VerifyMoms(VerifyMoms),
-    Shares(Shares)
+    Shares(Shares),
+    Transaction(Transaction)
 }
 
 impl Event {
@@ -22,7 +23,8 @@ impl Event {
             Event::Interest(e) => e.date,
             Event::Fine(e) => e.date,
             Event::VerifyMoms(e) => e.date,
-            Event::Shares(e) => e.date
+            Event::Shares(e) => e.date,
+            Event::Transaction(e) => e.date
         }
     }
 
@@ -35,7 +37,8 @@ impl Event {
             Event::Interest(e) => &e.id,
             Event::Fine(e) => &e.id,
             Event::VerifyMoms(e) => &e.id,
-            Event::Shares(e) => &e.id
+            Event::Shares(e) => &e.id,
+            Event::Transaction(e) => &e.id
         }
     }
 }

@@ -9,6 +9,7 @@ mod interest;
 mod fine;
 mod verify_moms;
 mod shares;
+mod transaction;
 
 use crate::book::*;
 
@@ -24,7 +25,8 @@ fn add_entry<'p, 'e:'p>(p: IncompleteParams<'_, 'p, 'e>, entry: &'e Event) -> Bo
         Event::Interest(e) => interest::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add interest")),
         Event::Fine(e) => fine::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add fine")),
         Event::VerifyMoms(e) => verify_moms::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add verify moms")),
-        Event::Shares(e) => shares::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add shares"))
+        Event::Shares(e) => shares::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add shares")),
+        Event::Transaction(e) => transaction::add(p.complete_with(e, entry)).map_err(|e| e.extend("Failed to add transaction"))
     }
 }
 

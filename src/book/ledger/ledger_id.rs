@@ -3,9 +3,9 @@ use crate::book::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum LedgerIdKind {
-    Pseudo,
-    Continuous,
-    Post
+    Transaction,
+    Verification,
+    Time
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Eq, Ord)]
@@ -20,24 +20,24 @@ impl LedgerId {
         self.id += 1
     }
 
-    pub fn initial(date: Date) -> Self {
-        Self{ fiscal_year_id: date.id(), id:0, kind: LedgerIdKind::Continuous }
+    pub fn transactions(date: Date) -> Self {
+        Self{ fiscal_year_id: date.id(), id:0, kind: LedgerIdKind::Transaction }
     }
 
-    pub fn pseudo(date: Date) -> Self {
-        Self { fiscal_year_id: date.id(), id: 0, kind: LedgerIdKind::Pseudo }
+    pub fn times(date: Date) -> Self {
+        Self { fiscal_year_id: date.id(), id: 0, kind: LedgerIdKind::Time }
     }
-    pub fn post(date: Date) -> Self {
-        Self{ fiscal_year_id: date.id(), id:0, kind: LedgerIdKind::Post }
+    pub fn verifications(date: Date) -> Self {
+        Self{ fiscal_year_id: date.id(), id:0, kind: LedgerIdKind::Verification }
     }
 }
 
 impl std::fmt::Display for LedgerIdKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            LedgerIdKind::Continuous => write!(f, "normal"),
-            LedgerIdKind::Pseudo => write!(f, "pseudo"),
-            LedgerIdKind::Post => write!(f, "post")
+            LedgerIdKind::Verification => write!(f, "verification"),
+            LedgerIdKind::Time => write!(f, "time"),
+            LedgerIdKind::Transaction => write!(f, "transaction")
         }
     }
 

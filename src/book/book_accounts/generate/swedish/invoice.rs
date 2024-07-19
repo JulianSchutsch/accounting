@@ -15,22 +15,6 @@ fn add_sweden(p: Params<Invoice>) -> BookResult {
         p.second.book_accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, incoming_moms_account, BookAccountAmount::Debit(moms));
         p.second.book_accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, invoice_account, BookAccountAmount::Debit(amount));
     }
-
-    for payment in p.event.payments.iter_inverse_date(p.event.date) {
-        let account = p.first.bank_accounts.get_account_by_references(&BankAccountReferences::new_from_single(payment.account.clone()))
-            .ok_or_else(|| BookError::new(format!("Cannot find bank account {} for payment for {}", payment.account, p.event.id)))?;
-        let amount = payment.amount;
-        p.second.book_accounts.add_entry(p.ledger_id, payment.date, &p.event_ref, ids::CLAIMS_FROM_CUSTOMERS, BookAccountAmount::Debit(amount));
-        match account.account_type {
-            BankAccountType::Privat => {
-                p.second.book_accounts.add_entry(p.ledger_id, payment.date, &p.event_ref, ids::DEBT_TO_PRIVATE, BookAccountAmount::Credit(amount));
-            }
-            BankAccountType::Account => {
-                account.consume_transaction(&mut p.second.consumed_bank_transactions, payment.date, payment.amount, &payment.references)?;
-                p.second.book_accounts.add_entry(p.ledger_id, payment.date, &p.event_ref, ids::COMPANY_BANK_ACCOUNT, BookAccountAmount::Credit(amount));
-            }
-        }
-    }
     Ok(())
 }
 

@@ -11,6 +11,4 @@ pub struct Invoice {
     pub country: Country,
     pub amounts: CategorizedAmounts,
     pub description: String,
-    #[serde(skip_deserializing)]
-    pub payments: Payments
 }

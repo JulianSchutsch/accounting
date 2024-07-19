@@ -1,8 +1,13 @@
-use crate::book::formats::skatteverket::konto::skv::{Row, Content};
 use crate::book::*;
+use crate::book::formats::skatteverket::konto::skv::{Row, Content};
 
-pub struct Importer {
-    pub content: Content
+fn add_account_entries(banks: &mut BankAccounts, content: &Content) -> BookResult {
+    let account = banks.get_mut_account_by_references(&BankAccountReferences::new_from_single(content.s_ref.clone()))
+        .ok_or_else(|| BookError::new(format!("Account {} not defined!", content.s_ref)))?;
+    for row in content.rows.iter() {
+        account.add_transaction(row.date, row.amount, BankTransactionReferences::new_from_single(row.description.as_str()))?;
+    }
+    Ok(())
 }
 
 static IMPORTERKEYS_TAX:[(&str, TaxPaymentKind); 4]=[
@@ -55,16 +60,24 @@ fn try_import_as_fine(ledger_id: &mut LedgerId, row: &Row, ledger: &mut Ledger) 
     false
 }
 
-impl LedgerImporter for Importer {
-    fn import(&self, ledger: &mut Ledger) -> BookResult {
-        let mut ledger_id = LedgerId::pseudo(self.content.period.begin);
-        for row in self.content.rows.iter() {
-            if !try_import_as_tax(&mut ledger_id, row, ledger) {
-                if !try_import_as_interest(&mut ledger_id, row, ledger) {
-                    try_import_as_fine(&mut ledger_id, row, ledger);
-                }
+fn import_transactions(content: Content, ledger: &mut Ledger) -> BookResult {
+    let mut ledger_id = LedgerId::transactions(content.period.begin);
+    for row in content.rows.iter() {
+        if !try_import_as_tax(&mut ledger_id, row, ledger) {
+            if !try_import_as_interest(&mut ledger_id, row, ledger) {
+                try_import_as_fine(&mut ledger_id, row, ledger);
             }
         }
-        Ok(())
     }
+    Ok(())
+}
+
+pub fn import(ledger: &mut Ledger, banks : &mut BankAccounts, path: &str, settings: &settings::banks::SKV) -> BookResult {
+    if !settings.files.iter().any(|e| e.is_match(path)) {
+        return Ok(());
+    }
+    let content = Content::import(path)?;
+    add_account_entries(banks, &content)?;
+    import_transactions(content, ledger)?;
+    Ok(())
 }
