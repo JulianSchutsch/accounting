@@ -1,6 +1,7 @@
 use crate::book::*;
 
-#[derive(Debug)]
+#[derive(Debug, serde::Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum Event {
     Income(Income),
     Invoice(Invoice),

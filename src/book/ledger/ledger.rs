@@ -9,6 +9,7 @@ type FiscalYears = BTreeMap<FiscalYearId, Period>;
 pub struct Ledger {
     pub events: Events,
     pub fiscal_years: FiscalYears,
+    pub ledger_id: LedgerIdGenerator,
 }
 
 impl Ledger {
@@ -17,7 +18,12 @@ impl Ledger {
         Ledger{
             events: Events::new(),
             fiscal_years: BTreeMap::new(),
+            ledger_id: LedgerIdGenerator::new()
         }
+    }
+
+    pub fn select_fiscal_year(&mut self, period: Period) {
+        self.ledger_id.select_fiscal_year(period);
     }
 
     pub fn get_mut_invoice_by_id(&mut self, id: &String) -> Option<&mut Invoice> {

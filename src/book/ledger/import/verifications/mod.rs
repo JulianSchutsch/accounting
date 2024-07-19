@@ -1,27 +1,18 @@
 use crate::book::*;
 
 mod yaml;
-mod skv;
 
-fn import_events(ledger: &mut Ledger, ledger_id: &mut LedgerId, path: &str, fiscal_year_settings: &settings::FiscalYear) -> BookResult<> {
+fn import_events(ledger: &mut Ledger, path: &str, fiscal_year_settings: &settings::FiscalYear) -> BookResult<> {
     for event_filter in fiscal_year_settings.events.iter() {
         match event_filter {
-            settings::events::Events::Yaml(e) => yaml::import_yaml_events(ledger, ledger_id, path, e)?
+            settings::events::Events::Yaml(e) => yaml::import_yaml_events(ledger, path, e)?
         }
     }
     Ok(())
 }
 
-fn import_fiscal_year(mut ledger: &mut Ledger, fiscal_year_settings: &settings::FiscalYear) -> BookResult {
-    let mut ledger_id: LedgerId = LedgerId::verifications(fiscal_year_settings.fiscal_year.begin);
+pub fn import_fiscal_year(mut ledger: &mut Ledger, fiscal_year_settings: &settings::FiscalYear) -> BookResult {
     utils::paths::directory_scan(std::path::Path::new(fiscal_year_settings.root_path.as_str()), &mut |path|{
-        import_events(&mut ledger, &mut ledger_id, path, fiscal_year_settings).map_err(|e| e.extend(format!("Failed to import file {}", path)))
+        import_events(&mut ledger, path, fiscal_year_settings).map_err(|e| e.extend(format!("Failed to import file {}", path)))
     })
-}
-
-pub fn import_using_settings(ledger: &mut Ledger, settings: &settings::Settings) -> BookResult {
-    for fiscal_year in settings.fiscal_years.iter() {
-        import_fiscal_year(ledger, fiscal_year).map_err(|e| e.extend(format!("Failed to import fiscal year {}", fiscal_year.fiscal_year)))?;
-    }
-    Ok(())
 }

@@ -6,5 +6,5 @@ pub struct Transaction {
     pub account: BankAccountReference,
     pub date: Date,
     pub amount: Amount,
-    pub description: String
+    pub references: BankTransactionReferences
 }

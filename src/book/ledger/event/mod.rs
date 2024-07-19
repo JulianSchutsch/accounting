@@ -1,7 +1,6 @@
 mod income;
 mod invoice;
 mod event;
-mod fiscal_year_id;
 mod salary;
 mod tax_payment;
 mod interest;
@@ -15,7 +14,6 @@ pub mod public {
     pub use super::invoice::*;
     pub use super::salary::*;
     pub use super::event::*;
-    pub use super::fiscal_year_id::*;
     pub use super::tax_payment::*;
     pub use super::interest::*;
     pub use super::fine::*;

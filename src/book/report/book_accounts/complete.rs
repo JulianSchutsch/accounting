@@ -43,7 +43,7 @@ pub fn generate_complete_accounts_table(filter: BookAccountsFilter, accounts: &B
     for ((date, ledger_id), entry_list) in filter {
         result.insert(TableEntry::RowSeparator);
         result.insert(TableEntry::String(TableAlignment::Left, format!("{}", date)));
-        result.insert(TableEntry::String(TableAlignment::Left, format!("{}:{}", ledger_id.fiscal_year_id, ledger_id.id)));
+        result.insert(TableEntry::String(TableAlignment::Left, format!("{}", ledger_id)));
         let (debit_list, credit_list) = split_debit_credit(&entry_list);
         let mut debit_it = debit_list.iter();
         let mut credit_it = credit_list.iter();

@@ -13,9 +13,7 @@ impl First {
         let exchange_rates = exchange_rate::import_using_settings(&settings)?;
         let mut bank_accounts = BankAccounts::new();
         let mut ledger = Ledger::new();
-        ledger::import::verifications::import_using_settings(&mut ledger, &settings)?;
-        ledger::import::transactions::import_using_settings(&mut ledger, &mut bank_accounts, &settings)?;
-        ledger::import::times::generate_using_settings(&mut ledger, &settings)?;
+        ledger::import::import_using_settings(&mut ledger, &mut bank_accounts, &settings)?;
         Ok(Self { settings, exchange_rates, bank_accounts, ledger })
     }
 }
