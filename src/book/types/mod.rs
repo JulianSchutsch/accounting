@@ -7,6 +7,8 @@ mod category;
 mod categorized_amounts;
 mod moms_factor;
 mod sequence_generator;
+mod associables;
+mod associable;
 
 pub mod public {
     pub use super::amount::*;
@@ -18,4 +20,6 @@ pub mod public {
     pub use super::categorized_amounts::*;
     pub use super::moms_factor::*;
     pub use super::sequence_generator::*;
+    pub use super::associable::*;
+    pub use super::associables::*;
 }
