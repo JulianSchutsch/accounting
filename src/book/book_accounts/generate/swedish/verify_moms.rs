@@ -6,7 +6,7 @@ use super::params::Params;
 pub fn add(p: Params<VerifyMoms>) -> BookResult {
     let amount = book_accounts::tools::period_sum(
         &p.second.book_accounts,
-        p.event.date.previous_month()?,
+        p.event.date.this_month()?,
         ids::MOMS_RANGE,
         BookAccountSide::Both
     )?;

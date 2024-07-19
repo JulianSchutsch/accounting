@@ -23,4 +23,6 @@ pub fn generate_naming(accounts: &mut BookAccounts) {
     accounts.set_account_name(FINES, "Fines");
     accounts.set_account_name(TAX_FREE_INCOME, "Tax free income");
     accounts.set_account_name(MOMS_DEBT, "Moms debt");
+    accounts.set_account_name(BOUND_CAPITAL, "Bound capital");
+    accounts.set_account_name(SHARES_CAPITAL, "Shares capital");
 }

@@ -10,6 +10,7 @@ mod tax_payment;
 mod interest;
 mod fine;
 mod verify_moms;
+mod shares;
 
 pub mod public {
     pub use super::income::*;
@@ -24,4 +25,5 @@ pub mod public {
     pub use super::interest::*;
     pub use super::fine::*;
     pub use super::verify_moms::*;
+    pub use super::shares::*;
 }

@@ -3,9 +3,9 @@ use crate::book::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum LedgerIdKind {
-    Technical,
     Pseudo,
-    Continuous
+    Continuous,
+    Post
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Eq, Ord)]
@@ -27,8 +27,8 @@ impl LedgerId {
     pub fn pseudo(date: Date) -> Self {
         Self { fiscal_year_id: date.id(), id: 0, kind: LedgerIdKind::Pseudo }
     }
-    pub fn technical(date: Date) -> Self {
-        Self{ fiscal_year_id: date.id(), id:0, kind: LedgerIdKind::Technical }
+    pub fn post(date: Date) -> Self {
+        Self{ fiscal_year_id: date.id(), id:0, kind: LedgerIdKind::Post }
     }
 }
 
@@ -37,7 +37,7 @@ impl std::fmt::Display for LedgerIdKind {
         match self {
             LedgerIdKind::Continuous => write!(f, "normal"),
             LedgerIdKind::Pseudo => write!(f, "pseudo"),
-            LedgerIdKind::Technical => write!(f, "technical")
+            LedgerIdKind::Post => write!(f, "post")
         }
     }
 

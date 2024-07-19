@@ -45,17 +45,33 @@ impl Date {
         Ok(Date(naive))
     }
 
+    pub fn first_day_this_month(&self) -> BookResult<Self> {
+        Ok(Self(chrono::NaiveDate::from_ymd_opt(self.0.year(), self.0.month(), 1).ok_or_else(|| BookError::new("No first day of last month"))?))
+    }
+
     pub fn first_day_next_month(&self) -> BookResult<Self> {
         Ok(Self(
             chrono::NaiveDate::from_ymd_opt( self.0.year(), self.0.month(), 1).ok_or_else( | | BookError::new("No first day of month")) ?
-            .checked_add_months(chrono::Months::new(1)).ok_or_else( | | BookError::new("No first day of next month")) ?
+            .checked_add_months(chrono::Months::new(1)).ok_or_else( || BookError::new("No first day of next month")) ?
         ))
+    }
+
+    pub fn last_day_this_month(&self) -> BookResult<Self> {
+        Ok(Self(self.first_day_next_month()?.0.checked_sub_days(chrono::Days::new(1)).ok_or_else(|| BookError::new("No last day of this month"))?))
+    }
+
+    pub fn last_day_next_month(&self) -> BookResult<Self> {
+        self.first_day_next_month()?.last_day_this_month()
     }
 
     pub fn previous_month(&self) -> BookResult<Period> {
         let first_day = self.0.checked_sub_months(chrono::Months::new(1)).ok_or_else(|| BookError::new("No first day of last month"))?;
         let last_day = self.0.checked_sub_days(chrono::Days::new(1)).ok_or_else(|| BookError::new("No last day of last month"))?;
         Ok(Period { begin: Date::new_internal(first_day), end: Date::new_internal(last_day) })
+    }
+
+    pub fn this_month(self) -> BookResult<Period> {
+        Ok(Period { begin: self.first_day_this_month()?, end: self.last_day_this_month()?})
     }
 
 }

@@ -10,7 +10,9 @@ pub fn import_yaml_events(ledger: &mut Ledger, ledger_id: &mut LedgerId, path: &
         #[serde(rename="salary")]
         Salary(Salary),
         #[serde(rename="invoice_payment")]
-        InvoicePayment(Payment)
+        InvoicePayment(Payment),
+        #[serde(rename="shares")]
+        Shares(Shares)
     }
     if !settings.files.iter().any(|e| e.is_match(path)) {
         return Ok(());
@@ -35,6 +37,10 @@ pub fn import_yaml_events(ledger: &mut Ledger, ledger_id: &mut LedgerId, path: &
             DeEvent::InvoicePayment(e) => {
                 let invoice = ledger.get_mut_invoice_by_id(&e.id).ok_or_else(|| BookError::new(format!("Failed to find invoice with id={}", e.id)))?;
                 invoice.payments.add(e)
+            }
+            DeEvent::Shares(e) => {
+                ledger.events.insert(ledger_id.clone(), Event::Shares(e));
+                ledger_id.increase();
             }
         }
     }
