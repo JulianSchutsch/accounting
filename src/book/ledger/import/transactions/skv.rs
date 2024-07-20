@@ -1,15 +1,6 @@
 use crate::book::*;
 use crate::book::formats::skatteverket::konto::skv::{Row, Content};
 
-fn add_account_entries(banks: &mut BankAccounts, content: &Content) -> BookResult {
-    let account = banks.get_mut_account_by_references(&BankAccountReferences::new_from_single(content.s_ref.clone()))
-        .ok_or_else(|| BookError::new(format!("Account {} not defined!", content.s_ref)))?;
-    for row in content.rows.iter() {
-        account.add_transaction(row.date, row.amount, BankTransactionReferences::new_from_single(row.description.as_str()))?;
-    }
-    Ok(())
-}
-
 static IMPORTERKEYS_TAX:[(&str, TaxPaymentKind); 4]=[
     ("Arbetsgivaravgift", TaxPaymentKind::SocialSecurityTax),
     ("Avdragen skatt", TaxPaymentKind::EmployeeTax),
@@ -57,11 +48,23 @@ fn try_import_as_fine(row: &Row, ledger: &mut Ledger) -> bool {
     false
 }
 
-fn import_transactions(content: Content, ledger: &mut Ledger) -> BookResult {
+fn import_transactions(content: &Content, ledger: &mut Ledger) -> BookResult {
     for row in content.rows.iter() {
         if !try_import_as_tax(row, ledger) {
             if !try_import_as_interest(row, ledger) {
-                try_import_as_fine(row, ledger);
+                if !try_import_as_fine(row, ledger) {
+                    if row.description.contains("Inbetalning bokförd") {
+                         ledger.events.insert(ledger.ledger_id.generate_transaction_id(), Event::Transaction(Transaction {
+                            id: "".to_string(),
+                            date: row.date,
+                            amount: row.amount,
+                            references: BankTransactionReferences::new_from_single("Inbetalning bokförd"),
+                            account: content.s_ref.clone()
+                        }));
+                    } else {
+                        return Err(BookError::new("Unknown entry in skatteverket account"));
+                    }
+                }
             }
         }
     }
@@ -73,7 +76,6 @@ pub fn import(ledger: &mut Ledger, banks : &mut BankAccounts, path: &str, settin
         return Ok(());
     }
     let content = Content::import(path)?;
-    add_account_entries(banks, &content)?;
-    import_transactions(content, ledger)?;
+    import_transactions(&content, ledger)?;
     Ok(())
 }

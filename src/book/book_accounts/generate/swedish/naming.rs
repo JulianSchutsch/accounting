@@ -25,4 +25,5 @@ pub fn generate_naming(accounts: &mut BookAccounts) {
     accounts.set_account_name(MOMS_DEBT, "Moms debt");
     accounts.set_account_name(BOUND_CAPITAL, "Bound capital");
     accounts.set_account_name(SHARES_CAPITAL, "Shares capital");
+    accounts.set_account_name(COMPANY_BANK_TRANSACTIONS, "Company transactions");
 }

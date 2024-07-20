@@ -8,4 +8,5 @@ pub struct Income {
   pub customer_vat: String,
   pub amounts: CategorizedAmounts,
   pub description: String,
+  pub payment: Vec<Payment>
 }

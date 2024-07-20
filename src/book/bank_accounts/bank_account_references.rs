@@ -1,5 +1,7 @@
 use std::collections::HashSet;
 
+use crate::book::*;
+
 use super::bank_account_reference::BankAccountReference;
 
 #[derive(Clone)]
@@ -8,6 +10,22 @@ pub struct BankAccountReferences {
 }
 
 impl BankAccountReferences {
+    pub fn matching_transaction(&self, rhs: &BankTransactionReferences) -> bool {
+        for left in self.references.iter() {
+            match left {
+                BankAccountReference::NamedAccount(name) => {
+                    for right in rhs.references.iter() {
+                        if name.name==*right {
+                            return true;
+                        }
+                    }
+                },
+                _ => ()
+            }
+        }
+        false
+    }
+
     pub fn matching(&self, rhs: &Self) -> bool {
         !self.references.is_disjoint(&rhs.references)
     }

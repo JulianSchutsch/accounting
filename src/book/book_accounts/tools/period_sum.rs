@@ -6,7 +6,7 @@ pub fn period_sum(book_accounts: &BookAccounts, period: Period, id_range: BookAc
         .limit_date(period)
         .limit_side(side).build(book_accounts);
     let mut result = Amount(0.0);
-    for ((date, ledger_id), entries) in filter {
+    for ((_date, _ledger_id), entries) in filter {
         for &entry in entries.iter() {
             result += entry.amount.signed_amount();
         }

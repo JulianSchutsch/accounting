@@ -31,6 +31,15 @@ pub struct Settings {
 }
 
 impl Settings {
+    pub fn account_transaction_match(&self, references: &BankTransactionReferences) -> Option<&Account> {
+        for account in self.accounts.iter() {
+            if account.references.matching_transaction(references) {
+                return Some(account);
+            }
+        }
+        None
+    }
+
     fn read_plain(path: &str) -> BookResult<PlainSettings> {
         let file = std::fs::File::open(path)?;
         let reader = std::io::BufReader::new(file);

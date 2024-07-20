@@ -3,7 +3,7 @@ use serde::Deserializer;
 
 #[derive(Debug)]
 pub struct BankTransactionReferences {
-    references: HashSet<String>
+    pub references: HashSet<String>
 }
 
 impl BankTransactionReferences {

@@ -6,8 +6,8 @@ fn split_debit_credit<'l>(entries: &Vec<&BookAccountEntry<'l>>) -> (Vec<BookAcco
     let mut credit = Vec::<BookAccountEntry>::new();
     for entry in entries {
         match entry.amount {
-            BookAccountAmount::Debit(_) => debit.push(*entry.clone()),
-            BookAccountAmount::Credit(_) => credit.push(*entry.clone())
+            BookAccountAmount::Debit(_) => debit.push(**entry),
+            BookAccountAmount::Credit(_) => credit.push(**entry)
         }
     }
     (debit, credit)

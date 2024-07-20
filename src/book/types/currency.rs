@@ -1,5 +1,3 @@
-use crate::book::*;
-
 #[derive(Debug, Hash, Eq, PartialEq, Clone, enum_map::Enum, Copy, serde::Deserialize)]
 pub enum Currency {
     SEK,

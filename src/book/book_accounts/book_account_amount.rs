@@ -9,7 +9,7 @@ pub enum BookAccountAmount {
 impl BookAccountAmount {
     pub fn from_signed_amount(amount: Amount) -> Self {
         if amount<Amount(0.0) {
-            Self::Credit(amount)
+            Self::Credit(-amount)
         } else {
             Self::Debit(amount)
         }

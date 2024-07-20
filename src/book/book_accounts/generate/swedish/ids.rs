@@ -25,6 +25,7 @@ pub const SOFTWARE_LICENSES: Id = Id(5420);
 pub const DEBT_TO_PRIVATE: Id = Id(2393);
 
 pub const COMPANY_BANK_ACCOUNT: Id = Id(1930);
+pub const COMPANY_BANK_TRANSACTIONS: Id = Id(1939);
 
 pub const SERVICE_SALARY: Id = Id(7210);
 pub const SHORT_TERM_DEBT_SALARY: Id = Id(2821);

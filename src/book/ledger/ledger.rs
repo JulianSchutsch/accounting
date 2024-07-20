@@ -26,18 +26,6 @@ impl Ledger {
         self.ledger_id.select_fiscal_year(period);
     }
 
-    pub fn get_mut_invoice_by_id(&mut self, id: &String) -> Option<&mut Invoice> {
-        for (_, event) in self.events.iter_mut() {
-            if event.id()==id {
-                match event {
-                    Event::Invoice(invoice) => return Some(invoice),
-                    _ => ()
-                }
-            }
-        }
-        None
-    }
-
     pub fn print(&self) {
         for (_date, event) in self.iter() {
             println!("{:?}", event);

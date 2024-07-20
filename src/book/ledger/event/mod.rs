@@ -8,6 +8,7 @@ mod fine;
 mod verify_moms;
 mod shares;
 mod transaction;
+mod payment;
 
 pub mod public {
     pub use super::income::*;
@@ -20,4 +21,5 @@ pub mod public {
     pub use super::verify_moms::*;
     pub use super::shares::*;
     pub use super::transaction::*;
+    pub use super::payment::*;
 }

@@ -3,10 +3,27 @@ use crate::book::*;
 use super::params::Params;
 use super::ids;
 
-fn add_worldwide(p: Params<Income>) -> BookResult {
-    let amounts = p.event.amounts.convert_into_book_currency(p.event.date, &p.first.exchange_rates)?;
+struct AssociableIncome {
+    remaining: Amount,
+    payments: Vec<Payment>
+}
 
-    p.second.book_accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::CLAIMS_TO_CUSTOMERS, BookAccountAmount::Debit(amounts.total));
+impl Associable<Transaction> for AssociableIncome {
+    fn associate(&mut self, data: &Transaction) -> BookResult<AssociableChange> {
+        for payment in self.payments.iter() {
+            match payment {
+                Payment::Exact => {
+                }
+                _ => return Err(BookError::new("Unsupported case for payment, implementation error"))
+            }
+        }
+        Ok((AssociableChange::Close))
+    }
+
+}
+
+fn add_moms_worldwide(p: &mut Params<Income>) -> BookResult {
+    let amounts = p.event.amounts.convert_into_book_currency(p.event.date, &p.first.exchange_rates)?;
 
     let mut accumulated_moms = Amount(0.0);
     for (&category, &amount) in amounts.iter() {
@@ -23,7 +40,20 @@ fn add_worldwide(p: Params<Income>) -> BookResult {
     Ok(())
 }
 
-pub fn add(p: Params<Income>) -> BookResult {
+fn add_immediate(p: &mut Params<Income>) -> BookResult<(Vec<Payment>, Amount)> {
+    let remaining = p.event.amounts.total;
+    let result: Vec<Payment> = Vec::new();
+
+    p.second.book_accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::CLAIMS_TO_CUSTOMERS, BookAccountAmount::Debit(remaining));
+    Ok((result, remaining))
+}
+
+pub fn add(p: &mut Params<Income>) -> BookResult {
     assert_eq!(p.event.country.is_eu(), false);
-    add_worldwide(p).map_err(|e| e.extend("Failed to add world wide income"))
+    add_moms_worldwide(p).map_err(|e| e.extend("Failed to add world wide income"))?;
+    let (payments, remaining) = add_immediate(p)?;
+    if !payments.is_empty() {
+
+    }
+    Ok(())
 }
