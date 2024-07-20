@@ -5,7 +5,6 @@ use super::ids;
 use super::params::Params;
 
 pub fn add_company_transaction(p: &mut Params<Transaction>) -> BookResult {
-    println!("Transaction between accounts {:?} {}", p.event.references, p.event.amount);
     let book_amount = BookAccountAmount::from_signed_amount(p.event.amount);
     p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::COMPANY_BANK_ACCOUNT, book_amount);
     p.second.book_accounts.add_entry(p.ledger_id, p.event.date, p.event_ref, ids::COMPANY_BANK_TRANSACTIONS, book_amount.invert());

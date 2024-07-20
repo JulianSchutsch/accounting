@@ -19,15 +19,15 @@ impl LedgerIdGenerator {
         self.transaction.reset();
     }
 
-    pub fn generate_verification_id(&mut self) -> LedgerId {
-        LedgerId::new(self.fiscal_year, self.verification.generate(), LedgerIdKind::Verification)
+    pub fn generate_verification_id(&mut self, date: Date, ) -> LedgerId {
+        LedgerId::new(date, self.fiscal_year, self.verification.generate(), LedgerIdKind::Verification)
     }
 
-    pub fn generate_time_id(&mut self) -> LedgerId {
-        LedgerId::new(self.fiscal_year, self.time.generate(), LedgerIdKind::Time)
+    pub fn generate_time_id(&mut self, date: Date) -> LedgerId {
+        LedgerId::new(date, self.fiscal_year, self.time.generate(), LedgerIdKind::Time)
     }
 
-    pub fn generate_transaction_id(&mut self) -> LedgerId {
-        LedgerId::new(self.fiscal_year, self.transaction.generate(), LedgerIdKind::Transaction)
+    pub fn generate_transaction_id(&mut self, date:Date) -> LedgerId {
+        LedgerId::new(date, self.fiscal_year, self.transaction.generate(), LedgerIdKind::Transaction)
     }
 }

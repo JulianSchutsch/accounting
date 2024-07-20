@@ -8,7 +8,7 @@ pub fn import_yaml_events(ledger: &mut Ledger, path: &str, settings: &settings::
     let reader = std::io::BufReader::new(file);
     let entries: Vec<Event> = serde_yaml::from_reader(reader)?;
     for entry in entries {
-        ledger.events.insert(ledger.ledger_id.generate_verification_id(), entry);
+        ledger.events.insert(ledger.ledger_id.generate_verification_id(entry.date()), entry);
     }
     Ok(())
 }

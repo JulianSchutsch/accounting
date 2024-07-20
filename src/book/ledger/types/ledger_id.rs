@@ -2,14 +2,15 @@ use crate::book::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Eq, Ord)]
 pub struct LedgerId {
+    date: Date,
     fiscal_year_id: FiscalYearId,
     id: i32,
     kind: LedgerIdKind
 }
 
 impl LedgerId {
-    pub fn new(fiscal_year_id: FiscalYearId, id: i32, kind: LedgerIdKind) -> Self {
-        Self{ fiscal_year_id, id, kind }
+    pub fn new(date: Date, fiscal_year_id: FiscalYearId, id: i32, kind: LedgerIdKind) -> Self {
+        Self{ date, fiscal_year_id, id, kind }
     }
 }
 

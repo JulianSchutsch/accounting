@@ -11,7 +11,7 @@ static IMPORTERKEYS_TAX:[(&str, TaxPaymentKind); 4]=[
 fn try_import_as_tax(row: &Row, ledger: &mut Ledger) -> bool {
     for (key, kind) in IMPORTERKEYS_TAX.iter() {
         if row.description.contains(key) {
-            ledger.events.insert(ledger.ledger_id.generate_transaction_id(), Event::TaxPayment(TaxPayment{
+            ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::TaxPayment(TaxPayment{
                 id: row.description.clone(),
                 date: row.date,
                 amount: -row.amount,
@@ -25,7 +25,7 @@ fn try_import_as_tax(row: &Row, ledger: &mut Ledger) -> bool {
 
 fn try_import_as_interest(row: &Row, ledger: &mut Ledger) -> bool {
     if row.description.contains("Intäktsränta") {
-        ledger.events.insert(ledger.ledger_id.generate_transaction_id(), Event::Interest(Interest{
+        ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::Interest(Interest{
             id: row.description.clone(),
             date: row.date,
             amount: row.amount,
@@ -38,7 +38,7 @@ fn try_import_as_interest(row: &Row, ledger: &mut Ledger) -> bool {
 
 fn try_import_as_fine(row: &Row, ledger: &mut Ledger) -> bool {
     if row.description.contains("Kostnadsränta") {
-        ledger.events.insert(ledger.ledger_id.generate_transaction_id(), Event::Fine(Fine{
+        ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::Fine(Fine{
             id: row.description.clone(),
             date: row.date,
             amount: -row.amount,
@@ -54,7 +54,7 @@ fn import_transactions(content: &Content, ledger: &mut Ledger) -> BookResult {
             if !try_import_as_interest(row, ledger) {
                 if !try_import_as_fine(row, ledger) {
                     if row.description.contains("Inbetalning bokförd") {
-                         ledger.events.insert(ledger.ledger_id.generate_transaction_id(), Event::Transaction(Transaction {
+                         ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::Transaction(Transaction {
                             id: "".to_string(),
                             date: row.date,
                             amount: row.amount,

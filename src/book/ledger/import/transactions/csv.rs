@@ -23,7 +23,7 @@ fn add_account_entries(ledger: &mut Ledger, banks: &mut BankAccounts, content: C
             amount: row.amount,
             references: BankTransactionReferences::new_from_single(row.reference.as_str())
         });
-        ledger.events.insert(ledger.ledger_id.generate_transaction_id(), event);
+        ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.transaction_date), event);
     }
     Ok(())
 }
