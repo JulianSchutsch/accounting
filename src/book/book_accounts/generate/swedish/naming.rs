@@ -11,7 +11,7 @@ pub fn generate_naming(accounts: &mut BookAccounts) {
     accounts.set_account_name(CLAIMS_FROM_CUSTOMERS, "Claims from customers");
     accounts.set_account_name(MEDIA_ADVERTISEMENT, "Media advertisement");
     accounts.set_account_name(SOFTWARE_LICENSES, "Software licenses");
-    accounts.set_account_name(DEBT_TO_PRIVATE, "Debt to private");
+    accounts.set_account_name(DEBT_TO_COMPANY_OWNERS, "Debt to company owners");
     accounts.set_account_name(SERVICE_SALARY, "Service salary");
     accounts.set_account_name(SHORT_TERM_DEBT_SALARY, "Short term salary debt");
     accounts.set_account_name(EMPLOYEE_TAXES, "Employee preliminary taxes");
@@ -26,4 +26,8 @@ pub fn generate_naming(accounts: &mut BookAccounts) {
     accounts.set_account_name(BOUND_CAPITAL, "Bound capital");
     accounts.set_account_name(SHARES_CAPITAL, "Shares capital");
     accounts.set_account_name(COMPANY_BANK_TRANSACTIONS, "Company transactions");
+    accounts.set_account_name(COMPANY_CURRENCY_ACCOUNT, "Company currency account");
+    accounts.set_account_name(INTEREST_FOR_CURRENT_ASSETS, "Interest for current assets");
+    accounts.set_account_name(BANK_COSTS, "Bank costs");
+    accounts.set_account_name(SHORT_TERM_DEBT_FROM_COMPANY_OWNERS, "Short term debt from company owners");
 }

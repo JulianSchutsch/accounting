@@ -1,8 +1,8 @@
 use crate::book::*;
 
-#[derive(Debug, Clone, Copy)]
-pub struct BookAccountEntry<'l> {
-    pub source: &'l Event,
+#[derive(Debug, Clone)]
+pub struct BookAccountEntry {
+    pub source_desc: String,
     pub account: BookAccountId,
     pub amount: BookAccountAmount
 }

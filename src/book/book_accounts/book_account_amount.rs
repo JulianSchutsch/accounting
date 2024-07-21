@@ -1,5 +1,27 @@
 use crate::book::*;
 
+pub enum BookSide {
+    Debit,
+    Credit
+}
+
+pub struct BookAmountConstructor {
+    side: BookSide,
+    pub target: BookAccountId
+}
+
+impl BookAmountConstructor {
+    pub fn new(side: BookSide, target: BookAccountId) -> Self {
+        Self { side, target }
+    }
+    pub fn construct(&self, amount: Amount) -> BookAccountAmount {
+        match self.side {
+            BookSide::Debit => BookAccountAmount::Debit(amount),
+            BookSide::Credit => BookAccountAmount::Credit(amount)
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 pub enum BookAccountAmount {
     Debit(Amount),

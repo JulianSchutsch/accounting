@@ -11,7 +11,9 @@ pub enum Event {
     Fine(Fine),
     VerifyMoms(VerifyMoms),
     Shares(Shares),
-    Transaction(Transaction)
+    Transaction(Transaction),
+    BankCost(BankCost),
+    Exchange(Exchange)
 }
 
 impl Event {
@@ -25,7 +27,9 @@ impl Event {
             Event::Fine(e) => e.date,
             Event::VerifyMoms(e) => e.date,
             Event::Shares(e) => e.date,
-            Event::Transaction(e) => e.date
+            Event::Transaction(e) => e.date,
+            Event::BankCost(e) => e.date,
+            Event::Exchange(e) => e.date
         }
     }
 
@@ -39,7 +43,9 @@ impl Event {
             Event::Fine(e) => &e.id,
             Event::VerifyMoms(e) => &e.id,
             Event::Shares(e) => &e.id,
-            Event::Transaction(e) => &e.id
+            Event::Transaction(e) => &e.id,
+            Event::BankCost(e) => &e.id,
+            Event::Exchange(e) => &e.id
         }
     }
 }

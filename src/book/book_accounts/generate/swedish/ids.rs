@@ -5,6 +5,12 @@ use crate::book::*;
 pub const CLAIMS_TO_CUSTOMERS:Id = Id(1510);
 pub const CLAIMS_FROM_CUSTOMERS: Id = Id(2440);
 
+pub const SHORT_TERM_DEBT_FROM_COMPANY_OWNERS: Id = Id(1685);
+
+pub const COMPANY_BANK_ACCOUNT: Id = Id(1930);
+pub const COMPANY_BANK_TRANSACTIONS: Id = Id(1939);
+pub const COMPANY_CURRENCY_ACCOUNT: Id = Id(1980);
+
 pub const SALES_OF_SERVICES_WORLDWIDE:Id = Id(3305);
 pub const SALES_OF_SERVICES_EU: Id = Id(3308);
 
@@ -22,10 +28,7 @@ pub const MOMS_DEBT: Id = Id(2650);
 pub const MEDIA_ADVERTISEMENT: Id = Id(5970);
 pub const SOFTWARE_LICENSES: Id = Id(5420);
 
-pub const DEBT_TO_PRIVATE: Id = Id(2393);
-
-pub const COMPANY_BANK_ACCOUNT: Id = Id(1930);
-pub const COMPANY_BANK_TRANSACTIONS: Id = Id(1939);
+pub const DEBT_TO_COMPANY_OWNERS: Id = Id(2393);
 
 pub const SERVICE_SALARY: Id = Id(7210);
 pub const SHORT_TERM_DEBT_SALARY: Id = Id(2821);
@@ -33,13 +36,18 @@ pub const SHORT_TERM_DEBT_SALARY: Id = Id(2821);
 pub const EMPLOYEE_TAXES: Id = Id(2710);
 pub const EMPLOYER_SOCIAL_SECURITY_TAX: Id = Id(2730);
 
+pub const BANK_COSTS: Id = Id(6570);
+
 pub const EMPLOYER_SOCIAL_SECURITY_COSTS: Id = Id(7510);
 
 pub const SHORT_TERM_DEBT_TAXES: Id = Id(1630);
 
 pub const PRELIMINARY_PAID_COMPANY_TAX:Id = Id(2518);
 
+pub const INTEREST_FOR_CURRENT_ASSETS:Id = Id(8310);
 pub const TAX_FREE_INCOME: Id = Id(8314);
+
+pub const EXCHANGE_RATE_DIFFERENCES:Id = Id(8330);
 
 pub const FINES: Id = Id(8423);
 

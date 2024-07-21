@@ -9,6 +9,8 @@ mod verify_moms;
 mod shares;
 mod transaction;
 mod payment;
+mod bank_cost;
+mod exchange;
 
 pub mod public {
     pub use super::income::*;
@@ -22,4 +24,6 @@ pub mod public {
     pub use super::shares::*;
     pub use super::transaction::*;
     pub use super::payment::*;
+    pub use super::bank_cost::*;
+    pub use super::exchange::*;
 }

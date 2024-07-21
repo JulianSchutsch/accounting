@@ -1,13 +1,13 @@
 use crate::book::report::table::*;
 use crate::book::*;
 
-fn split_debit_credit<'l>(entries: &Vec<&BookAccountEntry<'l>>) -> (Vec<BookAccountEntry<'l>>, Vec<BookAccountEntry<'l>>) {
-    let mut debit = Vec::<BookAccountEntry>::new();
-    let mut credit = Vec::<BookAccountEntry>::new();
+fn split_debit_credit<'l>(entries: &Vec<&'l BookAccountEntry>) -> (Vec<&'l BookAccountEntry>, Vec<&'l BookAccountEntry>) {
+    let mut debit = Vec::<&'l BookAccountEntry>::new();
+    let mut credit = Vec::<&'l BookAccountEntry>::new();
     for entry in entries {
         match entry.amount {
-            BookAccountAmount::Debit(_) => debit.push(**entry),
-            BookAccountAmount::Credit(_) => credit.push(**entry)
+            BookAccountAmount::Debit(_) => debit.push(entry),
+            BookAccountAmount::Credit(_) => credit.push(entry)
         }
     }
     (debit, credit)
@@ -17,7 +17,7 @@ fn generate_account_desc(e: &BookAccountEntry, accounts: &BookAccounts) -> Strin
     format!("{} {}", e.account.0, accounts.naming.get(&e.account).map_or("", |v| v.as_str()))
 }
 
-fn generate_side(table: &mut Table, entry: Option<&BookAccountEntry>, accounts: &BookAccounts) {
+fn generate_side(table: &mut Table, entry: Option<&&BookAccountEntry>, accounts: &BookAccounts) {
     match entry {
         Some(e) => {
             table.insert(TableEntry::String(TableAlignment::Left, generate_account_desc(&e, accounts)));
@@ -60,7 +60,7 @@ pub fn generate_complete_accounts_table(filter: BookAccountsFilter, accounts: &B
             generate_side(&mut result, debit, accounts);
             generate_side(&mut result, credit, accounts);
             if row==0 {
-                result.insert(TableEntry::String(TableAlignment::Left, format!("{:?}", entry_list.get(0).unwrap().source.id())));
+                result.insert(TableEntry::String(TableAlignment::Left, format!("{:?}", entry_list.get(0).unwrap().source_desc)));
             } else {
                 result.insert(TableEntry::Empty);
             }

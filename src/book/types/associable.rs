@@ -6,8 +6,8 @@ pub enum AssociableChange {
     Close
 }
 
-pub trait Associable<TA> {
-    fn associate(&mut self, data: &TA) -> BookResult<AssociableChange>;
+pub trait Associable<TA, TH> {
+    fn associate(&mut self, ledger_id: LedgerId, data: &TA, help: &mut TH) -> BookResult<AssociableChange>;
 }
 
-pub type AssociableBox<TA> = Box<dyn Associable<TA>>;
+pub type AssociableBox<TA, TH> = Box<dyn Associable<TA, TH>>;

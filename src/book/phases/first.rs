@@ -12,7 +12,7 @@ impl First {
         let settings = settings::Settings::read_from_file(path)?;
         let exchange_rates = exchange_rate::import_using_settings(&settings)?;
         let mut bank_accounts = BankAccounts::new();
-        let mut ledger = Ledger::new();
+        let mut ledger = Ledger::new(settings.book_currency);
         ledger::import::import_using_settings(&mut ledger, &mut bank_accounts, &settings)?;
         Ok(Self { settings, exchange_rates, bank_accounts, ledger })
     }

@@ -12,7 +12,7 @@ pub struct Row {
     #[serde(rename="Produkt")]
     _product: String,
     #[serde(rename="Valuta")]
-    _currency: Currency,
+    pub currency: Currency,
     #[serde(rename="Bokfdag")]
     _executed_date: Date,
     #[serde(rename="Transdag")]
@@ -22,7 +22,7 @@ pub struct Row {
     #[serde(rename="Referens")]
     pub reference: String,
     #[serde(rename="Text")]
-    _text: String,
+    pub text: String,
     #[serde(rename="Belopp")]
     pub amount: Amount,
     #[serde(rename="Saldo")]

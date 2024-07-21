@@ -28,6 +28,7 @@ fn try_import_as_interest(row: &Row, ledger: &mut Ledger) -> bool {
         ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::Interest(Interest{
             id: row.description.clone(),
             date: row.date,
+            currency: ledger.book_currency,
             amount: row.amount,
             taxable: false
         }));

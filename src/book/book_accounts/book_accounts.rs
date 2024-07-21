@@ -7,26 +7,31 @@ pub struct EntryKey {
     pub date: Date,
     pub ledger_id: LedgerId
 }
-type BookEntries<'l> = std::collections::BTreeMap<EntryKey, Vec<BookAccountEntry<'l>>>;
-pub type BookAccountEntriesIter<'l, 's> = std::collections::btree_map::Iter<'s, EntryKey, Vec<BookAccountEntry<'l>>>;
+type BookEntries = std::collections::BTreeMap<EntryKey, Vec<BookAccountEntry>>;
+pub type BookAccountEntriesIter<'s> = std::collections::btree_map::Iter<'s, EntryKey, Vec<BookAccountEntry>>;
 
-type ValueEntries<'l> = std::collections::BTreeMap<EntryKey, Vec<BookAccountValueEntry<'l>>>;
+type ValueEntries = std::collections::BTreeMap<EntryKey, Vec<BookAccountValueEntry>>;
 
-pub struct BookAccounts<'l> {
+pub struct BookAccounts {
     currency: Currency,
-    entries: BookEntries<'l>,
-    values: ValueEntries<'l>,
+    entries: BookEntries,
+    values: ValueEntries,
     pub naming: HashMap<BookAccountId, String>
 }
 
-impl<'s> BookAccounts<'s> {
-    pub fn new<'l>(currency: Currency) -> BookAccounts<'l> {
+impl BookAccounts {
+    pub fn new(currency: Currency) -> BookAccounts {
         BookAccounts{
             currency,
             entries: BookEntries::new(),
             values: ValueEntries::new(),
             naming: HashMap::new()
         }
+    }
+
+    pub fn clear(&mut self) {
+        self.entries.clear();
+        self.values.clear();
     }
 
     pub fn set_account_name(&mut self, id: BookAccountId, name: &str) {
@@ -43,13 +48,15 @@ impl<'s> BookAccounts<'s> {
         }
     }
 
-    pub fn add_entry<'l: 's>(&mut self, ledger_id: LedgerId, date: Date, source: &'l Event,  account: BookAccountId, amount: BookAccountAmount) {
-        let entry = BookAccountEntry{ source, account, amount };
-        self.entries.entry(EntryKey{date, ledger_id}).and_modify(|e| e.push(entry)).or_insert(vec![entry]);
+    pub fn add_entry(&mut self, ledger_id: LedgerId, date: Date, source_desc: &String,  account: BookAccountId, amount: BookAccountAmount) {
+        self.entries.entry(EntryKey{date, ledger_id})
+            .and_modify(|e| e.push(BookAccountEntry{ source_desc: source_desc.clone(), account, amount }))
+            .or_insert(vec![BookAccountEntry{ source_desc: source_desc.clone(), account, amount }]);
     }
 
-    pub fn add_value<'l: 's>(&mut self, ledger_id: LedgerId, date: Date, source: &'l Event, account: BookAccountId, amount: Amount) {
-        let entry = BookAccountValueEntry{ source, account, amount };
-        self.values.entry(EntryKey{date, ledger_id}).and_modify(|e| e.push(entry)).or_insert(vec![entry]);
+    pub fn add_value(&mut self, ledger_id: LedgerId, date: Date, source_desc: &String, account: BookAccountId, amount: Amount) {
+        self.values.entry(EntryKey{date, ledger_id})
+            .and_modify(|e| e.push(BookAccountValueEntry{ source_desc: source_desc.clone(), account, amount }))
+            .or_insert(vec![BookAccountValueEntry{ source_desc: source_desc.clone(), account, amount }]);
     }
 }

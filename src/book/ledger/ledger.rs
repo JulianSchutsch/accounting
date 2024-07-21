@@ -7,6 +7,7 @@ type EventsIter<'s> = std::collections::btree_map::Iter<'s, LedgerId, Event>;
 type FiscalYears = BTreeMap<FiscalYearId, Period>;
 
 pub struct Ledger {
+    pub book_currency: Currency,
     pub events: Events,
     pub fiscal_years: FiscalYears,
     pub ledger_id: LedgerIdGenerator,
@@ -14,8 +15,9 @@ pub struct Ledger {
 
 impl Ledger {
     pub fn iter(&self) -> EventsIter { self.events.iter() }
-    pub fn new() -> Ledger {
+    pub fn new(book_currency: Currency) -> Ledger {
         Ledger{
+            book_currency,
             events: Events::new(),
             fiscal_years: BTreeMap::new(),
             ledger_id: LedgerIdGenerator::new()

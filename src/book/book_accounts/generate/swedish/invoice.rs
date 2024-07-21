@@ -1,41 +1,40 @@
-use num::traits::Inv;
 use crate::book::*;
 
-use super::params::Params;
 use super::ids;
 use super::active_associables::*;
+use super::params::*;
 
 struct AssociableInvoice {
     remaining: Amount,
     payments: Vec<Payment>
 }
 
-impl Associable<Transaction> for AssociableInvoice {
-    fn associate(&mut self, data: &Transaction) -> BookResult<AssociableChange> {
-
+impl Associable<Transaction, Params<'_>> for AssociableInvoice {
+    fn associate(&mut self, ledger_id: LedgerId, data: &Transaction, p: &mut Params) -> BookResult<AssociableChange> {
+        // TODO: Actually absorb payments!
         Ok((AssociableChange::Close))
     }
 
 }
 
-fn add_moms_sweden(p: &mut Params<Invoice>) -> BookResult {
+fn add_moms_sweden(ledger_id: LedgerId, event: &Invoice, first: &phases::First, book_accounts: &mut BookAccounts) -> BookResult {
 
-    let amounts = p.event.amounts.convert_into_book_currency(p.event.date, &p.first.exchange_rates)?;
+    let amounts = event.amounts.convert_into_book_currency(event.date, &first.exchange_rates)?;
 
     for (&category, &amount) in amounts.iter() {
         let (incoming_moms_account, moms_factor) = ids::invoice_moms(category, amounts.reverse_charge)?;
         let invoice_account = ids::invoice_account(category)?;
         let moms = moms_factor*amount;
-        p.second.book_accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, incoming_moms_account, BookAccountAmount::Debit(moms));
-        p.second.book_accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, invoice_account, BookAccountAmount::Debit(amount));
+        book_accounts.add_entry(ledger_id, event.date, &event.id, incoming_moms_account, BookAccountAmount::Debit(moms));
+        book_accounts.add_entry(ledger_id, event.date, &event.id, invoice_account, BookAccountAmount::Debit(amount));
     }
     Ok(())
 }
 
-fn add_moms(p: &mut Params<Invoice>) -> BookResult {
-    if p.event.country.is_eu() {
-        if p.event.country==Country::Sweden {
-            add_moms_sweden(p)
+fn add_moms(ledger_id: LedgerId, event: &Invoice, first: &phases::First, book_accounts: &mut BookAccounts) -> BookResult {
+    if event.country.is_eu() {
+        if event.country==Country::Sweden {
+            add_moms_sweden(ledger_id, event, first, book_accounts)
         } else {
             panic!("Not implemented");
         }
@@ -44,17 +43,17 @@ fn add_moms(p: &mut Params<Invoice>) -> BookResult {
     }
 }
 
-fn add_immediate_payments(p: &mut Params<Invoice>) -> BookResult<(Vec<Payment>, Amount)> {
-    let mut remaining_amount = p.event.amounts.total;
+fn add_immediate_payments(ledger_id: LedgerId, event: &Invoice, first: &phases::First, book_accounts: &mut BookAccounts) -> BookResult<(Vec<Payment>, Amount)> {
+    let mut remaining_amount = event.amounts.total;
     let mut result: Vec<Payment> = Vec::new();
     // TODO: Near 0 is possible
-    for payment in p.event.payment.iter() {
+    for payment in event.payment.iter() {
         match payment {
             Payment::Exact => {
                 result.push(payment.clone())
             },
             Payment::LeaderCredit => {
-                p.second.book_accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::DEBT_TO_PRIVATE, BookAccountAmount::Credit(remaining_amount));
+                book_accounts.add_entry(ledger_id, event.date, &event.id, ids::DEBT_TO_COMPANY_OWNERS, BookAccountAmount::Credit(remaining_amount));
                 remaining_amount = Amount(0.0);
             }
         }
@@ -62,19 +61,19 @@ fn add_immediate_payments(p: &mut Params<Invoice>) -> BookResult<(Vec<Payment>, 
             break;
         }
     }
-    p.second.book_accounts.add_entry(p.ledger_id, p.event.date, &p.event_ref, ids::CLAIMS_FROM_CUSTOMERS, BookAccountAmount::Credit(remaining_amount));
+    book_accounts.add_entry(ledger_id, event.date, &event.id, ids::CLAIMS_FROM_CUSTOMERS, BookAccountAmount::Credit(remaining_amount));
     Ok((result, remaining_amount))
 }
 
-pub fn add(p: &mut Params<Invoice>) -> BookResult {
-    add_moms(p)?;
-    let (payments, remaining) = add_immediate_payments(p)?;
+pub fn add(ledger_id: LedgerId, event: &Invoice, p: &mut Params) -> BookResult {
+    add_moms(ledger_id, event, p.first, &mut p.book)?;
+    let (payments, remaining) = add_immediate_payments(ledger_id, event, p.first, &mut p.book)?;
     if !payments.is_empty() {
-        println!("Add associable {:?}", p.event);
-        p.associables.transactions.register(Box::new(AssociableInvoice{
+        println!("Add associable {:?}", event);
+/*        p.associables.transactions.register(Box::new(AssociableInvoice{
             remaining,
             payments
-        }));
+        }));*/
     }
     Ok(())
 }
