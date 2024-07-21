@@ -18,6 +18,5 @@ pub fn add<'p>(ledger_id: LedgerId, event: &Shares, p: &mut Params<'p>, associab
         currency: p.first.exchange_rates.book_currency,
         payments: event.payment.clone()
     };
-    process_payment(event_data, ids::SHORT_TERM_DEBT_FROM_COMPANY_OWNERS, &mut p.book, associables)?;
-    Ok(())
+    process_payment(event_data, ids::SHORT_TERM_DEBT_FROM_COMPANY_OWNERS, p, associables)
 }

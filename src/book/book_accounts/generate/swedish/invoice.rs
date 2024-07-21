@@ -12,7 +12,7 @@ struct AssociableInvoice {
 impl Associable<Transaction, Params<'_>> for AssociableInvoice {
     fn associate(&mut self, ledger_id: LedgerId, data: &Transaction, p: &mut Params) -> BookResult<AssociableChange> {
         // TODO: Actually absorb payments!
-        Ok((AssociableChange::Close))
+        Ok(AssociableChange::Close)
     }
 
 }
@@ -43,7 +43,7 @@ fn add_moms(ledger_id: LedgerId, event: &Invoice, first: &phases::First, book_ac
     }
 }
 
-fn add_immediate_payments(ledger_id: LedgerId, event: &Invoice, first: &phases::First, book_accounts: &mut BookAccounts) -> BookResult<(Vec<Payment>, Amount)> {
+/*fn add_immediate_payments(ledger_id: LedgerId, event: &Invoice, first: &phases::First, book_accounts: &mut BookAccounts) -> BookResult<(Vec<Payment>, Amount)> {
     let mut remaining_amount = event.amounts.total;
     let mut result: Vec<Payment> = Vec::new();
     // TODO: Near 0 is possible
@@ -63,17 +63,14 @@ fn add_immediate_payments(ledger_id: LedgerId, event: &Invoice, first: &phases::
     }
     book_accounts.add_entry(ledger_id, event.date, &event.id, ids::CLAIMS_FROM_CUSTOMERS, BookAccountAmount::Credit(remaining_amount));
     Ok((result, remaining_amount))
-}
+}*/
 
 pub fn add(ledger_id: LedgerId, event: &Invoice, p: &mut Params) -> BookResult {
     add_moms(ledger_id, event, p.first, &mut p.book)?;
-    let (payments, remaining) = add_immediate_payments(ledger_id, event, p.first, &mut p.book)?;
-    if !payments.is_empty() {
-        println!("Add associable {:?}", event);
+//    let (payments, remaining) = add_immediate_payments(ledger_id, event, p.first, &mut p.book)?;
 /*        p.associables.transactions.register(Box::new(AssociableInvoice{
             remaining,
             payments
         }));*/
-    }
     Ok(())
 }

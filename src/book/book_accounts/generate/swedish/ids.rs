@@ -2,10 +2,14 @@ use crate::book::book_accounts::book_account_id::BookAccountId as Id;
 use crate::book::book_accounts::book_account_id_range::BookAccountIdRange as IdRange;
 use crate::book::*;
 
+
 pub const CLAIMS_TO_CUSTOMERS:Id = Id(1510);
+
+pub const SHORT_TERM_DEBT_TAXES: Id = Id(1630);
+pub const SHORT_TERM_DEBT_FROM_COMPANY_OWNERS: Id = Id(1685);
+
 pub const CLAIMS_FROM_CUSTOMERS: Id = Id(2440);
 
-pub const SHORT_TERM_DEBT_FROM_COMPANY_OWNERS: Id = Id(1685);
 
 pub const COMPANY_BANK_ACCOUNT: Id = Id(1930);
 pub const COMPANY_BANK_TRANSACTIONS: Id = Id(1939);
@@ -39,8 +43,6 @@ pub const EMPLOYER_SOCIAL_SECURITY_TAX: Id = Id(2730);
 pub const BANK_COSTS: Id = Id(6570);
 
 pub const EMPLOYER_SOCIAL_SECURITY_COSTS: Id = Id(7510);
-
-pub const SHORT_TERM_DEBT_TAXES: Id = Id(1630);
 
 pub const PRELIMINARY_PAID_COMPANY_TAX:Id = Id(2518);
 

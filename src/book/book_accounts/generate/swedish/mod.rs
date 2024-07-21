@@ -22,7 +22,7 @@ use crate::book::book_accounts::generate::swedish::active_associables::ActiveAss
 
 fn add_entry<'p>(ledger_id: LedgerId, entry: &Event, params: & mut Params<'p>, associables: &mut ActiveAssociables<'p>) -> BookResult {
     match entry {
-        Event::Income(e) => income::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add income")),
+        Event::Income(e) => income::add(ledger_id, e, params, associables).map_err(|e| e.extend("Failed to add income")),
         Event::Invoice(e) => invoice::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add invoice")),
         Event::Salary(e) => salary::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add salary")),
         Event::TaxPayment(e) => tax_payment::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add tax payment")),

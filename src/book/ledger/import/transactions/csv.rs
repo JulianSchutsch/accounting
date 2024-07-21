@@ -62,6 +62,7 @@ fn add_transaction(ledger: &mut Ledger, row: &Row) -> BookResult {
         date: row.transaction_date,
         account: BankAccountReference::SwedishAccountNumber(SwedishAccountNumber{number: row.account_nr}),
         amount: row.amount,
+        currency: row.currency,
         references: BankTransactionReferences::new_from_single(row.reference.as_str())
     });
     ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.transaction_date), event);

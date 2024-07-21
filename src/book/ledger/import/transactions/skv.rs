@@ -56,11 +56,12 @@ fn import_transactions(content: &Content, ledger: &mut Ledger) -> BookResult {
                 if !try_import_as_fine(row, ledger) {
                     if row.description.contains("Inbetalning bokförd") {
                          ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::Transaction(Transaction {
-                            id: "".to_string(),
-                            date: row.date,
-                            amount: row.amount,
-                            references: BankTransactionReferences::new_from_single("Inbetalning bokförd"),
-                            account: content.s_ref.clone()
+                             id: "".to_string(),
+                                date: row.date,
+                                amount: row.amount,
+                             currency: Currency::SEK,
+                             references: BankTransactionReferences::new_from_single("Inbetalning bokförd"),
+                             account: content.s_ref.clone()
                         }));
                     } else {
                         return Err(BookError::new("Unknown entry in skatteverket account"));
