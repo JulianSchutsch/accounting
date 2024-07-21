@@ -13,8 +13,23 @@ fn add_account_periods(banks: &mut BankAccounts, content: &Content, path: &str) 
     Ok(())
 }
 
+fn is_own_account(row: &Row, banks: &BankAccounts) -> bool {
+    if row.text != "Överföring via internet" {
+        return false;
+    }
+    let num_part = row.reference.clone().split_off(5);
+    if let Ok(num) = num_part.as_str().parse::<i64>() {
+        let r = BankAccountReference::SwedishAccountNumber(SwedishAccountNumber { number: num });
+        if let Some(_) = banks.get_account_by_references(&BankAccountReferences::new_from_single(r)) {
+            println!("Remove internal {} {}", row.reference, row.amount);
+            return true;
+        }
+    }
+    false
+}
+
 fn try_add_interest(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
-    if row.text != "GOTTSKRIVEN RÄNTA" {
+    if row.text != "GOTTSKRIVEN RÄNTA" && row.text != "Sparränta" {
         return Ok(false);
     }
     let event = Event::Interest(Interest{
@@ -69,12 +84,14 @@ fn add_transaction(ledger: &mut Ledger, row: &Row) -> BookResult {
     Ok(())
 }
 
-fn add_account_entries(ledger: &mut Ledger, content: Content) -> BookResult {
+fn add_account_entries(ledger: &mut Ledger, content: Content, banks: &BankAccounts) -> BookResult {
     for row in content.rows.into_iter() {
-        if !try_add_interest(ledger, &row)? {
-            if !try_add_exchange(ledger, &row)? {
-                if !try_add_bank_cost(ledger, &row)? {
-                    add_transaction(ledger, &row)?;
+        if !is_own_account(&row, banks) {
+            if !try_add_interest(ledger, &row)? {
+                if !try_add_exchange(ledger, &row)? {
+                    if !try_add_bank_cost(ledger, &row)? {
+                        add_transaction(ledger, &row)?;
+                    }
                 }
             }
         }
@@ -89,5 +106,5 @@ pub fn import(ledger: &mut Ledger, banks : &mut BankAccounts, path: &str, settin
 
     let content = Content::import(path)?;
     add_account_periods(banks, &content, path)?;
-    add_account_entries(ledger, content)
+    add_account_entries(ledger, content, banks)
 }

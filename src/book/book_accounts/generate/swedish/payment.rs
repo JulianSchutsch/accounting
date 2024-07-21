@@ -44,7 +44,6 @@ impl ExpectedTransaction {
 impl Associable<Transaction, Params<'_>> for ExpectedTransaction {
 
     fn associate(&mut self, ledger_id: LedgerId, data: &Transaction, p: &mut Params) -> BookResult<AssociableChange> {
-        println!("Assoc ? {}", data.amount);
         for payment in self.event_data.payments.iter() {
             match payment {
                 Payment::Exact => {
