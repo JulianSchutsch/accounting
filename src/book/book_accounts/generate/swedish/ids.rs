@@ -2,14 +2,12 @@ use crate::book::book_accounts::book_account_id::BookAccountId as Id;
 use crate::book::book_accounts::book_account_id_range::BookAccountIdRange as IdRange;
 use crate::book::*;
 
-
 pub const CLAIMS_TO_CUSTOMERS:Id = Id(1510);
 
 pub const SHORT_TERM_DEBT_TAXES: Id = Id(1630);
 pub const SHORT_TERM_DEBT_FROM_COMPANY_OWNERS: Id = Id(1685);
 
-pub const CLAIMS_FROM_CUSTOMERS: Id = Id(2440);
-
+pub const CLAIMS_FROM_SUPPLIERS: Id = Id(2440);
 
 pub const COMPANY_BANK_ACCOUNT: Id = Id(1930);
 pub const COMPANY_BANK_TRANSACTIONS: Id = Id(1939);
@@ -21,10 +19,12 @@ pub const SALES_OF_SERVICES_EU: Id = Id(3308);
 pub const BOUND_CAPITAL: Id = Id(2080);
 pub const SHARES_CAPITAL: Id = Id(2081);
 
-pub const OUTGOING_MOMS: Id = Id(2610);
-pub const OUTGOING_MOMS_REVERSE_CHARGE_25PERC: Id = Id(2614);
+pub const OUTGOING_MOMS_25_PERCENT: Id = Id(2610);
+pub const OUTGOING_MOMS_REVERSE_CHARGE_25_PERCENT: Id = Id(2614);
+
 pub const INCOMING_MOMS_PROCUREMENT_ABROAD: Id = Id(2645);
 pub const INCOMING_MOMS:Id = Id(2640);
+
 pub const MOMS_RANGE: IdRange = IdRange::new(Id(2610), Id(2649));
 
 pub const MOMS_DEBT: Id = Id(2650);
@@ -60,22 +60,26 @@ pub fn income_worldwide_account(category: Category) -> BookResult<Id> {
     }
 }
 
-pub fn invoice_moms(category: Category, reverse_charge: bool) -> BookResult<(Id, MomsFactor)> {
-    if reverse_charge {
-        Err(BookError::new("Unsupported case of moms"))
-    } else {
-        match category {
-            Category::SoftwareLicense => Ok((INCOMING_MOMS, MomsFactor(0.25))),
-            Category::MediaAdvertisement => Ok((INCOMING_MOMS, MomsFactor(0.25))),
-            _ => Err(BookError::new("Unsupported case of moms"))
-        }
+pub fn invoice_moms(category: Category) -> BookResult<(Id, MomsFactor)> {
+    match category {
+        Category::SoftwareLicense => Ok((INCOMING_MOMS, MomsFactor(0.25))),
+        Category::MediaAdvertisement => Ok((INCOMING_MOMS, MomsFactor(0.25))),
+        _ => Err(BookError::new("Unsupported case of moms"))
+    }
+}
+
+pub fn invoice_moms_reverse_charge(category: Category) -> BookResult<Id> {
+    match category {
+        Category::MediaAdvertisement => Ok(OUTGOING_MOMS_REVERSE_CHARGE_25_PERCENT),
+        Category::SoftwareLicense => Ok(OUTGOING_MOMS_REVERSE_CHARGE_25_PERCENT),
+        _ => Err(BookError::new(format!("Category {} not classified for invoice account", category)))
     }
 }
 
 pub fn income_moms(category: Category, reverse_charge: bool) -> BookResult<(Id, MomsFactor)> {
     if reverse_charge {
         match category {
-            Category::Services => Ok((OUTGOING_MOMS_REVERSE_CHARGE_25PERC, MomsFactor(0.25))),
+            Category::Services => Ok((OUTGOING_MOMS_REVERSE_CHARGE_25_PERCENT, MomsFactor(0.25))),
             _ =>         Err(BookError::new("Unsupported case of moms"))
         }
     } else {

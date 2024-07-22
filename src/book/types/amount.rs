@@ -1,5 +1,17 @@
+pub const EPSILON: Amount = Amount(0.0001);
+
 #[derive(Default, Debug, Clone, Copy, PartialEq, PartialOrd, serde::Deserialize)]
 pub struct Amount(pub f64);
+
+pub fn almost_equal(a: Amount, b: Amount) -> bool {
+    (a-b).abs()<EPSILON
+}
+
+impl Amount {
+    pub fn abs(&self) -> Self {
+        return Amount(self.0.abs());
+    }
+}
 
 impl std::ops::Neg for Amount {
     type Output = Self;

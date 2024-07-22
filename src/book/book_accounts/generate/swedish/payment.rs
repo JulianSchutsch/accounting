@@ -47,11 +47,19 @@ impl Associable<Transaction, Params<'_>> for ExpectedTransaction {
         for payment in self.event_data.payments.iter() {
             match payment {
                 Payment::Exact => {
+                    println!("Check exact: {} {}", data.amount, self.event_data.amount);
                     if data.currency == self.event_data.currency && data.amount == self.remaining {
                         self.process_exact_payment(ledger_id, data, p)?;
                         return Ok(AssociableChange::Close);
                     }
                 },
+                Payment::ExactExchanged(e) => {
+                    println!("Check exchanged exact: {} {} {}", data.amount, self.event_data.amount, e.exchanged);
+                    if data.currency == p.first.exchange_rates.book_currency && almost_equal(data.amount, e.exchanged) {
+                        self.process_exact_payment(ledger_id, data, p)?;
+                        return Ok(AssociableChange::Close);
+                    }
+                }
                 Payment::ExactMedCost(cost) => {
                     if data.currency == self.event_data.currency && data.amount == self.remaining-cost.cost {
                         let book_cost = BookAccountAmount::from_signed_amount(cost.cost);
