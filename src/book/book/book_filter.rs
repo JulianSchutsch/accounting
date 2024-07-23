@@ -1,49 +1,49 @@
 use crate::book::*;
 
 #[derive(Clone, PartialEq)]
-pub enum BookAccountSide {
+pub enum BookSideFilter {
     Debit,
     Credit,
     Both
 }
 
-impl BookAccountSide {
+impl BookSideFilter {
     pub fn contains(&self, other: BookAmount) -> bool {
-        (*self==BookAccountSide::Both) || match other {
-            BookAmount::Debit(_) => *self==BookAccountSide::Debit,
-            BookAmount::Credit(_) => *self==BookAccountSide::Credit
+        (*self==BookSideFilter::Both) || match other {
+            BookAmount::Debit(_) => *self==BookSideFilter::Debit,
+            BookAmount::Credit(_) => *self==BookSideFilter::Credit
 
         }
     }
 }
 
 #[derive(Clone)]
-pub struct BookAccountsFilter<'l1> {
-    id_range: BookAccountIdRange,
+pub struct BookFilter<'l1> {
+    id_range: BookIdRange,
     date_range: Period,
-    side: BookAccountSide,
+    side: BookSideFilter,
     book_iter: BookAccountEntriesIter<'l1>
 }
 
-pub struct BookAccountsFilterBuilder {
-    id_range: BookAccountIdRange,
+pub struct BookFilterBuilder {
+    id_range: BookIdRange,
     date_range: Period,
-    side: BookAccountSide,
+    side: BookSideFilter,
 }
 
-impl BookAccountsFilterBuilder {
+impl BookFilterBuilder {
     pub fn new() -> Self {
         Self{
-            id_range: BookAccountIdRange::FULL,
+            id_range: BookIdRange::FULL,
             date_range: Period::FULL,
-            side: BookAccountSide::Both
+            side: BookSideFilter::Both
         }
     }
-    pub fn limit_id(self, id_range: BookAccountIdRange) -> Self {
+    pub fn limit_id(self, id_range: BookIdRange) -> Self {
         Self{id_range, date_range: self.date_range, side: self.side}
     }
 
-    pub fn limit_side(self, side: BookAccountSide) -> Self {
+    pub fn limit_side(self, side: BookSideFilter) -> Self {
         Self{id_range: self.id_range, date_range: self.date_range, side}
     }
 
@@ -51,8 +51,8 @@ impl BookAccountsFilterBuilder {
         Self{id_range: self.id_range, date_range, side: self.side}
     }
 
-    pub fn build(self, book_accounts: &Book) -> BookAccountsFilter {
-        BookAccountsFilter {
+    pub fn build(self, book_accounts: &Book) -> BookFilter {
+        BookFilter {
             id_range: self.id_range,
             date_range: self.date_range,
             side: self.side,
@@ -61,12 +61,12 @@ impl BookAccountsFilterBuilder {
     }
 }
 
-impl<'l1> Iterator for BookAccountsFilter<'l1>  {
-    type Item = ((Date, LedgerId), Vec<&'l1 BookAccountEntry>);
+impl<'l1> Iterator for BookFilter<'l1>  {
+    type Item = ((Date, LedgerId), Vec<&'l1 BookEntry>);
     fn next(&mut self) -> Option<Self::Item> {
         while let Some((entry_key, entry_list))=self.book_iter.next() {
             if self.date_range.contains(entry_key.date) {
-                let result:Vec<&'l1 BookAccountEntry> = entry_list.iter().filter(|e| self.id_range.contains(e.account) && self.side.contains(e.amount)).collect();
+                let result:Vec<&'l1 BookEntry> = entry_list.iter().filter(|e| self.id_range.contains(e.account) && self.side.contains(e.amount)).collect();
                 if !result.is_empty() {
                     return Some(((entry_key.date, entry_key.ledger_id), result));
                 }

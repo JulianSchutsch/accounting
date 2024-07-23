@@ -7,7 +7,7 @@ pub struct AccumulatedBook {
 }
 
 impl AccumulatedBook {
-    pub fn calculate(filter: BookAccountsFilter) -> Self {
+    pub fn calculate(filter: BookFilter) -> Self {
         let mut result = Self{
             values: BTreeMap::new()
         };

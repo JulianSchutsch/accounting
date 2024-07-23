@@ -1,13 +1,13 @@
 use crate::book::*;
 
 #[derive(Clone)]
-pub struct BookAccountIdRange {
+pub struct BookIdRange {
     begin: BookId,
     end: BookId
 }
 
-impl BookAccountIdRange {
-    pub const FULL: BookAccountIdRange = BookAccountIdRange{ begin: BookId::MIN, end: BookId::MAX};
+impl BookIdRange {
+    pub const FULL: BookIdRange = BookIdRange{ begin: BookId::MIN, end: BookId::MAX};
 
     pub const fn new(begin: BookId, end: BookId) -> Self {
         Self{ begin, end  }
@@ -18,7 +18,7 @@ impl BookAccountIdRange {
     }
 }
 
-impl std::fmt::Display for BookAccountIdRange{
+impl std::fmt::Display for BookIdRange{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}..{}", self.begin, self.end)
     }

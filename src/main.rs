@@ -3,7 +3,7 @@ mod book;
 use crate::book::*;
 
 fn display_period(period: Period, first: &phases::First, second: &phases::Second) {
-    let filter = BookAccountsFilterBuilder::new().limit_date(period).build(&second.book);
+    let filter = BookFilterBuilder::new().limit_date(period).build(&second.book);
     let complete_book = book::report::book_accounts::complete::generate_complete_accounts_table(filter.clone(), &second.book);
     let accumulated_book = book::AccumulatedBook::calculate(filter);
     let accumulated = book::report::accumulated_book::complete::generate_complete_accounts_table(&accumulated_book, &second.book);

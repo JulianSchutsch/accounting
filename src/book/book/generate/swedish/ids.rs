@@ -1,5 +1,5 @@
 use crate::book::book::book_id::BookId as Id;
-use crate::book::book::book_account_id_range::BookAccountIdRange as IdRange;
+use crate::book::book::book_id_range::BookIdRange as IdRange;
 use crate::book::*;
 
 pub const CLAIMS_TO_CUSTOMERS:Id = Id(1510);

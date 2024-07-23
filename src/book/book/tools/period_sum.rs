@@ -1,7 +1,7 @@
 use crate::book::*;
 
-pub fn period_sum(book: &Book, period: Period, id_range: BookAccountIdRange, side: BookAccountSide) -> BookResult<Amount> {
-    let filter = BookAccountsFilterBuilder::new()
+pub fn period_sum(book: &Book, period: Period, id_range: BookIdRange, side: BookSideFilter) -> BookResult<Amount> {
+    let filter = BookFilterBuilder::new()
         .limit_id(id_range)
         .limit_date(period)
         .limit_side(side).build(book);
