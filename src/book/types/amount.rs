@@ -43,6 +43,6 @@ impl std::ops::Sub for Amount {
 
 impl std::fmt::Display for Amount {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
+        write!(f, "{:.2}", self.0)
     }
 }

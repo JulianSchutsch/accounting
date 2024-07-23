@@ -1,10 +1,11 @@
 #[derive(PartialEq, Debug, Clone, Copy, serde::Deserialize)]
-#[serde(rename_all="lowercase")]
+#[serde(rename_all="snake_case")]
 pub enum Country {
     Sweden,
     Switzerland,
     Germany,
-    Netherlands
+    Netherlands,
+    CzechRepublic
 }
 
 impl Country {
@@ -12,6 +13,7 @@ impl Country {
         match self {
             Country::Sweden |
             Country::Netherlands |
+            Country::CzechRepublic |
             Country::Germany => true,
             _ => false,
         }

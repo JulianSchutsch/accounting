@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use crate::book::*;
 
 pub struct AccumulatedBook {
-    pub values: BTreeMap<BookAccountId, Amount>
+    pub values: BTreeMap<BookId, Amount>
 }
 
 impl AccumulatedBook {

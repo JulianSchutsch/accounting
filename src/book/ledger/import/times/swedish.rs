@@ -1,13 +1,9 @@
 use crate::book::*;
 
 pub fn generate_fiscal_year(ledger: &mut Ledger, settings: &settings::FiscalYear) -> BookResult {
-    let mut verify_moms_day = settings.fiscal_year.begin.last_day_this_month()?;
-    loop {
-        ledger.events.insert(ledger.ledger_id.generate_time_id(verify_moms_day), Event::VerifyMoms(VerifyMoms{id: "".to_string(), date: verify_moms_day}));
-        if verify_moms_day>=settings.fiscal_year.end {
-            break;
-        }
-        verify_moms_day = verify_moms_day.last_day_next_month()?;
+    for month in settings.fiscal_year.iterate_months() {
+        ledger.events.insert(ledger.ledger_id.generate_time_id(month.end), Event::VerifyMoms(VerifyMoms{id: "".to_string(), date: month.end}));
     }
+    ledger.events.insert(ledger.ledger_id.generate_time_id(settings.fiscal_year.end), Event::EndFiscalYear(EndFiscalYear{id: "".to_string(), date: settings.fiscal_year.end}));
     Ok(())
 }

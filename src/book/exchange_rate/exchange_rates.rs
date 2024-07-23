@@ -22,7 +22,9 @@ impl ExchangeRates {
         }
         let currency_series = self.series.get(&currency).ok_or_else(|| BookError::new(format!("Failed to retrieve exchange_rates {}", currency)))?;
         let exchange_rate = currency_series.get(&date).ok_or_else(|| BookError::new("Failed to find exchange rate for date"))?;
-        let book_amount = Amount(amount.0 * exchange_rate);
+        let unrounded = amount.0 * exchange_rate;
+        let rounded = (unrounded*100.0).round()/100.0;
+        let book_amount = Amount(rounded);
         Ok(book_amount)
     }
 

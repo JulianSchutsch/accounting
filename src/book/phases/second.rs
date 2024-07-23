@@ -1,15 +1,13 @@
 use crate::book::*;
 
 pub struct Second {
-    pub book_accounts: BookAccounts,
+    pub book: Book,
 }
 
 impl Second {
 
-    pub fn new(first: &phases::First, book: BookAccounts) -> Second {
-        Self {
-            book_accounts : book,
-        }
+    pub fn new(first: &phases::First, book: Book) -> Second {
+        Self { book }
     }
 
 }

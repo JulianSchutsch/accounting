@@ -1,4 +1,5 @@
 use crate::book::*;
+use crate::book::ledger::event::end_fiscal_year::EndFiscalYear;
 
 #[derive(Debug, serde::Deserialize)]
 #[serde(rename_all="snake_case")]
@@ -13,7 +14,8 @@ pub enum Event {
     Shares(Shares),
     Transaction(Transaction),
     BankCost(BankCost),
-    Exchange(Exchange)
+    Exchange(Exchange),
+    EndFiscalYear(EndFiscalYear)
 }
 
 impl Event {
@@ -29,7 +31,8 @@ impl Event {
             Event::Shares(e) => e.date,
             Event::Transaction(e) => e.date,
             Event::BankCost(e) => e.date,
-            Event::Exchange(e) => e.date
+            Event::Exchange(e) => e.date,
+            Event::EndFiscalYear(e) => e.date
         }
     }
 
@@ -45,7 +48,8 @@ impl Event {
             Event::Shares(e) => &e.id,
             Event::Transaction(e) => &e.id,
             Event::BankCost(e) => &e.id,
-            Event::Exchange(e) => &e.id
+            Event::Exchange(e) => &e.id,
+            Event::EndFiscalYear(e) => &e.id
         }
     }
 }

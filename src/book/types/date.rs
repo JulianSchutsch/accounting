@@ -70,6 +70,19 @@ impl Date {
         Ok(Period { begin: Date::new_internal(first_day), end: Date::new_internal(last_day) })
     }
 
+    pub fn remaining_month(self) -> BookResult<Period> {
+        Ok(Period{begin: self, end: self.last_day_this_month()?})
+    }
+
+    pub fn next_month_up_till(self, max_date: Date) -> BookResult<Option<Period>> {
+        let begin = self.first_day_next_month()?;
+        if begin>max_date {
+            return Ok(None);
+        }
+        let end = std::cmp::min(self.last_day_next_month()?, max_date);
+        Ok(Some(Period{begin, end}))
+    }
+
     pub fn this_month(self) -> BookResult<Period> {
         Ok(Period { begin: self.first_day_this_month()?, end: self.last_day_this_month()?})
     }

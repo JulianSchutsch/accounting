@@ -7,8 +7,28 @@ pub struct Period {
     pub end: Date
 }
 
+pub struct PeriodMonthIter {
+    current: Option<Period>,
+    max_date: Date
+}
+
+impl Iterator for PeriodMonthIter {
+    type Item = Period;
+    fn next(&mut self) -> Option<Self::Item> {
+        let result = self.current;
+        if result.is_some() {
+            self.current = self.current.unwrap().end.next_month_up_till(self.max_date).unwrap();
+        }
+        result
+    }
+}
+
 impl Period {
     pub const FULL: Period = Period{ begin: Date::MIN, end: Date::MAX };
+
+    pub fn iterate_months(&self) -> PeriodMonthIter {
+        PeriodMonthIter{ current: Some(self.begin.remaining_month().unwrap()), max_date: self.end}
+    }
 
     pub fn new() -> Self {
         Self{begin: Date::MIN, end: Date::MIN}

@@ -11,6 +11,7 @@ mod transaction;
 mod payment;
 mod bank_cost;
 mod exchange;
+mod end_fiscal_year;
 
 pub mod public {
     pub use super::income::*;
@@ -26,4 +27,5 @@ pub mod public {
     pub use super::payment::*;
     pub use super::bank_cost::*;
     pub use super::exchange::*;
+    pub use super::end_fiscal_year::*;
 }

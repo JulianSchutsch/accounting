@@ -11,10 +11,10 @@ impl K2 {
     }
 }
 
-fn calculate_net_sales(import: &phases::First, fiscal_year: Period, book_accounts: &BookAccounts) -> BookResult<Amount> {
+fn calculate_net_sales(import: &phases::First, fiscal_year: Period, book: &Book) -> BookResult<Amount> {
     let filter = BookAccountsFilterBuilder::new()
-        .limit_id(BookAccountIdRange::new(BookAccountId(3000), BookAccountId(3799)))
-        .limit_date(fiscal_year).build(book_accounts);
+        .limit_id(BookAccountIdRange::new(BookId(3000), BookId(3799)))
+        .limit_date(fiscal_year).build(book);
     let mut result = Amount(0.0);
     for (_, entry_list) in filter {
         for entry in entry_list {
@@ -24,8 +24,8 @@ fn calculate_net_sales(import: &phases::First, fiscal_year: Period, book_account
     Ok(result)
 }
 
-pub fn generate(import: &phases::First, year: &settings::FiscalYear, book_accounts: &BookAccounts) -> BookResult<K2> {
+pub fn generate(import: &phases::First, year: &settings::FiscalYear, book: &Book) -> BookResult<K2> {
     Ok(K2{
-        net_sales:calculate_net_sales(import, year.fiscal_year, book_accounts)?
+        net_sales:calculate_net_sales(import, year.fiscal_year, book)?
     })
 }

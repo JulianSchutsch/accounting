@@ -6,18 +6,18 @@ fn split_debit_credit<'l>(entries: &Vec<&'l BookAccountEntry>) -> (Vec<&'l BookA
     let mut credit = Vec::<&'l BookAccountEntry>::new();
     for entry in entries {
         match entry.amount {
-            BookAccountAmount::Debit(_) => debit.push(entry),
-            BookAccountAmount::Credit(_) => credit.push(entry)
+            BookAmount::Debit(_) => debit.push(entry),
+            BookAmount::Credit(_) => credit.push(entry)
         }
     }
     (debit, credit)
 }
 
-fn generate_account_desc(e: &BookAccountEntry, accounts: &BookAccounts) -> String {
+fn generate_account_desc(e: &BookAccountEntry, accounts: &Book) -> String {
     format!("{} {}", e.account.0, accounts.naming.get(&e.account).map_or("", |v| v.as_str()))
 }
 
-fn generate_side(table: &mut Table, entry: Option<&&BookAccountEntry>, accounts: &BookAccounts) {
+fn generate_side(table: &mut Table, entry: Option<&&BookAccountEntry>, accounts: &Book) {
     match entry {
         Some(e) => {
             table.insert(TableEntry::String(TableAlignment::Left, generate_account_desc(&e, accounts)));
@@ -30,7 +30,7 @@ fn generate_side(table: &mut Table, entry: Option<&&BookAccountEntry>, accounts:
     }
 }
 
-pub fn generate_complete_accounts_table(filter: BookAccountsFilter, accounts: &BookAccounts) -> Table {
+pub fn generate_complete_accounts_table(filter: BookAccountsFilter, accounts: &Book) -> Table {
     let mut result : Table = Table::new();
     result.insert(TableEntry::String(TableAlignment::Left, "Date".to_string()));
     result.insert(TableEntry::String(TableAlignment::Left, "Verification Id".to_string()));

@@ -1,7 +1,7 @@
 use crate::book::report::table::*;
 use crate::book::*;
 
-pub fn generate_complete_accounts_table(accumulated_book: &AccumulatedBook, accounts: &BookAccounts) -> Table {
+pub fn generate_complete_accounts_table(accumulated_book: &AccumulatedBook, accounts: &Book) -> Table {
     let mut result : Table = Table::new();
     result.insert(TableEntry::String(TableAlignment::Left, "Account".to_string()));
     result.insert(TableEntry::String(TableAlignment::Left, "Accumulated".to_string()));
