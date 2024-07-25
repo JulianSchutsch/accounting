@@ -54,6 +54,8 @@ pub const EXCHANGE_RATE_DIFFERENCES:Id = Id(8330);
 
 pub const FINES: Id = Id(8423);
 
+pub const OTHER_EXTERNAL_COSTS: Id = Id(6991);
+
 pub fn income_worldwide_account(category: Category) -> BookResult<Id> {
     match category {
         Category::Services => Ok(SALES_OF_SERVICES_WORLDWIDE),
@@ -65,6 +67,7 @@ pub fn invoice_moms(category: Category) -> BookResult<(Id, MomsFactor)> {
     match category {
         Category::SoftwareLicense => Ok((INCOMING_MOMS, MomsFactor(0.25))),
         Category::MediaAdvertisement => Ok((INCOMING_MOMS, MomsFactor(0.25))),
+        Category::MomsFreeCost => Ok((INCOMING_MOMS, MomsFactor(0.0))),
         _ => Err(BookError::new("Unsupported case of moms"))
     }
 }
@@ -73,7 +76,7 @@ pub fn invoice_moms_reverse_charge(category: Category) -> BookResult<Id> {
     match category {
         Category::MediaAdvertisement => Ok(OUTGOING_MOMS_REVERSE_CHARGE_25_PERCENT),
         Category::SoftwareLicense => Ok(OUTGOING_MOMS_REVERSE_CHARGE_25_PERCENT),
-        _ => Err(BookError::new(format!("Category {} not classified for invoice account", category)))
+        _ => Err(BookError::new(format!("Category {} not classified for reverse charge", category)))
     }
 }
 
@@ -92,6 +95,7 @@ pub fn invoice_account(category: Category) -> BookResult<Id> {
     match category {
         Category::MediaAdvertisement => Ok(MEDIA_ADVERTISEMENT),
         Category::SoftwareLicense => Ok(SOFTWARE_LICENSES),
+        Category::MomsFreeCost => Ok(OTHER_EXTERNAL_COSTS),
         _ => Err(BookError::new(format!("Category {} not classified for invoice account", category)))
     }
 }

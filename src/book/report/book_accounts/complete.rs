@@ -21,7 +21,7 @@ fn generate_side(table: &mut Table, entry: Option<&&BookEntry>, accounts: &Book)
     match entry {
         Some(e) => {
             table.insert(TableEntry::String(TableAlignment::Left, generate_account_desc(&e, accounts)));
-            table.insert(TableEntry::String(TableAlignment::Right, format!("{}", e.amount.plain_amount().0)));
+            table.insert(TableEntry::String(TableAlignment::Right, format!("{:.2}", e.amount.plain_amount().0)));
         }
         None => {
             table.insert(TableEntry::Empty);

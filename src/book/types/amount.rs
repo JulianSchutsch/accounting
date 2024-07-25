@@ -1,3 +1,5 @@
+use crate::book::BookResult;
+
 pub const EPSILON: Amount = Amount(0.0001);
 
 #[derive(Default, Debug, Clone, Copy, PartialEq, PartialOrd, serde::Deserialize)]
@@ -8,8 +10,17 @@ pub fn almost_equal(a: Amount, b: Amount) -> bool {
 }
 
 impl Amount {
+    pub fn zero() -> Self {
+        Self(0.0)
+    }
     pub fn abs(&self) -> Self {
         return Amount(self.0.abs());
+    }
+    pub fn from_str(s: &str) -> BookResult<Self> {
+        Ok(Self(s.parse::<f64>()?))
+    }
+    pub fn almost_zero(&self) -> bool {
+        return self.0.abs()<EPSILON.0;
     }
 }
 

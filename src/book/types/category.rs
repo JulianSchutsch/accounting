@@ -1,10 +1,9 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, serde::Deserialize)]
+#[serde(rename_all="snake_case")]
 pub enum Category {
-    #[serde(rename="software-license")]
     SoftwareLicense,
-    #[serde(rename="media-advertisement")]
     MediaAdvertisement,
-    #[serde(rename="services")]
+    MomsFreeCost,
     Services,
 }
 
@@ -13,6 +12,7 @@ impl std::fmt::Display for Category {
         match self {
             Category::SoftwareLicense => write!(f, "Software license"),
             Category::MediaAdvertisement => write!(f, "Media advertisment"),
+            Category::MomsFreeCost => write!(f, "Moms free cost"),
             Category::Services => write!(f, "Services")
         }
     }

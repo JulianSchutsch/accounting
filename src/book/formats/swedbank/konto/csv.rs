@@ -26,7 +26,7 @@ pub struct Row {
     #[serde(rename="Belopp")]
     pub amount: Amount,
     #[serde(rename="Saldo")]
-    _accumulated: f32
+    pub accumulated: Amount
 }
 
 pub struct Content {

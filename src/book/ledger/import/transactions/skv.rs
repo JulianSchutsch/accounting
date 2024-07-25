@@ -49,6 +49,14 @@ fn try_import_as_fine(row: &Row, ledger: &mut Ledger) -> bool {
     false
 }
 
+fn import_values(content: &Content, banks: &mut BankAccounts) -> BookResult {
+    let account_ref = BankAccountReferences::new_from_single(content.s_ref.clone());
+    let account = banks.get_mut_account_by_references(&account_ref).ok_or_else(|| BookError::new(format!("Cannot find skatteverket account {}", content.s_ref)))?;
+    account.add_value(content.period.begin, content.start_value);
+    account.add_value(content.period.end, content.stop_value);
+    Ok(())
+}
+
 fn import_transactions(content: &Content, ledger: &mut Ledger) -> BookResult {
     for row in content.rows.iter() {
         if !try_import_as_tax(row, ledger) {
@@ -56,7 +64,7 @@ fn import_transactions(content: &Content, ledger: &mut Ledger) -> BookResult {
                 if !try_import_as_fine(row, ledger) {
                     if row.description.contains("Inbetalning bokförd") {
                          ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::Transaction(Transaction {
-                             id: "".to_string(),
+                             id: "Incoming payment".to_string(),
                                 date: row.date,
                                 amount: row.amount,
                              currency: Currency::SEK,
@@ -78,6 +86,7 @@ pub fn import(ledger: &mut Ledger, banks : &mut BankAccounts, path: &str, settin
         return Ok(());
     }
     let content = Content::import(path)?;
+    import_values(&content, banks)?;
     import_transactions(&content, ledger)?;
     Ok(())
 }

@@ -25,7 +25,7 @@ fn add_entry<'p>(ledger_id: LedgerId, entry: &Event, params: & mut Params<'p>, a
     match entry {
         Event::Income(e) => income::add(ledger_id, e, params, associables).map_err(|e| e.extend("Failed to add income")),
         Event::Invoice(e) => invoice::add(ledger_id, e, params, associables).map_err(|e| e.extend("Failed to add invoice")),
-        Event::Salary(e) => salary::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add salary")),
+        Event::Salary(e) => salary::add(ledger_id, e, params, associables).map_err(|e| e.extend("Failed to add salary")),
         Event::TaxPayment(e) => tax_payment::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add tax payment")),
         Event::Interest(e) => interest::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add interest")),
         Event::Fine(e) => fine::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add fine")),

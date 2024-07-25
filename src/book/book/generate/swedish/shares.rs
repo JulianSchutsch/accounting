@@ -15,7 +15,8 @@ pub fn add<'p>(ledger_id: LedgerId, event: &Shares, p: &mut Params<'p>, associab
         id: event.id.clone(),
         amount: event.amount,
         currency: p.first.exchange_rates.book_currency,
-        payments: event.payment.clone()
+        payments: event.payment.clone(),
+        exchange_rate: None
     };
     process_payment(event_data, ids::UNPAID_SHARES, p, associables)
 }

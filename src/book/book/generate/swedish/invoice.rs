@@ -25,10 +25,13 @@ fn add_moms_europa(ledger_id: LedgerId, event: &Invoice, first: &phases::First, 
     let amounts = event.amounts.convert_into_book_currency(event.date, &first.exchange_rates)?;
 
     for (&category, &amount) in amounts.iter() {
+        let (incoming_moms_account, moms_factor) = ids::invoice_moms(category)?;
         let invoice_account = ids::invoice_account(category)?;
+        let moms = moms_factor*amount;
         book.add_entry(ledger_id, event.date, &event.id, invoice_account, BookAmount::Debit(amount));
+        book.add_entry(ledger_id, event.date, &event.id, incoming_moms_account, BookAmount::Debit(moms));
         if amounts.reverse_charge {
-            book.add_entry(ledger_id, event.date, &event.id, ids::invoice_moms_reverse_charge(category)?, BookAmount::Credit(amount));
+            book.add_entry(ledger_id, event.date, &event.id, ids::invoice_moms_reverse_charge(category)?, BookAmount::Credit(moms));
         }
     }
     Ok(())
@@ -54,7 +57,8 @@ pub fn add(ledger_id: LedgerId, event: &Invoice, p: &mut Params, associables: &m
         id: event.id.clone(),
         amount: -event.amounts.total,
         currency: event.amounts.currency,
-        payments: event.payment.clone()
+        payments: event.payment.clone(),
+        exchange_rate: event.amounts.exchange_rate
     };
     process_payment(event_data, ids::CLAIMS_FROM_SUPPLIERS, p, associables)?;
     Ok(())

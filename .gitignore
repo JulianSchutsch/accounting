@@ -2,3 +2,5 @@
 comment.txt
 Cargo.lock
 .idea
+run.sh
+out.txt

@@ -11,25 +11,29 @@ pub struct Row {
 pub struct Content {
     pub s_ref: BankAccountReference,
     pub period: Period,
+    pub start_value: Amount,
+    pub stop_value: Amount,
     pub rows: Vec<Row>
 }
 
 lazy_static::lazy_static! {
-    static ref description_regex: regex::Regex = regex::Regex::new(r";(?<desc>\w*) saldo (?<date>\d{4}-\d{2}-\d{2});\d*;\d*;").unwrap();
+    static ref description_regex: regex::Regex = regex::Regex::new(r";(?<desc>\w*) saldo (?<date>\d{4}-\d{2}-\d{2});(?<value>\d*);\d*;").unwrap();
     static ref line_regex: regex::Regex = regex::Regex::new(r"(?<date>\d{4}-\d{2}-\d{2});(?<desc>[^;]*);(?<amount>-?\d*);;").unwrap();
     static ref filename_regex: regex::Regex = regex::Regex::new(r"bokf_trans_(?<ref>\d*)\.skv").unwrap();
 }
 
 impl Content {
-    fn read_period_part(period: &mut Period, s: &str) -> bool {
+    fn read_period_part(period: &mut Period, start_value: &mut Amount, stop_value: &mut Amount, s: &str) -> bool {
         if let Some(results) = description_regex.captures(s) {
             if let Ok(date) = Date::from_str(&results["date"]) {
-                match &results["desc"] {
-                    r"Ingående" => period.begin = date,
-                    r"Utgående" => period.end = date,
-                    _ => ()
+                if let Ok(value) = Amount::from_str(&results["value"]) {
+                    match &results["desc"] {
+                        r"Ingående" => {period.begin = date; *start_value = value; }
+                        r"Utgående" => {period.end = date; *stop_value = value; }
+                        _ => ()
+                    }
+                    return true
                 }
-                return true
             }
         }
         false
@@ -70,6 +74,8 @@ impl Content {
         let mut line = String::new();
 
         let mut period: Period = Period::new();
+        let mut start_value: Amount = Amount(0.0);
+        let mut stop_value: Amount = Amount(0.0);
         let mut rows: Vec<Row> = Vec::new();
 
         while let Ok(buf) = reader.fill_buf() {
@@ -77,13 +83,13 @@ impl Content {
                 break;
             }
             reader.read_line(&mut line)?;
-            if !Self::read_period_part(&mut period, line.as_str()) {
+            if !Self::read_period_part(&mut period, &mut start_value, &mut stop_value, line.as_str()) {
                 if !Self::read_entry(&mut rows, line.as_str()) {
                     return Err(BookError::new(format!("Invalid line in {} = {}", path, line)));
                 }
             }
             line.clear();
         }
-        Ok(Self{s_ref, period, rows})
+        Ok(Self{s_ref, period, start_value, stop_value, rows})
     }
 }

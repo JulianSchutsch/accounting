@@ -25,13 +25,13 @@ fn calculate_exchange_direction(a: &Exchange, b: &Exchange, p: &Params ) -> Book
     if a.currency==p.first.exchange_rates.book_currency {
         Ok(Dir{
             currency: b.currency,
-            book_amount:p.first.exchange_rates.convert_into_book_currency(b.date, b.currency, b.amount)?,
+            book_amount:p.first.exchange_rates.convert_into_book_currency(b.date, b.currency, b.amount, None)?,
             realised_book_amount: a.amount
         })
     } else {
         Ok(Dir {
             currency: a.currency,
-            book_amount: p.first.exchange_rates.convert_into_book_currency(a.date, a.currency, a.amount)?,
+            book_amount: p.first.exchange_rates.convert_into_book_currency(a.date, a.currency, a.amount, None)?,
             realised_book_amount: b.amount
         })
     }
@@ -39,8 +39,8 @@ fn calculate_exchange_direction(a: &Exchange, b: &Exchange, p: &Params ) -> Book
 
 impl Associable<Exchange, Params<'_>> for AssociableExchange {
     fn associate(&mut self, _ledger_id: LedgerId, event: &Exchange, p: &mut Params) -> BookResult<AssociableChange> {
-        let a_amount = p.first.exchange_rates.convert_into_book_currency(self.exchange.date, self.exchange.currency, self.exchange.amount)?;
-        let b_amount = p.first.exchange_rates.convert_into_book_currency(event.date, event.currency, event.amount)?;
+        let a_amount = p.first.exchange_rates.convert_into_book_currency(self.exchange.date, self.exchange.currency, self.exchange.amount, None)?;
+        let b_amount = p.first.exchange_rates.convert_into_book_currency(event.date, event.currency, event.amount, None)?;
         // TODO: Date may not be the best way to associate
         if self.exchange.date==event.date {
             let dir = calculate_exchange_direction(&self.exchange, event, p)?;

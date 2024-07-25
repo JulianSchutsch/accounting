@@ -12,16 +12,7 @@ impl K2 {
 }
 
 fn calculate_net_sales(import: &phases::First, fiscal_year: Period, book: &Book) -> BookResult<Amount> {
-    let filter = BookFilterBuilder::new()
-        .limit_id(BookIdRange::new(BookId(3000), BookId(3799)))
-        .limit_date(fiscal_year).build(book);
-    let mut result = Amount(0.0);
-    for (_, entry_list) in filter {
-        for entry in entry_list {
-            result = result + entry.amount.plain_amount();
-        }
-    }
-    Ok(result)
+    book::tools::period_sum(book, fiscal_year, BookIdRange::new(BookId(3000), BookId(3799)), BookSideFilter::Both)
 }
 
 pub fn generate(import: &phases::First, year: &settings::FiscalYear, book: &Book) -> BookResult<K2> {

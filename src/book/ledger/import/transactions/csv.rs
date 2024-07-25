@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashSet;
 
 use crate::book::*;
@@ -5,10 +6,19 @@ use crate::book::formats::swedbank::konto::csv::{Row, Content};
 
 fn add_account_periods(banks: &mut BankAccounts, content: &Content, path: &str) -> BookResult {
     let accounts = content.rows.iter().map(|row| row.account_nr).collect::<HashSet<i64>>();
-    for account in accounts {
-        let ref1 = BankAccountReference::SwedishAccountNumber(SwedishAccountNumber{number: account});
+    for account_nr in accounts {
+        let ref1 = BankAccountReference::SwedishAccountNumber(SwedishAccountNumber{number: account_nr});
         let account = banks.get_mut_account_by_references(&BankAccountReferences::new_from_single(ref1.clone())).ok_or_else(|| BookError::new(format!("Account {} not defined!", ref1)))?;
         account.add_period(content.period, path.to_string());
+        let mut iter = content.rows.iter();
+        if let Some(first_row) = iter.next() {
+            account.add_value(content.period.end, first_row.accumulated);
+            let mut last = first_row.accumulated-first_row.amount;
+            while let Some(row) = iter.next() {
+                last = row.accumulated-row.amount;
+            }
+            account.add_value(content.period.begin, last);
+        }
     }
     Ok(())
 }
@@ -33,7 +43,7 @@ fn try_add_interest(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
         return Ok(false);
     }
     let event = Event::Interest(Interest{
-        id: "".to_string(),
+        id: "Interest by bank".to_string(),
         date: row.transaction_date,
         currency: row.currency,
         taxable: true,
@@ -48,7 +58,7 @@ fn try_add_exchange(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
         return Ok(false)
     }
     let event = Event::Exchange(Exchange{
-        id: "".to_string(),
+        id: "Currency exchange".to_string(),
         date: row.transaction_date,
         currency: row.currency,
         amount: row.amount

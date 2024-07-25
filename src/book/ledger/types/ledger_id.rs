@@ -4,8 +4,8 @@ use crate::book::*;
 pub struct LedgerId {
     date: Date,
     fiscal_year_id: FiscalYearId,
+    kind: LedgerIdKind,
     id: i32,
-    kind: LedgerIdKind
 }
 
 impl LedgerId {

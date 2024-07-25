@@ -17,7 +17,7 @@ fn add_taxed_interest(ledger_id: LedgerId, event: &Interest, first: &phases::Fir
         book.add_entry(ledger_id, event.date, &event.id, ids::INTEREST_FOR_CURRENT_ASSETS, BookAmount::Credit(event.amount));
         book.add_entry(ledger_id, event.date, &event.id, ids::COMPANY_BANK_ACCOUNT, BookAmount::Debit(event.amount));
     } else {
-        let book_amount = first.exchange_rates.convert_into_book_currency(event.date, event.currency, event.amount)?;
+        let book_amount = first.exchange_rates.convert_into_book_currency(event.date, event.currency, event.amount, None)?;
         book.add_entry(ledger_id, event.date, &event.id, ids::INTEREST_FOR_CURRENT_ASSETS, BookAmount::Credit(book_amount));
         book.add_entry(ledger_id, event.date, &event.id, ids::COMPANY_CURRENCY_ACCOUNT, BookAmount::Debit(book_amount));
     }

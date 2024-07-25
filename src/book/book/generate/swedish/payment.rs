@@ -10,7 +10,8 @@ pub struct PaymentEventData {
     pub id: String,
     pub amount: Amount,
     pub currency: Currency,
-    pub payments: Vec<Payment>
+    pub payments: Vec<Payment>,
+    pub exchange_rate: Option<f64>
 }
 
 struct ExpectedTransaction {
@@ -22,8 +23,8 @@ struct ExpectedTransaction {
 impl ExpectedTransaction {
     fn process_exact_payment(&mut self, ledger_id: LedgerId, data: &Transaction, p: &mut Params) -> BookResult {
         if data.currency != p.first.exchange_rates.book_currency {
-            let converted_original_date = p.first.exchange_rates.convert_into_book_currency(self.event_data.date, data.currency, self.remaining)?;
-            let converted_today = p.first.exchange_rates.convert_into_book_currency(data.date, data.currency, self.remaining)?;
+            let converted_original_date = p.first.exchange_rates.convert_into_book_currency(self.event_data.date, data.currency, self.remaining, self.event_data.exchange_rate)?;
+            let converted_today = p.first.exchange_rates.convert_into_book_currency(data.date, data.currency, self.remaining, None)?;
             let converted_difference = converted_original_date - converted_today;
 
             let book_original_date = BookAmount::from_signed_amount(-converted_original_date);
@@ -81,7 +82,10 @@ fn calculate_immediate_payments(event_data: PaymentEventData, work_id: BookId, p
     for payment in event_data.payments.iter() {
         match payment {
             Payment::LeaderCredit => {
-                p.book.add_entry(event_data.ledger_id, event_data.date, &event_data.id, ids::DEBT_TO_COMPANY_OWNERS, BookAmount::Credit(remaining_amount));
+                if remaining_amount>=Amount::zero() {
+                    return Err(BookError::new("Unexpected to solve an invoice using LeaderCredit"));
+                }
+                p.book.add_entry(event_data.ledger_id, event_data.date, &event_data.id, ids::DEBT_TO_COMPANY_OWNERS, BookAmount::Credit(-remaining_amount));
                 remaining_amount = Amount(0.0);
             },
             _ => ()
@@ -90,8 +94,10 @@ fn calculate_immediate_payments(event_data: PaymentEventData, work_id: BookId, p
             break;
         }
     }
-    let converted_remaining_amount = p.first.exchange_rates.convert_into_book_currency(event_data.date, event_data.currency, remaining_amount)?;
-    p.book.add_entry(event_data.ledger_id, event_data.date, &event_data.id, work_id, BookAmount::from_signed_amount(converted_remaining_amount));
+    let converted_remaining_amount = p.first.exchange_rates.convert_into_book_currency(event_data.date, event_data.currency, remaining_amount, event_data.exchange_rate)?;
+    if !almost_equal(converted_remaining_amount, Amount::zero()) {
+        p.book.add_entry(event_data.ledger_id, event_data.date, &event_data.id, work_id, BookAmount::from_signed_amount(converted_remaining_amount));
+    }
     Ok(ExpectedTransaction{event_data, remaining: remaining_amount, work_account: work_id})
 }
 

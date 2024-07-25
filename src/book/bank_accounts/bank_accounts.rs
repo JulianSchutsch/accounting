@@ -13,6 +13,18 @@ pub struct BankAccounts {
 
 impl BankAccounts {
 
+    pub fn sum_latest_values(&self, currency: Currency, date: Date) -> Amount {
+        let mut result = Amount::zero();
+        for (_, account) in self.accounts.iter() {
+            if account.currency == currency {
+                if let Some(v) = account.latest_value(date) {
+                    result = result + v;
+                }
+            }
+        }
+        result
+    }
+
     pub fn iter(&self) -> AccountsIter {
         return self.accounts.iter();
     }

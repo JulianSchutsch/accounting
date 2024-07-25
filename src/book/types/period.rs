@@ -1,7 +1,7 @@
 use chrono::Datelike;
 use crate::book::*;
 
-#[derive(Clone, Copy, PartialEq, Eq, serde::Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, serde::Deserialize)]
 pub struct Period {
     pub begin : Date,
     pub end: Date

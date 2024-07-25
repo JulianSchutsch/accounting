@@ -1,3 +1,4 @@
+use std::ffi::c_double;
 use crate::book::*;
 use crate::book::book::generate::swedish::active_associables::ActiveAssociables;
 
@@ -32,7 +33,8 @@ pub fn add<'p>(ledger_id: LedgerId, event: &Income, p: &mut Params<'p>, associab
         id: event.id.clone(),
         amount: event.amounts.total,
         currency: event.amounts.currency,
-        payments: event.payment.clone()
+        payments: event.payment.clone(),
+        exchange_rate: event.amounts.exchange_rate
     };
     process_payment(event_data, ids::CLAIMS_TO_CUSTOMERS, p, associables)
 }

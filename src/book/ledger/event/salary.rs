@@ -9,4 +9,5 @@ pub struct Salary {
     pub total: Amount,
     pub employee_tax: Amount,
     pub employer_tax: Amount,
+    pub payment: Vec<Payment>
 }

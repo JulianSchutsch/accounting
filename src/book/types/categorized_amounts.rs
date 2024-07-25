@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 use std::collections::btree_map::Iter as BTreeMapIter;
 
 use crate::book::*;
+use crate::book::settings::ExchangeRate;
 
 fn reverse_charge_default() -> bool { false }
 
@@ -12,7 +13,8 @@ pub struct CategorizedAmounts {
     #[serde(default="reverse_charge_default")]
     pub reverse_charge : bool,
     #[serde(flatten)]
-    pub amounts: BTreeMap<Category, Amount>
+    pub amounts: BTreeMap<Category, Amount>,
+    pub exchange_rate: Option<f64>
 }
 
 impl CategorizedAmounts {
@@ -26,13 +28,14 @@ impl CategorizedAmounts {
     pub fn convert_into_book_currency(&self, date: Date, exchange_rates: &ExchangeRates) -> BookResult<CategorizedAmounts> {
         Ok(CategorizedAmounts {
             currency: exchange_rates.book_currency,
-            total: exchange_rates.convert_into_book_currency(date, self.currency, self.total)?,
+            total: exchange_rates.convert_into_book_currency(date, self.currency, self.total, self.exchange_rate)?,
             reverse_charge: self.reverse_charge,
             amounts: self.amounts.iter()
                 .map(|(&category, amount)| -> BookResult<(Category, Amount)> {
-                    let converted = exchange_rates.convert_into_book_currency(date, self.currency, *amount)?;
+                    let converted = exchange_rates.convert_into_book_currency(date, self.currency, *amount, self.exchange_rate)?;
                     Ok((category, converted))
-                }).collect::<Result<BTreeMap<_, _>, _>>()?
+                }).collect::<Result<BTreeMap<_, _>, _>>()?,
+            exchange_rate: None
         })
     }
 }

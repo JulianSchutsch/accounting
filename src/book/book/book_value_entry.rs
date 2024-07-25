@@ -1,7 +1,7 @@
 use crate::book::*;
 
 #[derive(Debug, Clone)]
-pub struct BookAccountValueEntry {
+pub struct BookValueEntry {
     pub source_desc: String,
     pub account: BookId,
     pub amount: Amount

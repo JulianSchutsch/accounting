@@ -2,13 +2,31 @@ mod book;
 
 use crate::book::*;
 
-fn display_period(period: Period, first: &phases::First, second: &phases::Second) {
+fn display_banks(period: Period, first: &phases::First) {
+    for (_, account) in first.bank_accounts.iter() {
+        let first = account.latest_value(period.begin);
+        let last =  account.latest_value(period.end);
+        if let Some(first_value) = first {
+            if let Some(last_value) = last {
+                println!("Acocunt {}, Values during {} are from {}..{} {}", account.references, period, first_value, last_value, account.currency);
+            } else {
+                println!("Account {} missing last value", account.references);
+            }
+        } else {
+            println!("Account {} missing first value", account.references);
+        }
+    }
+}
+
+fn display_period(period: Period, fiscal_year: Period, first: &phases::First, second: &phases::Second) {
     let filter = BookFilterBuilder::new().limit_date(period).build(&second.book);
+    let filter_from_start = BookFilterBuilder::new().limit_date(Period::from_dates(fiscal_year.begin, period.end)).build(&second.book);
     let complete_book = book::report::book_accounts::complete::generate_complete_accounts_table(filter.clone(), &second.book);
-    let accumulated_book = book::AccumulatedBook::calculate(filter);
+    let accumulated_book = book::AccumulatedBook::calculate(filter_from_start);
     let accumulated = book::report::accumulated_book::complete::generate_complete_accounts_table(&accumulated_book, &second.book);
     complete_book.print();
     accumulated.print();
+    println!("Accumulated total: {}", accumulated_book.total);
 }
 
 fn process_root_file(path: &str) -> BookResult {
@@ -16,8 +34,11 @@ fn process_root_file(path: &str) -> BookResult {
     let second = book::book::generate::generate(&first)?;
     for fiscal_year in first.settings.fiscal_years.iter() {
         for month in fiscal_year.fiscal_year.iterate_months() {
-            display_period(month, &first, &second);
+            display_period(month, fiscal_year.fiscal_year, &first, &second);
         }
+        display_banks(fiscal_year.fiscal_year, &first);
+        let k2 = book::annual_accounts::generate(&first, &second.book, fiscal_year.fiscal_year)?;
+        k2.print();
     }
     Ok(())
 }

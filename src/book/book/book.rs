@@ -10,7 +10,7 @@ pub struct EntryKey {
 type BookEntries = std::collections::BTreeMap<EntryKey, Vec<BookEntry>>;
 pub type BookAccountEntriesIter<'s> = std::collections::btree_map::Iter<'s, EntryKey, Vec<BookEntry>>;
 
-type ValueEntries = std::collections::BTreeMap<EntryKey, Vec<BookAccountValueEntry>>;
+type ValueEntries = std::collections::BTreeMap<EntryKey, Vec<BookValueEntry>>;
 
 pub struct Book {
     currency: Currency,
@@ -56,7 +56,7 @@ impl Book {
 
     pub fn add_value(&mut self, ledger_id: LedgerId, date: Date, source_desc: &String, account: BookId, amount: Amount) {
         self.values.entry(EntryKey{date, ledger_id})
-            .and_modify(|e| e.push(BookAccountValueEntry{ source_desc: source_desc.clone(), account, amount }))
-            .or_insert(vec![BookAccountValueEntry{ source_desc: source_desc.clone(), account, amount }]);
+            .and_modify(|e| e.push(BookValueEntry{ source_desc: source_desc.clone(), account, amount }))
+            .or_insert(vec![BookValueEntry{ source_desc: source_desc.clone(), account, amount }]);
     }
 }

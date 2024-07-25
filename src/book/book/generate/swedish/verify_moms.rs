@@ -10,8 +10,10 @@ pub fn add(ledger_id: LedgerId, event: &VerifyMoms, p: &mut Params) -> BookResul
         ids::MOMS_RANGE,
         BookSideFilter::Both
     )?;
-    let book_amount = BookAmount::from_signed_amount(amount);
-    p.book.add_entry(ledger_id, event.date, &event.id, ids::MOMS_DEBT, book_amount);
-    p.book.add_entry(ledger_id, event.date, &event.id, ids::SHORT_TERM_DEBT_TAXES, book_amount.invert());
+    if !amount.almost_zero() {
+        let book_amount = BookAmount::from_signed_amount(amount);
+        p.book.add_entry(ledger_id, event.date, &event.id, ids::MOMS_DEBT, book_amount);
+        p.book.add_entry(ledger_id, event.date, &event.id, ids::SHORT_TERM_DEBT_TAXES, book_amount.invert());
+    }
     Ok(())
 }

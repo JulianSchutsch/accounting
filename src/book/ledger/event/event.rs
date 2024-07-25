@@ -32,7 +32,7 @@ impl Event {
             Event::Transaction(e) => e.date,
             Event::BankCost(e) => e.date,
             Event::Exchange(e) => e.date,
-            Event::EndFiscalYear(e) => e.date
+            Event::EndFiscalYear(e) => e.fiscal_year.end
         }
     }
 
