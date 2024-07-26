@@ -51,6 +51,7 @@ fn add_moms(ledger_id: LedgerId, event: &Invoice, first: &phases::First, book: &
 
 pub fn add(ledger_id: LedgerId, event: &Invoice, p: &mut Params, associables: &mut ActiveAssociables) -> BookResult {
     add_moms(ledger_id, event, p.first, &mut p.book)?;
+    println!("Add invoice with {} {}", event.amounts.total, event.amounts.currency);
     let event_data = PaymentEventData {
         ledger_id,
         date: event.date,

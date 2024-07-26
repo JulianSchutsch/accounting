@@ -1,6 +1,9 @@
 use crate::book::*;
 use crate::book::book::tools::period_sum;
 
+use super::result::Result;
+
+#[derive(Default)]
 pub struct Assets {
     // Assets
     pub customer_receivables: Amount,
@@ -15,7 +18,6 @@ impl Assets {
     pub fn table(&self) -> report::table::Table {
         let mut table = report::table::Table::new();
         table.insert_title_row("Balance");
-        table.insert_title_row("Short term assets");
         table.insert_str("Customer receivables");
         table.insert_num(self.customer_receivables);
         table.new_line();
@@ -25,17 +27,16 @@ impl Assets {
         table.insert_str("Prepaid costs");
         table.insert_num(self.prepaid_costs);
         table.new_line();
-        table.insert_row_sep();
         table.insert_str("Sum short term receivables");
         table.insert_num(self.sum_short_term_receivables);
         table.new_line();
         table.insert_str("Cash and bank balances");
         table.insert_num(self.cash_and_bank_balances);
         table.new_line();
-        table.insert_row_sep();
         table.insert_str("Sum assets");
         table.insert_num(self.sum_assets);
         table.new_line();
+        table.insert_row_sep();
         table
     }
 
@@ -61,6 +62,7 @@ impl Assets {
 
 }
 
+#[derive(Default)]
 pub struct Equity {
     // Equity capital and debt
     pub share_capital: Amount,
@@ -79,19 +81,17 @@ pub struct Equity {
 }
 
 impl Equity {
-    pub fn generate(period: Period, book: &Book) -> BookResult<Equity> {
+    pub fn generate(period: Period, book: &Book, previous: &Equity, result: &Result) -> BookResult<Equity> {
         let share_capital = period_sum(book, period, BookIdRange::num_new(2081, 2081))?;
         let sum_restricted_equity = share_capital;
-        // balanced result...this is to be calculated...or decided?
-        // years result...similar
-        let balanced_result = Amount(0.0);
-        let years_result = Amount(0.0);
+        let balanced_result = previous.balanced_result + result.result_after_taxes;
+        let years_result = result.result_after_taxes;
         let sum_unrestricted_equity = balanced_result + years_result;
         let sum_equity = sum_restricted_equity + sum_unrestricted_equity;
         let other_long_term_liabilities = period_sum(book, period,BookIdRange::num_new(2390, 2399))?;
         let sum_long_term_liabilities = other_long_term_liabilities;
         let accounts_payable = period_sum(book, period, BookIdRange::num_new(2440, 2449))?;
-        let tax_debt = Amount(0.0); // Hmm....
+        let tax_debt = result.taxes - result.payed_taxes;
         let other_short_term_liabilities =
                 period_sum(book, period, BookIdRange::num_new(2499, 2499))?
             +   period_sum(book, period, BookIdRange::num_new(2610, 2669))?
@@ -113,7 +113,6 @@ impl Equity {
     pub fn table(&self) -> report::table::Table {
         let mut table = report::table::Table::new();
         table.insert_title_row("Equity and liabilities");
-        table.insert_title_row("Equity");
         table.insert_str("Share capital");
         table.insert_num(self.share_capital);
         table.new_line();
@@ -154,16 +153,17 @@ impl Equity {
     }
 }
 
+#[derive(Default)]
 pub struct Balance {
     pub assets: Assets,
     pub equity: Equity
 }
 
 impl Balance {
-    pub fn generate(period: Period, book: &Book) -> BookResult<Balance> {
+    pub fn generate(period: Period, book: &Book, previous: &Balance, result: &Result) -> BookResult<Balance> {
         Ok(Balance{
             assets: Assets::generate(period, book)?,
-            equity: Equity::generate(period, book)?
+            equity: Equity::generate(period, book, &previous.equity, result)?
         })
     }
 }

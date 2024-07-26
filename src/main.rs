@@ -37,7 +37,8 @@ fn process_root_file(path: &str) -> BookResult {
             display_period(month, fiscal_year.fiscal_year, &first, &second);
         }
         display_banks(fiscal_year.fiscal_year, &first);
-        let k2 = book::annual_accounts::swedish::K2::generate(&first, &fiscal_year, &second.book)?;
+        let previous_k2 = annual_accounts::swedish::K2::new();
+        let k2 = annual_accounts::swedish::K2::generate(&first, &fiscal_year, &second.book, &previous_k2)?;
         k2.result.table().print();
         k2.balance.assets.table().print();
         k2.balance.equity.table().print();
