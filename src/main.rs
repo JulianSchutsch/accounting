@@ -16,6 +16,11 @@ fn display_banks(period: Period, first: &phases::First) {
             println!("Account {} missing first value", account.references);
         }
     }
+    for currency in ALL_CURRENCIES {
+        let b = first.bank_accounts.sum_latest_values(currency, period.begin);
+        let e = first.bank_accounts.sum_latest_values(currency, period.end);
+        println!("Currency total {} -> {} {}", b, e, currency);
+    }
 }
 
 fn display_period(period: Period, fiscal_year: Period, first: &phases::First, second: &phases::Second) {
