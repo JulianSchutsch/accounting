@@ -19,7 +19,7 @@ fn display_banks(period: Period, first: &phases::First) {
     for currency in ALL_CURRENCIES {
         let b = first.bank_accounts.sum_latest_values(currency, period.begin);
         let e = first.bank_accounts.sum_latest_values(currency, period.end);
-        println!("Currency total {} -> {} {}", b, e, currency);
+        println!("Accumulated currency {} -> {} {}", b, e, currency);
     }
 }
 
@@ -32,6 +32,7 @@ fn display_period(period: Period, fiscal_year: Period, first: &phases::First, se
     complete_book.print();
     accumulated.print();
     println!("Accumulated total: {}", accumulated_book.total);
+    display_banks(period, first);
 }
 
 fn process_root_file(path: &str) -> BookResult {
@@ -41,7 +42,7 @@ fn process_root_file(path: &str) -> BookResult {
         for month in fiscal_year.fiscal_year.iterate_months() {
             display_period(month, fiscal_year.fiscal_year, &first, &second);
         }
-        display_banks(fiscal_year.fiscal_year, &first);
+//        display_banks(fiscal_year.fiscal_year, &first);
         let previous_k2 = annual_accounts::swedish::K2::new();
         let k2 = annual_accounts::swedish::K2::generate(&first, &fiscal_year, &second.book, &previous_k2)?;
         k2.result.table().print();

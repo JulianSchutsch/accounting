@@ -23,6 +23,7 @@ fn calculate_exchange_direction(a: &Exchange, b: &Exchange, p: &Params ) -> Book
     if !(a.currency==p.first.exchange_rates.book_currency) && !(b.currency==p.first.exchange_rates.book_currency) {
         return Err(BookError::new("None of the currencies in this exchange is a book currency"));
     }
+    println!("Exchange amounts: {} {} {} {}", a.amount, b.amount, a.currency, b.currency);
     if a.currency==p.first.exchange_rates.book_currency {
         Ok(Dir{
             currency: b.currency,
@@ -40,8 +41,6 @@ fn calculate_exchange_direction(a: &Exchange, b: &Exchange, p: &Params ) -> Book
 
 impl Associable<Exchange, Params<'_>> for AssociableExchange {
     fn associate(&mut self, _ledger_id: LedgerId, event: &Exchange, p: &mut Params) -> BookResult<AssociableChange> {
-        let a_amount = p.first.exchange_rates.convert_into_book_currency(self.exchange.date, self.exchange.currency, self.exchange.amount, None)?;
-        let b_amount = p.first.exchange_rates.convert_into_book_currency(event.date, event.currency, event.amount, None)?;
         // TODO: Date may not be the best way to associate
         if self.exchange.date==event.date {
             let dir = calculate_exchange_direction(&self.exchange, event, p)?;

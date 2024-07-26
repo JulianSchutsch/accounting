@@ -6,6 +6,7 @@ pub struct Row {
     pub date: Date,
     pub description: String,
     pub amount: Amount,
+    pub accumulated: Amount
 }
 
 pub struct Content {
@@ -39,15 +40,17 @@ impl Content {
         false
     }
 
-    fn read_entry(rows: &mut Vec<Row>, s: &str) -> bool {
+    fn read_entry(rows: &mut Vec<Row>, s: &str, accumulated: &mut Amount) -> bool {
         if let Some(results) = line_regex.captures(s) {
             if let Ok(date) = Date::from_str(&results["date"]) {
                 let amount = Amount(f64::from_str(&results["amount"]).unwrap());
                 let description = results["desc"].to_string();
+                *accumulated = *accumulated + amount;
                 rows.push(Row {
                     date,
                     description,
-                    amount
+                    amount,
+                    accumulated: *accumulated
                 });
             }
             return true;
@@ -77,6 +80,7 @@ impl Content {
         let mut start_value: Amount = Amount(0.0);
         let mut stop_value: Amount = Amount(0.0);
         let mut rows: Vec<Row> = Vec::new();
+        let mut accumulated = start_value.clone();
 
         while let Ok(buf) = reader.fill_buf() {
             if buf.is_empty() {
@@ -84,7 +88,7 @@ impl Content {
             }
             reader.read_line(&mut line)?;
             if !Self::read_period_part(&mut period, &mut start_value, &mut stop_value, line.as_str()) {
-                if !Self::read_entry(&mut rows, line.as_str()) {
+                if !Self::read_entry(&mut rows, line.as_str(), &mut accumulated) {
                     return Err(BookError::new(format!("Invalid line in {} = {}", path, line)));
                 }
             }

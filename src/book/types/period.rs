@@ -42,6 +42,32 @@ impl Period {
         (date>=self.begin) && (date<=self.end)
     }
 
+    pub fn last_within_period<Value, T: std::iter::Iterator>(&self, it: T, f: fn(&T::Item)->(Date, Value)) -> Option<Value> {
+        let mut result : Option<Value>=None;
+        let mut date = Date::MIN;
+        for e in it {
+            let (d, v) = f(&e);
+            if (date<=d) && self.contains(d) {
+                result = Some(v);
+                date = d;
+            }
+        }
+        return result;
+    }
+
+    pub fn first_within_period<Value, T: std::iter::Iterator>(&self, it: T, f: fn(&T::Item)->(Date, Value)) -> Option<Value> {
+        let mut result : Option<Value>=None;
+        let mut date = Date::MAX;
+        for e in it {
+            let (d, v) = f(&e);
+            if (date>=d) && self.contains(d) {
+                result = Some(v);
+                date = d;
+            }
+        }
+        return result;
+    }
+
     pub fn month_till_end_max(date: &Date, max_date: &Date) -> BookResult<Self> {
         let first_day = date.internal_date();
         let first_day_next_month = chrono::NaiveDate::from_ymd_opt(first_day.year(), first_day.month(), 1).ok_or_else(|| BookError::new("No first day of next month"))?

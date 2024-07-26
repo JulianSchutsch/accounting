@@ -1,3 +1,4 @@
+use serde::de::Unexpected::Option;
 use crate::book::*;
 use crate::book::formats::skatteverket::konto::skv::{Row, Content};
 
@@ -53,7 +54,14 @@ fn import_values(content: &Content, banks: &mut BankAccounts) -> BookResult {
     let account_ref = BankAccountReferences::new_from_single(content.s_ref.clone());
     let account = banks.get_mut_account_by_references(&account_ref).ok_or_else(|| BookError::new(format!("Cannot find skatteverket account {}", content.s_ref)))?;
     account.add_value(content.period.begin, content.start_value);
-    account.add_value(content.period.end, content.stop_value);
+    let mut value = content.start_value.clone();
+    for month in content.period.iterate_months() {
+        value = month.last_within_period(content.rows.iter(), |e| (e.date, e.accumulated)).unwrap_or(value);
+        account.add_value(month.end, value);
+    }
+    if !almost_equal(content.stop_value, value) {
+        return Err(BookError::new(format!("Accumulated error for skatteverket account {} {}", value, content.stop_value)));
+    }
     Ok(())
 }
 

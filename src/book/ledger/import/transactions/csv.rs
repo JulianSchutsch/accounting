@@ -10,14 +10,12 @@ fn add_account_periods(banks: &mut BankAccounts, content: &Content, path: &str) 
         let ref1 = BankAccountReference::SwedishAccountNumber(SwedishAccountNumber{number: account_nr});
         let account = banks.get_mut_account_by_references(&BankAccountReferences::new_from_single(ref1.clone())).ok_or_else(|| BookError::new(format!("Account {} not defined!", ref1)))?;
         account.add_period(content.period, path.to_string());
-        let mut iter = content.rows.iter();
-        if let Some(first_row) = iter.next() {
-            account.add_value(content.period.end, first_row.accumulated);
-            let mut last = first_row.accumulated-first_row.amount;
-            while let Some(row) = iter.next() {
-                last = row.accumulated-row.amount;
-            }
-            account.add_value(content.period.begin, last);
+
+        let mut value = content.period.first_within_period(content.rows.iter(), |e| (e.transaction_date, e.accumulated - e.amount)).unwrap_or(Amount(0.0));
+        account.add_value(content.period.begin, value);
+        for month in content.period.iterate_months() {
+            value = month.last_within_period(content.rows.iter(), |e| (e.transaction_date, e.accumulated)).unwrap_or(value);
+            account.add_value(month.end, value);
         }
     }
     Ok(())
@@ -72,7 +70,7 @@ fn try_add_bank_cost(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
         return Ok(false);
     }
     let event = Event::BankCost(BankCost{
-        id: "".to_string(),
+        id: "Bank costs".to_string(),
         date: row.transaction_date,
         currency: row.currency,
         amount: -row.amount
@@ -83,7 +81,7 @@ fn try_add_bank_cost(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
 
 fn add_transaction(ledger: &mut Ledger, row: &Row) -> BookResult {
     let event = Event::Transaction(Transaction{
-        id: "".to_string(),
+        id: "Transaction".to_string(),
         date: row.transaction_date,
         account: BankAccountReference::SwedishAccountNumber(SwedishAccountNumber{number: row.account_nr}),
         amount: row.amount,

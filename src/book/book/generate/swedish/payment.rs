@@ -25,16 +25,24 @@ struct ExpectedTransaction {
 impl ExpectedTransaction {
     fn process_exact_payment(&mut self, ledger_id: LedgerId, data: &Transaction, p: &mut Params) -> BookResult {
         if self.event_data.currency != p.first.exchange_rates.book_currency {
-            println!("Process exact with conversion {}", data.amount);
+            println!("Process exact with conversion {} {}", data.amount, data.currency);
             let converted_original_date = p.first.exchange_rates.convert_into_book_currency(self.event_data.date, self.event_data.currency, self.remaining, self.event_data.exchange_rate)?;
-            let converted_today = p.first.exchange_rates.convert_into_book_currency(data.date, self.event_data.currency, self.remaining, None)?;
+            let converted_today = if data.currency!=p.first.exchange_rates.book_currency {
+                p.first.exchange_rates.convert_into_book_currency(data.date, data.currency, self.remaining, None)?
+            } else {
+                data.amount
+            };
             let converted_difference = converted_original_date - converted_today;
 
             let book_original_date = BookAmount::from_signed_amount(-converted_original_date);
             let book_today = BookAmount::from_signed_amount(converted_today);
             let book_difference = BookAmount::from_signed_amount(converted_difference);
             p.book.add_entry(ledger_id, data.date, &self.event_data.id, self.work_account, book_original_date);
-            p.book.add_entry(ledger_id, data.date, &self.event_data.id, ids::COMPANY_CURRENCY_ACCOUNT, book_today);
+            if data.currency != p.first.exchange_rates.book_currency {
+                p.book.add_entry(ledger_id, data.date, &self.event_data.id, ids::COMPANY_CURRENCY_ACCOUNT, book_today);
+            } else {
+                p.book.add_entry(ledger_id, data.date, &self.event_data.id, ids::COMPANY_BANK_ACCOUNT, book_today);
+            }
             p.book.add_entry(ledger_id, data.date, &self.event_data.id, ids::EXCHANGE_RATE_DIFFERENCES, book_difference);
         } else {
             println!("Process exact without conversion {}", data.amount);
