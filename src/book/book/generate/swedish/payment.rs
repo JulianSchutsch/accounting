@@ -4,6 +4,7 @@ use crate::book::book::generate::swedish::ids;
 use super::active_associables::*;
 use super::params::*;
 
+#[derive(Debug)]
 pub struct PaymentEventData {
     pub ledger_id: LedgerId,
     pub date: Date,
@@ -14,6 +15,7 @@ pub struct PaymentEventData {
     pub exchange_rate: Option<f64>
 }
 
+#[derive(Debug)]
 struct ExpectedTransaction {
     event_data: PaymentEventData,
     remaining: Amount,
@@ -75,6 +77,10 @@ impl Associable<Transaction, Params<'_>> for ExpectedTransaction {
             }
         }
         Ok(AssociableChange::NoMatch)
+    }
+
+    fn describe(&self) -> String {
+        format!("{:?}", self)
     }
 }
 

@@ -47,5 +47,15 @@ pub fn generate(first: &phases::First) -> BookResult<phases::Second> {
         add_entry(*ledger_id, event, &mut params, &mut associables)?;
     }
 
+    if !associables.exchanges.complete() {
+        println!("Non associated exchanges");
+    }
+    if !associables.transactions.complete() {
+        println!("Non associated transactions");
+        for (_, transaction) in associables.transactions.iter() {
+            println!("{}", transaction.describe());
+        }
+    }
+
     Ok(phases::Second::new(first, params.book))
 }

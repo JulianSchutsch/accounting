@@ -4,6 +4,7 @@ use super::ids;
 use super::active_associables::*;
 use super::params::*;
 
+#[derive(Debug)]
 struct AssociableExchange {
     ledger_id: LedgerId,
     exchange: Exchange
@@ -53,6 +54,9 @@ impl Associable<Exchange, Params<'_>> for AssociableExchange {
             return Ok(AssociableChange::Close);
         }
         Ok(AssociableChange::NoMatch)
+    }
+    fn describe(&self) -> String {
+        format!("{:?}", self)
     }
 }
 

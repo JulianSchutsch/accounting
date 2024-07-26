@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use crate::book::*;
 
 type AssociablePtr<TA, TH> = *const dyn Associable<TA, TH>;
+type AssociableIter<'a, TA, TH> = std::collections::btree_map::Iter<'a, AssociablePtr<TA, TH>, AssociableBox<TA, TH>>;
 
 pub struct Associables<TA, TH> {
     entries: BTreeMap<AssociablePtr<TA, TH>, AssociableBox<TA, TH>>
@@ -11,6 +12,14 @@ pub struct Associables<TA, TH> {
 impl<TA, TH> Associables<TA, TH> {
     pub fn new() -> Self {
         Self{ entries: BTreeMap::new() }
+    }
+
+    pub fn iter(&self) -> AssociableIter<TA, TH> {
+        self.entries.iter()
+    }
+
+    pub fn complete(&self) -> bool {
+        return self.entries.is_empty();
     }
 
     pub fn register(&mut self, associable: AssociableBox<TA, TH>) {
