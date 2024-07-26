@@ -25,10 +25,6 @@ pub struct BankAccount {
 }
 
 impl BankAccount {
-    pub fn description(&self) -> String {
-        format!("{}", self.references)
-    }
-
     pub fn new(account_type: BankAccountType, initial_value: Amount, currency: Currency, references: BankAccountReferences) -> Self {
         Self { account_type, initial_value, currency, references, periods: Vec::new(), values: BTreeMap::new() }
     }

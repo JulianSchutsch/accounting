@@ -13,6 +13,10 @@ impl BookIdRange {
         Self{ begin, end  }
     }
 
+    pub const fn num_new(begin: i32, end: i32) -> Self {
+        Self{ begin: BookId(begin), end: BookId(end) }
+    }
+
     pub fn contains(&self, id: BookId) -> bool {
         (id>=self.begin) && (id<=self.end)
     }

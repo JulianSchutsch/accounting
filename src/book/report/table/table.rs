@@ -1,3 +1,5 @@
+use num::Num;
+
 pub enum TableAlignment {
     Left,
     Center,
@@ -28,8 +30,29 @@ impl Table {
     pub fn iter(&self) -> TableEntriesIterator {
         self.entries.iter()
     }
+
+    pub fn insert_title_row(&mut self, s: &str) {
+        self.insert(TableEntry::TitleRow(s.to_string()));
+    }
+
+    pub fn insert_str(&mut self, s: &str) {
+        self.insert(TableEntry::String(TableAlignment::Left, s.to_string()));
+    }
+
+    pub fn insert_num<T: std::fmt::Display>(&mut self, s: T) {
+        self.insert(TableEntry::String(TableAlignment::Right, format!("{}", s)));
+    }
+
+    pub fn new_line(&mut self) {
+        self.insert(TableEntry::NewRow);
+    }
+
     pub fn insert(&mut self, e:TableEntry) {
         self.entries.push(e);
+    }
+
+    pub fn insert_row_sep(&mut self) {
+        self.insert(TableEntry::RowSeparator);
     }
 
     pub fn column_widths(&self) -> std::collections::HashMap<usize, usize> {

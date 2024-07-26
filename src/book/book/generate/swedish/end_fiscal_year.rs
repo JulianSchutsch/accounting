@@ -5,7 +5,7 @@ use super::ids;
 use super::params::Params;
 
 pub fn add(ledger_id: LedgerId, event: &EndFiscalYear, p: &mut Params) -> BookResult {
-    let book_sum = period_sum(&p.book, Period::from_dates(Date::MIN, event.fiscal_year.end), BookIdRange::new(ids::COMPANY_CURRENCY_ACCOUNT, ids::COMPANY_CURRENCY_ACCOUNT), BookSideFilter::Both)?;
+    let book_sum = period_sum(&p.book, Period::from_dates(Date::MIN, event.fiscal_year.end), BookIdRange::new(ids::COMPANY_CURRENCY_ACCOUNT, ids::COMPANY_CURRENCY_ACCOUNT))?;
     let mut exchanged_sums = Amount(0.0);
     for &currency in ALL_CURRENCIES.iter() {
         if currency!=p.first.settings.book_currency {

@@ -1,22 +1,18 @@
 use crate::book::*;
 
+use super::result::*;
+use super::balance::*;
+
 pub struct K2 {
-    pub net_sales: Amount,
+    pub result: Result,
+    pub balance: Balance
 }
 
 impl K2 {
-    pub fn print(&self) {
-        println!("Swedish-K2:");
-        println!(" Net sales = {}", self.net_sales);
+    pub fn generate(import: &phases::First, year: &settings::FiscalYear, book: &Book) -> BookResult<K2> {
+        Ok(K2 {
+            result: Result::generate(year.fiscal_year, book)?,
+            balance: Balance::generate(year.fiscal_year, book)?
+        })
     }
-}
-
-fn calculate_net_sales(import: &phases::First, fiscal_year: Period, book: &Book) -> BookResult<Amount> {
-    book::tools::period_sum(book, fiscal_year, BookIdRange::new(BookId(3000), BookId(3799)), BookSideFilter::Both)
-}
-
-pub fn generate(import: &phases::First, year: &settings::FiscalYear, book: &Book) -> BookResult<K2> {
-    Ok(K2{
-        net_sales:calculate_net_sales(import, year.fiscal_year, book)?
-    })
 }

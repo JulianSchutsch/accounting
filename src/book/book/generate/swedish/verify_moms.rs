@@ -8,7 +8,6 @@ pub fn add(ledger_id: LedgerId, event: &VerifyMoms, p: &mut Params) -> BookResul
         &p.book,
         event.date.this_month()?,
         ids::MOMS_RANGE,
-        BookSideFilter::Both
     )?;
     if !amount.almost_zero() {
         let book_amount = BookAmount::from_signed_amount(amount);
