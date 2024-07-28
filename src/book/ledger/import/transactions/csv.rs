@@ -36,7 +36,7 @@ fn is_own_account(row: &Row, banks: &BankAccounts) -> bool {
     false
 }
 
-fn try_add_interest(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
+fn try_add_interest(ledger: &mut LedgerBuilder, row: &Row) -> BookResult<bool> {
     if row.text != "GOTTSKRIVEN RÄNTA" && row.text != "Sparränta" {
         return Ok(false);
     }
@@ -47,11 +47,11 @@ fn try_add_interest(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
         taxable: true,
         amount: row.amount
     });
-    ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.transaction_date), event);
+    ledger.add(row.transaction_date, EventKind::Transaction, event);
     Ok(true)
 }
 
-fn try_add_exchange(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
+fn try_add_exchange(ledger: &mut LedgerBuilder, row: &Row) -> BookResult<bool> {
     if !row.text.starts_with("VALUTAAFFÄR") && !row.text.starts_with("Valutaaffär"){
         return Ok(false)
     }
@@ -61,11 +61,11 @@ fn try_add_exchange(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
         currency: row.currency,
         amount: row.amount
     });
-    ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.transaction_date), event);
+    ledger.add(row.transaction_date, EventKind::Transaction, event);
     Ok(true)
 }
 
-fn try_add_bank_cost(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
+fn try_add_bank_cost(ledger: &mut LedgerBuilder, row: &Row) -> BookResult<bool> {
     if !row.text.to_ascii_uppercase().starts_with("PRIS " ) {
         return Ok(false);
     }
@@ -75,11 +75,11 @@ fn try_add_bank_cost(ledger: &mut Ledger, row: &Row) -> BookResult<bool> {
         currency: row.currency,
         amount: -row.amount
     });
-    ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.transaction_date), event);
+    ledger.add(row.transaction_date, EventKind::Transaction, event);
     Ok(true)
 }
 
-fn add_transaction(ledger: &mut Ledger, row: &Row) -> BookResult {
+fn add_transaction(ledger: &mut LedgerBuilder, row: &Row) -> BookResult {
     let event = Event::Transaction(Transaction{
         id: "Transaction".to_string(),
         date: row.transaction_date,
@@ -88,11 +88,11 @@ fn add_transaction(ledger: &mut Ledger, row: &Row) -> BookResult {
         currency: row.currency,
         references: BankTransactionReferences::new_from_single(row.reference.as_str())
     });
-    ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.transaction_date), event);
+    ledger.add(row.transaction_date, EventKind::Transaction, event);
     Ok(())
 }
 
-fn add_account_entries(ledger: &mut Ledger, content: Content, banks: &BankAccounts) -> BookResult {
+fn add_account_entries(ledger: &mut LedgerBuilder, content: Content, banks: &BankAccounts) -> BookResult {
     for row in content.rows.into_iter() {
         if !is_own_account(&row, banks) {
             if !try_add_interest(ledger, &row)? {
@@ -107,7 +107,7 @@ fn add_account_entries(ledger: &mut Ledger, content: Content, banks: &BankAccoun
     Ok(())
 }
 
-pub fn import(ledger: &mut Ledger, banks : &mut BankAccounts, path: &str, settings: &settings::banks::CSV) -> BookResult {
+pub fn import(ledger: &mut LedgerBuilder, banks : &mut BankAccounts, path: &str, settings: &settings::banks::CSV) -> BookResult {
     if !settings.files.iter().any(|e| e.is_match(path)) {
         return Ok(());
     }

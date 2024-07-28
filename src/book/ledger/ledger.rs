@@ -9,8 +9,6 @@ type FiscalYears = BTreeMap<FiscalYearId, Period>;
 pub struct Ledger {
     pub book_currency: Currency,
     pub events: Events,
-    pub fiscal_years: FiscalYears,
-    pub ledger_id: LedgerIdGenerator,
 }
 
 impl Ledger {
@@ -18,19 +16,13 @@ impl Ledger {
     pub fn new(book_currency: Currency) -> Ledger {
         Ledger{
             book_currency,
-            events: Events::new(),
-            fiscal_years: BTreeMap::new(),
-            ledger_id: LedgerIdGenerator::new()
+            events: Events::new()
         }
     }
 
-    pub fn select_fiscal_year(&mut self, period: Period) {
-        self.ledger_id.select_fiscal_year(period);
-    }
-
     pub fn print(&self) {
-        for (_date, event) in self.iter() {
-            println!("{:?}", event);
+        for (ledger_id, event) in self.iter() {
+            println!("{} {:?}", ledger_id, event);
         }
     }
 }

@@ -3,7 +3,7 @@ mod skv;
 
 use crate::book::*;
 
-fn import_banks(ledger: &mut Ledger, banks: &mut BankAccounts, path: &str, fiscal_year_settings: &settings::FiscalYear) -> BookResult {
+fn import_banks(ledger: &mut LedgerBuilder, banks: &mut BankAccounts, path: &str, fiscal_year_settings: &settings::FiscalYear) -> BookResult {
     for banks_filter in fiscal_year_settings.banks.iter() {
         match banks_filter {
             settings::banks::Banks::CSV(e) => csv::import(ledger, banks, path, e).map_err(|e| e.extend(format!("Failed to import csv account from file {}", path)))?,
@@ -13,7 +13,7 @@ fn import_banks(ledger: &mut Ledger, banks: &mut BankAccounts, path: &str, fisca
     Ok(())
 }
 
-pub fn import_fiscal_year(ledger: &mut Ledger, banks: &mut BankAccounts, fiscal_year_settings: &settings::FiscalYear) -> BookResult {
+pub fn import_fiscal_year(ledger: &mut LedgerBuilder, banks: &mut BankAccounts, fiscal_year_settings: &settings::FiscalYear) -> BookResult {
     utils::paths::directory_scan(std::path::Path::new(fiscal_year_settings.root_path.as_str()), &mut |path|{
         import_banks(ledger, banks, path, fiscal_year_settings)?;
         Ok(())

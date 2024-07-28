@@ -30,6 +30,10 @@ impl Period {
         PeriodMonthIter{ current: Some(self.begin.remaining_month().unwrap()), max_date: self.end}
     }
 
+    pub fn new_invalid() -> Self {
+        Self{begin: Date::MAX, end: Date::MIN}
+    }
+
     pub fn new() -> Self {
         Self{begin: Date::MIN, end: Date::MIN}
     }

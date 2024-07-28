@@ -42,7 +42,6 @@ fn process_root_file(path: &str) -> BookResult {
         for month in fiscal_year.fiscal_year.iterate_months() {
             display_period(month, fiscal_year.fiscal_year, &first, &second);
         }
-//        display_banks(fiscal_year.fiscal_year, &first);
         let previous_k2 = annual_accounts::swedish::K2::new();
         let k2 = annual_accounts::swedish::K2::generate(&first, &fiscal_year, &second.book, &previous_k2)?;
         k2.result.table().print();

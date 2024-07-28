@@ -9,10 +9,10 @@ static IMPORTERKEYS_TAX:[(&str, TaxPaymentKind); 4]=[
     ("Moms", TaxPaymentKind::Moms)
 ];
 
-fn try_import_as_tax(row: &Row, ledger: &mut Ledger) -> bool {
+fn try_import_as_tax(row: &Row, ledger: &mut LedgerBuilder) -> bool {
     for (key, kind) in IMPORTERKEYS_TAX.iter() {
         if row.description.contains(key) {
-            ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::TaxPayment(TaxPayment{
+            ledger.add(row.date, EventKind::Transaction, Event::TaxPayment(TaxPayment{
                 id: row.description.clone(),
                 date: row.date,
                 amount: -row.amount,
@@ -24,9 +24,9 @@ fn try_import_as_tax(row: &Row, ledger: &mut Ledger) -> bool {
     false
 }
 
-fn try_import_as_interest(row: &Row, ledger: &mut Ledger) -> bool {
+fn try_import_as_interest(row: &Row, ledger: &mut LedgerBuilder) -> bool {
     if row.description.contains("Intäktsränta") {
-        ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::Interest(Interest{
+        ledger.add(row.date, EventKind::Transaction, Event::Interest(Interest{
             id: row.description.clone(),
             date: row.date,
             currency: ledger.book_currency,
@@ -38,9 +38,9 @@ fn try_import_as_interest(row: &Row, ledger: &mut Ledger) -> bool {
     false
 }
 
-fn try_import_as_fine(row: &Row, ledger: &mut Ledger) -> bool {
+fn try_import_as_fine(row: &Row, ledger: &mut LedgerBuilder) -> bool {
     if row.description.contains("Kostnadsränta") {
-        ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::Fine(Fine{
+        ledger.add(row.date, EventKind::Transaction, Event::Fine(Fine{
             id: row.description.clone(),
             date: row.date,
             amount: -row.amount,
@@ -65,13 +65,13 @@ fn import_values(content: &Content, banks: &mut BankAccounts) -> BookResult {
     Ok(())
 }
 
-fn import_transactions(content: &Content, ledger: &mut Ledger) -> BookResult {
+fn import_transactions(content: &Content, ledger: &mut LedgerBuilder) -> BookResult {
     for row in content.rows.iter() {
         if !try_import_as_tax(row, ledger) {
             if !try_import_as_interest(row, ledger) {
                 if !try_import_as_fine(row, ledger) {
                     if row.description.contains("Inbetalning bokförd") {
-                         ledger.events.insert(ledger.ledger_id.generate_transaction_id(row.date), Event::Transaction(Transaction {
+                         ledger.add(row.date, EventKind::Transaction, Event::Transaction(Transaction {
                              id: "Incoming payment".to_string(),
                                 date: row.date,
                                 amount: row.amount,
@@ -89,7 +89,7 @@ fn import_transactions(content: &Content, ledger: &mut Ledger) -> BookResult {
     Ok(())
 }
 
-pub fn import(ledger: &mut Ledger, banks : &mut BankAccounts, path: &str, settings: &settings::banks::SKV) -> BookResult {
+pub fn import(ledger: &mut LedgerBuilder, banks : &mut BankAccounts, path: &str, settings: &settings::banks::SKV) -> BookResult {
     if !settings.files.iter().any(|e| e.is_match(path)) {
         return Ok(());
     }
