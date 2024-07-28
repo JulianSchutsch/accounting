@@ -17,6 +17,10 @@ impl BookIdRange {
         Self{ begin: BookId(begin), end: BookId(end) }
     }
 
+    pub const fn single(id: BookId) -> Self {
+        Self{ begin: id, end: id}
+    }
+
     pub fn contains(&self, id: BookId) -> bool {
         (id>=self.begin) && (id<=self.end)
     }

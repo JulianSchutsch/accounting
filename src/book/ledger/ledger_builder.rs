@@ -57,11 +57,11 @@ impl LedgerBuilder {
             if !pos.valid(key.date) {
                 pos = LedgerBuilderFiscalYearPos::select(key.date, settings)?;
             }
-            let ledger_id = LedgerId::new(pos.fiscal_year_id, pos.id);
             for event in events.into_iter() {
+                let ledger_id = LedgerId::new(pos.fiscal_year_id, pos.id);
                 ledger.events.insert(ledger_id, event);
+                pos.increase();
             }
-            pos.increase();
         }
         Ok(ledger)
     }

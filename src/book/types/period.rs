@@ -26,6 +26,10 @@ impl Iterator for PeriodMonthIter {
 impl Period {
     pub const FULL: Period = Period{ begin: Date::MIN, end: Date::MAX };
 
+    pub fn extend_to_min(&self) -> Period {
+        Period{ begin: Date::MIN, end: self.end }
+    }
+
     pub fn iterate_months(&self) -> PeriodMonthIter {
         PeriodMonthIter{ current: Some(self.begin.remaining_month().unwrap()), max_date: self.end}
     }

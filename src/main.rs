@@ -37,6 +37,7 @@ fn display_period(period: Period, fiscal_year: Period, first: &phases::First, se
 
 fn process_root_file(path: &str) -> BookResult {
     let first = phases::First::from_root_file(path)?;
+    first.ledger.print();
     let second = book::book::generate::generate(&first)?;
     for fiscal_year in first.settings.fiscal_years.iter() {
         for month in fiscal_year.fiscal_year.iterate_months() {

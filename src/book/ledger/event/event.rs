@@ -11,6 +11,7 @@ pub enum Event {
     Interest(Interest),
     Fine(Fine),
     VerifyMoms(VerifyMoms),
+    Check(CheckPeriod),
     Shares(Shares),
     Transaction(Transaction),
     BankCost(BankCost),
@@ -32,7 +33,8 @@ impl Event {
             Event::Transaction(e) => e.date,
             Event::BankCost(e) => e.date,
             Event::Exchange(e) => e.date,
-            Event::EndFiscalYear(e) => e.fiscal_year.end
+            Event::EndFiscalYear(e) => e.fiscal_year.end,
+            Event::Check(e) => e.period.end,
         }
     }
 
@@ -49,7 +51,8 @@ impl Event {
             Event::Transaction(e) => &e.id,
             Event::BankCost(e) => &e.id,
             Event::Exchange(e) => &e.id,
-            Event::EndFiscalYear(e) => &e.id
+            Event::EndFiscalYear(e) => &e.id,
+            Event::Check(e) => &e.id
         }
     }
 }

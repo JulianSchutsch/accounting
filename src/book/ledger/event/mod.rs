@@ -12,6 +12,7 @@ mod payment;
 mod bank_cost;
 mod exchange;
 mod end_fiscal_year;
+mod check_period;
 
 pub mod public {
     pub use super::income::*;
@@ -28,4 +29,5 @@ pub mod public {
     pub use super::bank_cost::*;
     pub use super::exchange::*;
     pub use super::end_fiscal_year::*;
+    pub use super::check_period::*;
 }

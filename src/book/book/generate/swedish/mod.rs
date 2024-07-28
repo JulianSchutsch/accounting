@@ -15,6 +15,7 @@ mod exchange;
 mod params;
 mod payment;
 mod end_fiscal_year;
+mod check_period;
 
 use crate::book::*;
 
@@ -34,7 +35,8 @@ fn add_entry<'p>(ledger_id: LedgerId, entry: &Event, params: & mut Params<'p>, a
         Event::Transaction(e) => transaction::add(ledger_id, e, params, associables).map_err(|e| e.extend("Failed to add transaction")),
         Event::BankCost(e) => bank_cost::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add bank cost")),
         Event::Exchange(e) => exchange::add(ledger_id, e, params, associables).map_err(|e| e.extend("Failed to add exchange")),
-        Event::EndFiscalYear(e) => end_fiscal_year::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add end of fiscal year"))
+        Event::EndFiscalYear(e) => end_fiscal_year::add(ledger_id, e, params).map_err(|e| e.extend("Failed to add end of fiscal year")),
+        Event::Check(e) => check_period::add(ledger_id, e, params).map_err(|e| e.extend("Failed to run check"))
     }
 }
 
