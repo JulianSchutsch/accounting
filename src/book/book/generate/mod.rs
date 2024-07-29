@@ -1,4 +1,4 @@
-mod swedish;
+pub mod swedish;
 
 use crate::book::*;
 

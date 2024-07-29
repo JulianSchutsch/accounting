@@ -12,3 +12,19 @@ pub fn period_sum(book: &Book, period: Period, id_range: BookIdRange) -> BookRes
     }
     Ok(result)
 }
+
+pub fn extract_sums(ledger_id: LedgerId, date: Date, event_id: &String, book: &mut Book, period: Period, id_range: BookIdRange) -> BookResult<Amount> {
+    let mut total = Amount::zero();
+    for id in id_range.iter() {
+        let amount = book::tools::period_sum(
+            &book,
+            period,
+            BookIdRange::single(id),
+        )?;
+        if !amount.almost_zero() {
+            book.add_entry(ledger_id, date,event_id, id, BookAmount::from_signed_amount(-amount));
+        }
+        total += amount;
+    }
+    Ok(total)
+}

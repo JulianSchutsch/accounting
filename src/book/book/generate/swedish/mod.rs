@@ -1,6 +1,6 @@
 mod income;
 mod invoice;
-mod ids;
+pub mod ids;
 mod naming;
 mod salary;
 mod tax_payment;

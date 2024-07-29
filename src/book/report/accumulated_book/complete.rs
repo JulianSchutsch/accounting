@@ -8,9 +8,11 @@ pub fn generate_complete_accounts_table(accumulated_book: &AccumulatedBook, acco
     result.insert(TableEntry::NewRow);
     result.insert(TableEntry::RowSeparator);
     for (key, value) in accumulated_book.values.iter() {
-        result.insert(TableEntry::String(TableAlignment::Left, format!("{} {}", key, accounts.naming.get(key).map_or("", |v| v.as_str()))));
-        result.insert(TableEntry::String(TableAlignment::Left, format!("{}", value)));
-        result.insert(TableEntry::NewRow);
+        if !value.almost_zero() {
+            result.insert(TableEntry::String(TableAlignment::Left, format!("{} {}", key, accounts.naming.get(key).map_or("", |v| v.as_str()))));
+            result.insert(TableEntry::String(TableAlignment::Left, format!("{}", value)));
+            result.insert(TableEntry::NewRow);
+        }
     }
     result
 }

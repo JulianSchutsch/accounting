@@ -6,8 +6,30 @@ pub struct BookIdRange {
     end: BookId
 }
 
+pub struct BookIdRangeIter {
+    pos: BookId,
+    end: BookId
+}
+
+impl std::iter::Iterator for BookIdRangeIter {
+    type Item = BookId;
+    fn next(&mut self) -> Option<Self::Item> {
+        let result = if self.pos<=self.end {
+            Some(self.pos)
+        } else {
+            None
+        };
+        self.pos = BookId(self.pos.0+1);
+        result
+    }
+}
+
 impl BookIdRange {
     pub const FULL: BookIdRange = BookIdRange{ begin: BookId::MIN, end: BookId::MAX};
+
+    pub fn iter(&self) -> BookIdRangeIter {
+        BookIdRangeIter{ pos: self.begin, end: self.end }
+    }
 
     pub const fn new(begin: BookId, end: BookId) -> Self {
         Self{ begin, end  }

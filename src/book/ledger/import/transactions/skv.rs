@@ -12,7 +12,6 @@ static IMPORTERKEYS_TAX:[(&str, TaxPaymentKind); 4]=[
 fn try_import_as_tax(row: &Row, ledger: &mut LedgerBuilder) -> bool {
     for (key, kind) in IMPORTERKEYS_TAX.iter() {
         if row.description.contains(key) {
-            println!("Add tax payment {} {}", row.date, row.amount);
             ledger.add(row.date, EventKind::Transaction, Event::TaxPayment(TaxPayment{
                 id: row.description.clone(),
                 date: row.date,
