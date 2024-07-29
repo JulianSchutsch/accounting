@@ -55,7 +55,7 @@ impl BankAccounts {
     }
 
     pub fn add_account(&mut self, references: BankAccountReferences, account_type: BankAccountType, currency: Currency, initial_value: Amount) -> BookResult {
-        if let Some(account) = self.get_mut_account_by_references(&references) {
+        if let Some(_account) = self.get_mut_account_by_references(&references) {
             return Err(BookError::new(format!("Account with references {} cannot be created twice", references)));
         }
         let account_id = self.next_account_id.increase();

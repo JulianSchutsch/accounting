@@ -82,15 +82,15 @@ pub struct Equity {
 
 impl Equity {
     pub fn generate(period: Period, book: &Book, previous: &Equity, result: &Result) -> BookResult<Equity> {
-        let share_capital = period_sum(book, period, BookIdRange::num_new(2081, 2081))?;
+        let share_capital = -period_sum(book, period, BookIdRange::num_new(2081, 2081))?;
         let sum_restricted_equity = share_capital;
-        let balanced_result = previous.balanced_result + result.result_after_taxes;
+        let balanced_result = previous.balanced_result + previous.years_result;
         let years_result = result.result_after_taxes;
         let sum_unrestricted_equity = balanced_result + years_result;
         let sum_equity = sum_restricted_equity + sum_unrestricted_equity;
-        let other_long_term_liabilities = period_sum(book, period,BookIdRange::num_new(2390, 2399))?;
+        let other_long_term_liabilities = -period_sum(book, period,BookIdRange::num_new(2390, 2399))?;
         let sum_long_term_liabilities = other_long_term_liabilities;
-        let accounts_payable = period_sum(book, period, BookIdRange::num_new(2440, 2449))?;
+        let accounts_payable = -period_sum(book, period, BookIdRange::num_new(2440, 2449))?;
         let tax_debt = result.taxes - result.payed_taxes;
         let other_short_term_liabilities =
                 period_sum(book, period, BookIdRange::num_new(2499, 2499))?

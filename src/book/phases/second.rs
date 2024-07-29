@@ -6,7 +6,7 @@ pub struct Second {
 
 impl Second {
 
-    pub fn new(first: &phases::First, book: Book) -> Second {
+    pub fn new(_first: &phases::First, book: Book) -> Second {
         Self { book }
     }
 

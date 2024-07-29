@@ -6,7 +6,6 @@ mod book_entry;
 mod book_id;
 mod book_account_sum;
 
-pub mod verify;
 pub mod tools;
 pub mod generate;
 mod book_value_entry;

@@ -11,7 +11,6 @@ struct AssociableExchange {
 }
 
 struct Dir {
-    pub currency: Currency,
     pub book_amount: Amount,
     pub realised_book_amount: Amount
 }
@@ -26,13 +25,11 @@ fn calculate_exchange_direction(a: &Exchange, b: &Exchange, p: &Params ) -> Book
     println!("Exchange amounts: {} {} {} {}", a.amount, b.amount, a.currency, b.currency);
     if a.currency==p.first.exchange_rates.book_currency {
         Ok(Dir{
-            currency: b.currency,
             book_amount:p.first.exchange_rates.convert_into_book_currency(b.date, b.currency, b.amount, None)?,
             realised_book_amount: a.amount
         })
     } else {
         Ok(Dir {
-            currency: a.currency,
             book_amount: p.first.exchange_rates.convert_into_book_currency(a.date, a.currency, a.amount, None)?,
             realised_book_amount: b.amount
         })

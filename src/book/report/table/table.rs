@@ -1,5 +1,3 @@
-use num::Num;
-
 pub enum TableAlignment {
     Left,
     Center,

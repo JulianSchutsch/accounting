@@ -51,20 +51,20 @@ impl Result {
     }
 
     pub fn generate(period: Period, book: &Book) -> BookResult<Result> {
-        let net_sales= period_sum(book, period, BookIdRange::num_new(3000,3799))?;
-        let other_operating_income= period_sum(book, period, BookIdRange::num_new(3900, 3999))?;
+        let net_sales= -period_sum(book, period, BookIdRange::num_new(3000,3799))?;
+        let other_operating_income= -period_sum(book, period, BookIdRange::num_new(3900, 3999))?;
 
         let sum_operating_income = net_sales+other_operating_income;
 
-        let other_external_costs= period_sum(book, period, BookIdRange::num_new(5000, 6999))?;
-        let employer_costs= period_sum(book, period, BookIdRange::num_new(7000, 7699))?;
-        let other_operating_costs= period_sum(book, period, BookIdRange::num_new(7960, 7989))?;
+        let other_external_costs= -period_sum(book, period, BookIdRange::num_new(5000, 6999))?;
+        let employer_costs= -period_sum(book, period, BookIdRange::num_new(7000, 7699))?;
+        let other_operating_costs= -period_sum(book, period, BookIdRange::num_new(7960, 7989))?;
 
         let sum_operating_costs = other_external_costs + employer_costs + other_operating_costs;
 
-        let other_financial_assets= period_sum(book, period, BookIdRange::num_new(8210, 8269))?;
-        let other_interest_income= period_sum(book, period, BookIdRange::num_new(8310, 8399))?;
-        let other_interest_cost= period_sum(book, period, BookIdRange::num_new(8410, 8499))?;
+        let other_financial_assets= -period_sum(book, period, BookIdRange::num_new(8210, 8269))?;
+        let other_interest_income= -period_sum(book, period, BookIdRange::num_new(8310, 8399))?;
+        let other_interest_cost= -period_sum(book, period, BookIdRange::num_new(8410, 8499))?;
 
         let sum_financial_posts = other_financial_assets + other_interest_income + other_interest_cost;
 
