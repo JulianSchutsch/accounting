@@ -71,7 +71,7 @@ impl Result {
         let result_before_dispositions = sum_operating_income + sum_operating_costs + sum_financial_posts;
         let result_before_taxes = sum_operating_income + sum_operating_costs + sum_financial_posts;
 
-        let taxes = Amount(0.2*result_before_dispositions.0);
+        let taxes = Amount(0.206*result_before_dispositions.0);
         let payed_taxes = period_sum(book, period, BookIdRange::num_new(2510, 2519))?;
 
         let result_after_taxes = result_before_taxes - taxes;
